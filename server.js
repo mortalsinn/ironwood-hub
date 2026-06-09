@@ -17,7 +17,7 @@ app.get('/api/ironwood-data', async (req, res) => {
     // ==========================================
     // HAWK-TUNED TARGETING VECTORS
     // ==========================================
-    const TARGET_HOSTNAME = "ironwoodstair.com";
+    const TARGET_HOSTNAME = "ironwoodstairs.com";
     // Extreme Boolean SEO Query
     const TARGET_SEARCH = "Ironwood Stair OR custom stairs Calgary OR glass railings Calgary OR stair contractor";
     

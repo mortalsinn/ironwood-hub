@@ -45,7 +45,7 @@
                 <h1 class="text-xl font-bold tracking-wider text-white">IRONWOOD <span class="text-slate-400 font-light">COMMAND CENTER</span></h1>
             </div>
             <div class="flex items-center space-x-4">
-                <div class="text-xs text-slate-400 hidden sm:block">Target: <span class="text-white font-mono bg-slate-800 px-2 py-1 rounded border border-slate-600">ironwoodstair.com</span></div>
+                <div class="text-xs text-slate-400 hidden sm:block" id="target-container">Target: <span id="target-badge" class="text-white font-mono bg-slate-800 px-2 py-1 rounded border border-slate-600">ironwoodstairs.com</span></div>
                 <button onclick="fetchData()" class="bg-brandBlue/10 hover:bg-brandBlue/20 text-brandBlue border border-brandBlue/30 px-4 py-2 rounded-md transition flex items-center text-sm font-semibold shadow-[0_0_10px_rgba(56,189,248,0.2)]">
                     <i class="ph ph-arrows-clockwise mr-2 animate-spin-slow"></i> Sync Intel
                 </button>
@@ -211,180 +211,213 @@
     <script>
         let myChart = null;
 
+        function getMockData() {
+            return {
+                brandVelocity: "+14.2%",
+                seoIntel: { domainAuthority: 42, trustFlow: 85 },
+                localIntel: { googleBusiness: { rating: "4.9", totalReviews: 142 } },
+                threatIntel: { status: "SECURE", sslDaysRemaining: 84, domainMaturity: "Active since 2013" },
+                chartData: { labels: ["May 10", "May 17", "May 24", "May 31", "Jun 7", "Jun 14"], searchVolume: [10, 25, 45, 95, 60, 80] },
+                aeoIntel: { llmPerformance: [ { model: "ChatGPT-4o (Sim)", recommendationProbability: "85%" }, { model: "Perplexity (Sim)", recommendationProbability: "72%" }, { model: "Claude 3.5 (Sim)", recommendationProbability: "88%" } ] },
+                socialIntel: {
+                    redditFeed: [ 
+                        { author: "yyc_builder", time: "2 hours ago", text: "Anyone know a good contractor for custom glass railings? Need them for a new build in SW Calgary.", intent: "HOT LEAD", url: "#" }, 
+                        { author: "homeowner_calgary", time: "1 day ago", text: "Got a quote for stairs, checking if Ironwood is good?", intent: "CHATTER", url: "#" } 
+                    ],
+                    youtubeFeed: [ { title: "Modern Stair Railing Remodel // Start to Finish", channel: "DIY Calgary", views: 347474, url: "#" }, { title: "Prestige Railings & Stairs Ltd - Staircase Renovation", channel: "ShopInCities", views: 946, url: "#" } ],
+                    newsFeed: [ { title: "The biggest night of the year for Calgary's building industry", date: "4/13/2026", url: "#" }, { title: "Pilot project takes aim at Calgary hail, wind damage", date: "4/10/2026", url: "#" } ],
+                    liveStream: [ { source: "SYSTEM", text: "Dashboard operating in PREVIEW mode. Live backend data disabled for security." } ]
+                },
+                competitorIntel: [ { domain: "houzz.com", title: "IRONWOOD STAIR & RAIL INC. - Project...", position: 2 }, { domain: "calgaryarea.com", title: "Ironwood Stair & Rail Inc. - Calgary...", position: 4 }, { domain: "greatstairs.com", title: "Stairs, Spindles & Railings - local...", position: 7 } ]
+            };
+        }
+
+        function populateUI(data) {
+            // 1. KPIs
+            document.getElementById('kpi-velocity').innerText = data.brandVelocity;
+            document.getElementById('kpi-rating').innerText = data.localIntel.googleBusiness.rating;
+            document.getElementById('kpi-reviews').innerText = `${data.localIntel.googleBusiness.totalReviews} Reviews`;
+            document.getElementById('domain-age').innerText = data.threatIntel.domainMaturity;
+            document.getElementById('kpi-ssl-days').innerText = data.threatIntel.sslDaysRemaining;
+
+            const threatEl = document.getElementById('kpi-threat');
+            if(data.threatIntel.status === "SECURE") {
+                threatEl.innerHTML = `<i class="ph-fill ph-shield-check mr-2"></i> SECURE`;
+                threatEl.className = "text-2xl font-bold text-brandGreen mt-2 flex items-center";
+            } else {
+                threatEl.innerHTML = `<i class="ph-fill ph-warning-octagon mr-2"></i> CHECK SSL`;
+                threatEl.className = "text-2xl font-bold text-yellow-400 mt-2 flex items-center";
+            }
+
+            // 2. Diagnostics
+            document.getElementById('diag-google').innerText = data.seoIntel.domainAuthority;
+            document.getElementById('diag-bing').innerText = data.seoIntel.trustFlow;
+
+            // 3. Competitors
+            const compList = document.getElementById('competitor-list');
+            compList.innerHTML = '';
+            if(data.competitorIntel && data.competitorIntel.length > 0) {
+                data.competitorIntel.forEach(comp => {
+                    compList.innerHTML += `
+                        <div class="bg-slate-800/60 p-3 rounded-lg border border-red-500/20 flex justify-between items-center">
+                            <div>
+                                <div class="text-sm font-bold text-slate-200 truncate hover:text-red-400 transition cursor-pointer">${comp.domain}</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">${comp.title}</div>
+                            </div>
+                            <div class="bg-red-900/40 text-red-400 font-bold text-xs px-2.5 py-1 rounded-md"># ${comp.position}</div>
+                        </div>`;
+                });
+            } else {
+                compList.innerHTML = '<div class="text-xs text-slate-500 italic p-2">Awaiting SerpApi integration...</div>';
+            }
+
+            // 4. AEO Matrix
+            const aeoMatrix = document.getElementById('aeo-matrix');
+            aeoMatrix.innerHTML = '';
+            data.aeoIntel.llmPerformance.forEach(llm => {
+                let color = "text-brandBlue";
+                if(llm.recommendationProbability.includes("%") && parseInt(llm.recommendationProbability) > 70) color = "text-brandGreen drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]";
+                
+                aeoMatrix.innerHTML += `
+                    <div class="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-bold text-slate-200 flex items-center">
+                                ${llm.model.includes("ChatGPT") ? '<i class="ph-fill ph-robot text-brandGreen mr-1.5"></i>' : '<i class="ph-fill ph-brain text-purple-400 mr-1.5"></i>'}
+                                ${llm.model}
+                            </p>
+                        </div>
+                        <p class="${color} font-black text-lg">${llm.recommendationProbability}</p>
+                    </div>`;
+            });
+
+            // 5. REDDIT LEAD RADAR
+            const redditFeed = document.getElementById('reddit-feed');
+            redditFeed.innerHTML = '';
+            if(data.socialIntel.redditFeed.length > 0) {
+                data.socialIntel.redditFeed.forEach(post => {
+                    let intentClass = post.intent === "HOT LEAD" 
+                        ? "border-brandGreen bg-brandGreen/5 shadow-[inset_0_0_10px_rgba(16,185,129,0.1)]" 
+                        : "border-slate-700 bg-slate-800/30";
+                    let intentBadge = post.intent === "HOT LEAD"
+                        ? `<span class="text-[9px] font-bold bg-brandGreen text-black px-1.5 py-0.5 rounded ml-2 animate-pulse">HOT LEAD</span>`
+                        : `<span class="text-[9px] text-slate-500 border border-slate-600 px-1.5 py-0.5 rounded ml-2">CHATTER</span>`;
+                        
+                    redditFeed.innerHTML += `
+                        <a href="${post.url}" target="_blank" class="block p-3 rounded-lg border ${intentClass} hover:bg-slate-700/50 transition">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <div class="text-[10px] text-slate-400 font-mono">u/${post.author} • ${post.time}</div>
+                                ${intentBadge}
+                            </div>
+                            <p class="text-sm text-slate-200 font-medium">${post.text}</p>
+                        </a>`;
+                });
+            } else {
+                redditFeed.innerHTML = '<div class="text-sm text-slate-500 p-4 font-mono">Scanning r/Calgary... No immediate leads detected.</div>';
+            }
+
+            // 6. YOUTUBE RADAR
+            const ytFeed = document.getElementById('youtube-feed');
+            ytFeed.innerHTML = '';
+            if(data.socialIntel.youtubeFeed.length > 0) {
+                data.socialIntel.youtubeFeed.forEach(vid => {
+                    ytFeed.innerHTML += `
+                        <div class="flex items-start space-x-2 bg-slate-800/40 p-2 rounded border border-slate-700/50">
+                            <i class="ph-fill ph-play-circle text-red-500 text-xl mt-0.5 shrink-0"></i>
+                            <div>
+                                <p class="text-xs font-bold text-slate-200 leading-tight">${vid.title}</p>
+                                <p class="text-[9px] text-slate-400 mt-1">${vid.channel} • ${vid.views.toLocaleString()} views</p>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                ytFeed.innerHTML = '<div class="text-xs text-slate-500 italic">Awaiting SerpApi...</div>';
+            }
+
+            // 7. NEWS RADAR
+            const newsFeed = document.getElementById('news-feed');
+            newsFeed.innerHTML = '';
+            if(data.socialIntel.newsFeed.length > 0) {
+                data.socialIntel.newsFeed.forEach(news => {
+                    newsFeed.innerHTML += `
+                        <div class="border-l-2 border-brandBlue pl-2 py-1 mb-2">
+                            <p class="text-[11px] font-bold text-slate-300 leading-tight">${news.title}</p>
+                            <p class="text-[9px] text-slate-500 mt-0.5">${news.date}</p>
+                        </div>`;
+                });
+            }
+
+            // 8. GLOBAL TICKER
+            let tickerText = "";
+            data.socialIntel.liveStream.forEach(log => {
+                tickerText += `[${log.source.toUpperCase()}] ${log.text} ••• `;
+            });
+            document.getElementById('ticker-content').innerText = tickerText.repeat(5);
+
+            // 9. CHART.JS
+            const ctx = document.getElementById('velocityChart').getContext('2d');
+            if(myChart) myChart.destroy();
+            Chart.defaults.color = '#64748b'; 
+            Chart.defaults.font.family = 'monospace';
+            Chart.defaults.scale.grid.color = 'rgba(51, 65, 85, 0.3)';
+
+            let gradientBlue = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientBlue.addColorStop(0, 'rgba(56, 189, 248, 0.5)');
+            gradientBlue.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.chartData.labels,
+                    datasets: [{
+                        label: 'Google Search Volume (Alberta)',
+                        data: data.chartData.searchVolume,
+                        borderColor: '#38bdf8', 
+                        backgroundColor: gradientBlue, 
+                        borderWidth: 2, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#0f172a'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { border: { display: false } },
+                        y: { border: { display: false }, beginAtZero: true }
+                    }
+                }
+            });
+
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+
         async function fetchData() {
             document.getElementById('loader').classList.remove('hidden');
             document.getElementById('dashboard').classList.add('hidden');
 
             try {
-                const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/ironwood-data' : '/api/ironwood-data';
+                // Determine appropriate API URL
+                const apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+                    ? 'http://localhost:3000/api/ironwood-data' 
+                    : '/api/ironwood-data';
+
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
                 const data = await response.json();
-
-                // 1. KPIs
-                document.getElementById('kpi-velocity').innerText = data.brandVelocity;
-                document.getElementById('kpi-rating').innerText = data.localIntel.googleBusiness.rating;
-                document.getElementById('kpi-reviews').innerText = `${data.localIntel.googleBusiness.totalReviews} Reviews`;
-                document.getElementById('domain-age').innerText = data.threatIntel.domainMaturity;
-                document.getElementById('kpi-ssl-days').innerText = data.threatIntel.sslDaysRemaining;
-
-                const threatEl = document.getElementById('kpi-threat');
-                if(data.threatIntel.status === "SECURE") {
-                    threatEl.innerHTML = `<i class="ph-fill ph-shield-check mr-2"></i> SECURE`;
-                    threatEl.className = "text-2xl font-bold text-brandGreen mt-2 flex items-center";
-                } else {
-                    threatEl.innerHTML = `<i class="ph-fill ph-warning-octagon mr-2"></i> CHECK SSL`;
-                    threatEl.className = "text-2xl font-bold text-yellow-400 mt-2 flex items-center";
-                }
-
-                // 2. Diagnostics
-                document.getElementById('diag-google').innerText = data.seoIntel.domainAuthority;
-                document.getElementById('diag-bing').innerText = data.seoIntel.trustFlow;
-
-                // 3. Competitors
-                const compList = document.getElementById('competitor-list');
-                compList.innerHTML = '';
-                if(data.competitorIntel && data.competitorIntel.length > 0) {
-                    data.competitorIntel.forEach(comp => {
-                        compList.innerHTML += `
-                            <div class="bg-slate-800/60 p-3 rounded-lg border border-red-500/20 flex justify-between items-center">
-                                <div>
-                                    <div class="text-sm font-bold text-slate-200 truncate hover:text-red-400 transition cursor-pointer">${comp.domain}</div>
-                                    <div class="text-[10px] text-slate-400 mt-0.5">${comp.title}</div>
-                                </div>
-                                <div class="bg-red-900/40 text-red-400 font-bold text-xs px-2.5 py-1 rounded-md"># ${comp.position}</div>
-                            </div>`;
-                    });
-                } else {
-                    compList.innerHTML = '<div class="text-xs text-slate-500 italic p-2">Awaiting SerpApi integration...</div>';
-                }
-
-                // 4. AEO Matrix
-                const aeoMatrix = document.getElementById('aeo-matrix');
-                aeoMatrix.innerHTML = '';
-                data.aeoIntel.llmPerformance.forEach(llm => {
-                    let color = "text-brandBlue";
-                    if(llm.recommendationProbability.includes("%") && parseInt(llm.recommendationProbability) > 70) color = "text-brandGreen drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]";
-                    
-                    aeoMatrix.innerHTML += `
-                        <div class="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 flex justify-between items-center">
-                            <div>
-                                <p class="text-sm font-bold text-slate-200 flex items-center">
-                                    ${llm.model.includes("ChatGPT") ? '<i class="ph-fill ph-robot text-brandGreen mr-1.5"></i>' : '<i class="ph-fill ph-brain text-purple-400 mr-1.5"></i>'}
-                                    ${llm.model}
-                                </p>
-                            </div>
-                            <p class="${color} font-black text-lg">${llm.recommendationProbability}</p>
-                        </div>`;
-                });
-
-                // 5. REDDIT LEAD RADAR
-                const redditFeed = document.getElementById('reddit-feed');
-                redditFeed.innerHTML = '';
-                if(data.socialIntel.redditFeed.length > 0) {
-                    data.socialIntel.redditFeed.forEach(post => {
-                        let intentClass = post.intent === "HOT LEAD" 
-                            ? "border-brandGreen bg-brandGreen/5 shadow-[inset_0_0_10px_rgba(16,185,129,0.1)]" 
-                            : "border-slate-700 bg-slate-800/30";
-                        let intentBadge = post.intent === "HOT LEAD"
-                            ? `<span class="text-[9px] font-bold bg-brandGreen text-black px-1.5 py-0.5 rounded ml-2 animate-pulse">HOT LEAD</span>`
-                            : `<span class="text-[9px] text-slate-500 border border-slate-600 px-1.5 py-0.5 rounded ml-2">CHATTER</span>`;
-                            
-                        redditFeed.innerHTML += `
-                            <a href="${post.url}" target="_blank" class="block p-3 rounded-lg border ${intentClass} hover:bg-slate-700/50 transition">
-                                <div class="flex justify-between items-center mb-1.5">
-                                    <div class="text-[10px] text-slate-400 font-mono">u/${post.author} • ${post.time}</div>
-                                    ${intentBadge}
-                                </div>
-                                <p class="text-sm text-slate-200 font-medium">${post.text}</p>
-                            </a>`;
-                    });
-                } else {
-                    redditFeed.innerHTML = '<div class="text-sm text-slate-500 p-4 font-mono">Scanning r/Calgary... No immediate leads detected.</div>';
-                }
-
-                // 6. YOUTUBE RADAR
-                const ytFeed = document.getElementById('youtube-feed');
-                ytFeed.innerHTML = '';
-                if(data.socialIntel.youtubeFeed.length > 0) {
-                    data.socialIntel.youtubeFeed.forEach(vid => {
-                        ytFeed.innerHTML += `
-                            <div class="flex items-start space-x-2 bg-slate-800/40 p-2 rounded border border-slate-700/50">
-                                <i class="ph-fill ph-play-circle text-red-500 text-xl mt-0.5 shrink-0"></i>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-200 leading-tight">${vid.title}</p>
-                                    <p class="text-[9px] text-slate-400 mt-1">${vid.channel} • ${vid.views.toLocaleString()} views</p>
-                                </div>
-                            </div>`;
-                    });
-                } else {
-                    ytFeed.innerHTML = '<div class="text-xs text-slate-500 italic">Awaiting SerpApi...</div>';
-                }
-
-                // 7. NEWS RADAR
-                const newsFeed = document.getElementById('news-feed');
-                newsFeed.innerHTML = '';
-                if(data.socialIntel.newsFeed.length > 0) {
-                    data.socialIntel.newsFeed.forEach(news => {
-                        newsFeed.innerHTML += `
-                            <div class="border-l-2 border-brandBlue pl-2 py-1 mb-2">
-                                <p class="text-[11px] font-bold text-slate-300 leading-tight">${news.title}</p>
-                                <p class="text-[9px] text-slate-500 mt-0.5">${news.date}</p>
-                            </div>`;
-                    });
-                }
-
-                // 8. GLOBAL TICKER
-                let tickerText = "";
-                data.socialIntel.liveStream.forEach(log => {
-                    tickerText += `[${log.source.toUpperCase()}] ${log.text} ••• `;
-                });
-                document.getElementById('ticker-content').innerText = tickerText.repeat(5);
-
-                // 9. CHART.JS
-                const ctx = document.getElementById('velocityChart').getContext('2d');
-                if(myChart) myChart.destroy();
-                Chart.defaults.color = '#64748b'; 
-                Chart.defaults.font.family = 'monospace';
-                Chart.defaults.scale.grid.color = 'rgba(51, 65, 85, 0.3)';
-
-                let gradientBlue = ctx.createLinearGradient(0, 0, 0, 300);
-                gradientBlue.addColorStop(0, 'rgba(56, 189, 248, 0.5)');
-                gradientBlue.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
-
-                myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.chartData.labels,
-                        datasets: [{
-                            label: 'Google Search Volume (Alberta)',
-                            data: data.chartData.searchVolume,
-                            borderColor: '#38bdf8', 
-                            backgroundColor: gradientBlue, 
-                            borderWidth: 2, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#0f172a'
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { border: { display: false } },
-                            y: { border: { display: false }, beginAtZero: true }
-                        }
-                    }
-                });
-
-                document.getElementById('loader').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
+                
+                // Success: populate with real data
+                populateUI(data);
 
             } catch (error) {
-                console.error("Dashboard Render Error:", error);
-                document.getElementById('loader').innerHTML = `
-                    <div class="text-red-500 font-mono text-center p-8 bg-red-900/10 rounded-xl border border-red-500/30">
-                        <i class="ph ph-warning-octagon text-6xl mb-4 animate-pulse"></i>
-                        <span class="font-bold text-xl block tracking-widest uppercase">CRITICAL ERROR</span>
-                        <span class="text-xs text-slate-500 mt-4 block">${error.message}</span>
-                    </div>`;
+                console.warn("Backend unreachable or preview environment detected. Injecting simulated fallback data.", error);
+                
+                // Update the top badge to indicate simulated mode for the user
+                const targetBadge = document.getElementById('target-badge');
+                if (targetBadge) {
+                    targetBadge.innerHTML = `<span class="text-orange-400 font-mono bg-orange-900/40 px-2 py-1 rounded border border-orange-500/50 animate-pulse text-[10px] tracking-widest">PREVIEW (SIMULATED DATA)</span>`;
+                }
+
+                // Fallback: populate with realistic mock data so the dashboard still functions visually in previews
+                populateUI(getMockData());
             }
         }
 
