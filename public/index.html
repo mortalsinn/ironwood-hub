@@ -14,17 +14,17 @@
                         darkBg: '#0f172a',
                         cardBg: '#1e293b',
                         brandBlue: '#38bdf8',
-                        brandGreen: '#10b981'
+                        brandGreen: '#10b981',
+                        brandOrange: '#f97316'
                     }
                 }
             }
         }
     </script>
-    <!-- Phosphor Icons for UI and Chart.js for data visualization -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
@@ -32,6 +32,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(71, 85, 105, 0.5); }
+        /* Custom scrollbar for deep feeds */
+        .feed-scroll::-webkit-scrollbar { width: 4px; }
     </style>
 </head>
 <body class="bg-darkBg text-slate-200 font-sans min-h-screen flex flex-col overflow-x-hidden">
@@ -43,9 +45,9 @@
                 <h1 class="text-xl font-bold tracking-wider text-white">IRONWOOD <span class="text-slate-400 font-light">COMMAND CENTER</span></h1>
             </div>
             <div class="flex items-center space-x-4">
-                <div class="text-xs text-slate-400 hidden sm:block">Target: <span class="text-white font-mono bg-slate-800 px-2 py-1 rounded">ironwoodstair.com</span></div>
+                <div class="text-xs text-slate-400 hidden sm:block">Target: <span class="text-white font-mono bg-slate-800 px-2 py-1 rounded border border-slate-600">ironwoodstair.com</span></div>
                 <button onclick="fetchData()" class="bg-brandBlue/10 hover:bg-brandBlue/20 text-brandBlue border border-brandBlue/30 px-4 py-2 rounded-md transition flex items-center text-sm font-semibold shadow-[0_0_10px_rgba(56,189,248,0.2)]">
-                    <i class="ph ph-arrows-clockwise mr-2"></i> Sync Intel
+                    <i class="ph ph-arrows-clockwise mr-2 animate-spin-slow"></i> Sync Intel
                 </button>
             </div>
         </div>
@@ -55,92 +57,137 @@
         
         <!-- Live Global Ticker -->
         <div class="bg-black border border-slate-700 rounded-lg p-2 flex items-center overflow-hidden shadow-lg">
-            <span class="bg-brandBlue text-black font-bold text-xs px-2 py-1 rounded mr-3 whitespace-nowrap uppercase">Live Feed</span>
+            <span class="bg-brandBlue text-black font-bold text-xs px-2 py-1 rounded mr-3 whitespace-nowrap uppercase">Live Target Stream</span>
             <div class="w-full overflow-hidden relative">
                 <div id="ticker-content" class="whitespace-nowrap text-sm text-brandBlue font-mono animate-[marquee_20s_linear_infinite]">
-                    INITIALIZING GLOBAL INTEL SCRAPE... 
+                    INITIALIZING GLOBAL OSINT SCRAPE FOR "IRONWOOD STAIR & RAIL"... 
                 </div>
             </div>
         </div>
 
-        <!-- System Loader (Visible during API calls) -->
         <div id="loader" class="flex flex-col justify-center items-center py-32 fade-in">
             <div class="relative flex justify-center items-center mb-4">
-                <div class="absolute animate-ping w-20 h-20 rounded-full border-2 border-brandBlue opacity-20"></div>
-                <i class="ph ph-hexagon text-6xl text-brandBlue animate-pulse"></i>
+                <div class="absolute animate-ping w-24 h-24 rounded-full border-2 border-brandBlue opacity-20"></div>
+                <i class="ph ph-crosshairs text-6xl text-brandBlue animate-pulse"></i>
             </div>
-            <p class="font-mono text-brandBlue tracking-widest text-sm uppercase">Synchronizing Nodes...</p>
+            <p class="font-mono text-brandBlue tracking-widest text-sm uppercase mt-2">Deploying Scrapers to Reddit, Google & AI...</p>
         </div>
 
         <div id="dashboard" class="hidden fade-in space-y-4">
             
-            <!-- Top Row: High-Level KPIs -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden group shadow-lg">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Brand Search Velocity</p>
-                    <h3 class="text-3xl font-black text-white mt-1 font-mono tracking-tighter" id="kpi-velocity">--</h3>
-                    <div class="h-1 w-full bg-slate-800 mt-2 rounded-full overflow-hidden"><div class="h-full bg-brandBlue w-[92%]"></div></div>
+            <!-- Row 1: High-Level KPIs -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-brandBlue shadow-lg flex justify-between items-center group cursor-default hover:bg-slate-800/80 transition">
+                    <div>
+                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Brand Velocity</p>
+                        <h3 class="text-3xl font-black text-white mt-1 font-mono tracking-tighter" id="kpi-velocity">--</h3>
+                    </div>
+                    <i class="ph ph-trend-up text-4xl text-brandBlue/30 group-hover:text-brandBlue/60 transition"></i>
                 </div>
                 
-                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-yellow-400 shadow-lg">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Google Map Authority</p>
-                    <div class="flex items-end space-x-2 mt-1">
-                        <h3 class="text-3xl font-bold text-white" id="kpi-rating">--</h3>
-                        <div class="text-yellow-400 text-lg mb-1"><i class="ph-fill ph-star"></i></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-1 font-mono" id="kpi-reviews">-- Reviews</p>
-                </div>
-
-                <div class="glass-panel p-4 rounded-xl shadow-lg border-t-2 border-t-purple-500">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Domain Maturity</p>
-                    <div class="flex items-center mt-2">
-                        <i class="ph ph-clock-counter-clockwise text-purple-400 text-3xl mr-2"></i>
-                        <h3 class="text-lg font-bold text-white leading-tight" id="domain-age">Scanning...</h3>
-                    </div>
-                </div>
-
-                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-brandBlue md:col-span-2 flex justify-between items-center shadow-lg">
+                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-yellow-400 shadow-lg flex justify-between items-center group hover:bg-slate-800/80 transition">
                     <div>
-                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Cyber & SSL Threat Intel</p>
+                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Google Maps Intel</p>
+                        <div class="flex items-end space-x-2 mt-1">
+                            <h3 class="text-3xl font-bold text-white" id="kpi-rating">--</h3>
+                            <div class="text-yellow-400 text-lg mb-1"><i class="ph-fill ph-star"></i></div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1 font-mono" id="kpi-reviews">-- Reviews</p>
+                    </div>
+                    <i class="ph ph-map-pin text-4xl text-yellow-400/30 group-hover:text-yellow-400/60 transition"></i>
+                </div>
+
+                <div class="glass-panel p-4 rounded-xl shadow-lg border-t-2 border-t-purple-500 hover:bg-slate-800/80 transition flex justify-between items-center group">
+                    <div>
+                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Domain Maturity</p>
+                        <h3 class="text-xl font-bold text-white leading-tight mt-2" id="domain-age">Scanning...</h3>
+                    </div>
+                    <i class="ph ph-clock-counter-clockwise text-4xl text-purple-400/30 group-hover:text-purple-400/60 transition"></i>
+                </div>
+
+                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-brandGreen flex justify-between items-center shadow-lg hover:bg-slate-800/80 transition group">
+                    <div>
+                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">SSL Threat Intel</p>
                         <h3 class="text-2xl font-bold mt-2 flex items-center" id="kpi-threat">
-                            <i class="ph ph-shield text-slate-500 mr-2"></i> Scanning...
+                            <i class="ph ph-shield text-slate-500 mr-2"></i> --
                         </h3>
                     </div>
                     <div class="text-right">
-                        <p class="text-[10px] text-slate-400 uppercase tracking-widest">Certificate Validity</p>
-                        <p class="text-xl font-mono text-white mt-1" id="kpi-ssl-days">--</p>
-                        <p class="text-[10px] text-slate-500 mt-1">Days Remaining</p>
+                        <p class="text-2xl font-mono text-white" id="kpi-ssl-days">--</p>
+                        <p class="text-[10px] text-slate-500">Days Left</p>
                     </div>
                 </div>
             </div>
 
+            <!-- Row 2: Visuals & Matrix -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                
-                <!-- Chart Area -->
                 <div class="glass-panel p-4 rounded-xl lg:col-span-2 shadow-2xl relative">
                     <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
-                        <h3 class="text-sm font-bold text-slate-200 tracking-widest uppercase flex items-center"><i class="ph ph-chart-line-up text-brandBlue mr-2 text-lg"></i> Search Volume vs AI Indexing</h3>
+                        <h3 class="text-sm font-bold text-slate-200 tracking-widest uppercase flex items-center"><i class="ph ph-chart-line-up text-brandBlue mr-2 text-lg"></i> Google Trends: Search Interest (30 Days)</h3>
+                        <span class="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-400">Target: "Custom Stairs"</span>
                     </div>
-                    <!-- Fixed height container for Chart.js -->
-                    <div class="h-72 w-full"><canvas id="velocityChart"></canvas></div>
+                    <div class="h-64 w-full"><canvas id="velocityChart"></canvas></div>
                 </div>
 
-                <!-- Answer Engine Matrix -->
-                <div class="glass-panel p-4 rounded-xl lg:col-span-1 shadow-2xl">
-                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-brain text-purple-400 mr-2 text-lg"></i> Answer Engine Matrix</h3>
-                    <p class="text-xs text-slate-400 mb-4">Probability of AI recommending Ironwood for queries.</p>
-                    <div class="space-y-3" id="aeo-matrix">
-                        <!-- AI Data injected here -->
+                <div class="glass-panel p-4 rounded-xl lg:col-span-1 shadow-2xl flex flex-col">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-brain text-purple-400 mr-2 text-lg"></i> AI Recommendation Matrix</h3>
+                    <p class="text-xs text-slate-400 mb-4">Probability of AI recommending Ironwood for local queries.</p>
+                    <div class="space-y-3 flex-grow" id="aeo-matrix"></div>
+                </div>
+            </div>
+
+            <!-- ROW 3: GOD-MODE SOCIAL & MEDIA RADAR -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- Dedicated Reddit Lead Radar -->
+                <div class="glass-panel p-4 rounded-xl lg:col-span-2 shadow-lg border border-slate-600 relative overflow-hidden flex flex-col">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
+                        <h3 class="text-sm font-bold text-white tracking-widest uppercase flex items-center"><i class="ph-fill ph-reddit-logo text-brandOrange mr-2 text-lg"></i> Reddit Lead Radar (r/Calgary)</h3>
+                        <div class="flex space-x-2">
+                            <span class="flex items-center text-[10px] text-brandGreen font-bold"><span class="w-2 h-2 rounded-full bg-brandGreen mr-1 animate-pulse"></span> HOT LEAD</span>
+                            <span class="flex items-center text-[10px] text-slate-400"><span class="w-2 h-2 rounded-full bg-slate-500 mr-1"></span> CHATTER</span>
+                        </div>
+                    </div>
+                    <div class="space-y-3 overflow-y-auto max-h-[300px] feed-scroll pr-2" id="reddit-feed">
+                        <!-- Reddit leads injected here -->
+                    </div>
+                </div>
+
+                <!-- Media, News & Video PR Radar -->
+                <div class="glass-panel p-4 rounded-xl col-span-1 shadow-lg border border-slate-600 flex flex-col">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-broadcast text-brandBlue mr-2 text-lg"></i> Media & Video PR</h3>
+                    <div class="overflow-y-auto max-h-[300px] feed-scroll pr-2 space-y-4">
+                        
+                        <!-- YouTube Section -->
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 block"><i class="ph-fill ph-youtube-logo text-red-500 mr-1"></i> Top Ranking Video Content</span>
+                            <div class="space-y-2" id="youtube-feed"></div>
+                        </div>
+
+                        <!-- News Section -->
+                        <div class="pt-2 border-t border-slate-700/50">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 block"><i class="ph ph-article text-brandBlue mr-1"></i> Local PR & News XML</span>
+                            <div class="space-y-2" id="news-feed"></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                
-                <!-- Google Lighthouse Data -->
+            <!-- Row 4: Technical Specs & Competitors -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="glass-panel p-4 rounded-xl col-span-1 shadow-lg">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-crosshairs text-red-400 mr-2 text-lg"></i> Local Competitor Intel</h3>
+                    <div class="mb-3 flex justify-between items-center">
+                        <span class="text-[10px] text-slate-400 uppercase">Targeting Keywords:</span>
+                        <span class="bg-slate-800 text-slate-200 text-[10px] px-2 py-1 rounded font-mono border border-slate-600 shadow-inner">"custom stairs calgary"</span>
+                    </div>
+                    <div class="space-y-3" id="competitor-list"></div>
+                </div>
+
                 <div class="glass-panel p-4 rounded-xl col-span-1 shadow-lg">
                     <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-magnifying-glass text-brandBlue mr-2 text-lg"></i> Official Lighthouse Diagnostics</h3>
-                    <div class="space-y-6 mt-4">
+                    <div class="space-y-6 mt-6">
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-slate-300 text-xs uppercase font-bold tracking-wider">Tech SEO Score</span>
@@ -157,28 +204,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Competitor Hit-List -->
-                <div class="glass-panel p-4 rounded-xl col-span-1 shadow-lg flex flex-col">
-                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-crosshairs text-red-400 mr-2 text-lg"></i> Live Competitor Intel</h3>
-                    <div class="mb-3">
-                        <span class="text-[10px] text-slate-400 uppercase">Targeting Keyword:</span>
-                        <span class="bg-slate-800 text-slate-200 text-[10px] px-2 py-1 rounded ml-1 font-mono border border-slate-600 shadow-inner">"custom stairs calgary"</span>
-                    </div>
-                    <div class="space-y-3 flex-grow" id="competitor-list">
-                        <!-- Competitors injected here -->
-                    </div>
-                </div>
-
-                <!-- Live OSINT Terminal -->
-                <div class="glass-panel p-4 rounded-xl col-span-1 relative overflow-hidden shadow-lg border border-slate-600">
-                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-terminal-window text-brandGreen mr-2 text-lg"></i> Global OSINT Stream</h3>
-                    <div class="space-y-3 max-h-[220px] overflow-y-auto pr-2 text-sm font-mono" id="live-log">
-                        <!-- Logs injected here -->
-                    </div>
-                    <div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-cardBg to-transparent pointer-events-none rounded-b-xl"></div>
-                </div>
-
             </div>
         </div>
     </main>
@@ -187,197 +212,182 @@
         let myChart = null;
 
         async function fetchData() {
-            // UI State: Loading
             document.getElementById('loader').classList.remove('hidden');
             document.getElementById('dashboard').classList.add('hidden');
 
             try {
-                // Determine environment dynamically
                 const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/ironwood-data' : '/api/ironwood-data';
-                
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
                 const data = await response.json();
 
-                // 1. Populate KPI Cards
+                // 1. KPIs
                 document.getElementById('kpi-velocity').innerText = data.brandVelocity;
                 document.getElementById('kpi-rating').innerText = data.localIntel.googleBusiness.rating;
-                document.getElementById('kpi-reviews').innerText = `${data.localIntel.googleBusiness.totalReviews} Map Reviews`;
-                
-                // Threat Intel logic
+                document.getElementById('kpi-reviews').innerText = `${data.localIntel.googleBusiness.totalReviews} Reviews`;
+                document.getElementById('domain-age').innerText = data.threatIntel.domainMaturity;
+                document.getElementById('kpi-ssl-days').innerText = data.threatIntel.sslDaysRemaining;
+
                 const threatEl = document.getElementById('kpi-threat');
                 if(data.threatIntel.status === "SECURE") {
                     threatEl.innerHTML = `<i class="ph-fill ph-shield-check mr-2"></i> SECURE`;
-                    threatEl.className = "text-2xl font-bold text-brandGreen mt-2 flex items-center drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]";
-                } else if(data.threatIntel.status === "WARNING") {
-                    threatEl.innerHTML = `<i class="ph-fill ph-warning-octagon mr-2"></i> EXPIRING`;
-                    threatEl.className = "text-2xl font-bold text-yellow-400 mt-2 flex items-center";
+                    threatEl.className = "text-2xl font-bold text-brandGreen mt-2 flex items-center";
                 } else {
-                    threatEl.innerHTML = `<i class="ph-fill ph-warning mr-2"></i> OFFLINE`;
-                    threatEl.className = "text-2xl font-bold text-red-500 mt-2 flex items-center";
+                    threatEl.innerHTML = `<i class="ph-fill ph-warning-octagon mr-2"></i> CHECK SSL`;
+                    threatEl.className = "text-2xl font-bold text-yellow-400 mt-2 flex items-center";
                 }
-                
-                document.getElementById('kpi-ssl-days').innerText = data.threatIntel.sslDaysRemaining;
-                document.getElementById('domain-age').innerText = data.threatIntel.domainMaturity;
 
-                // 2. Populate Diagnostics
+                // 2. Diagnostics
                 document.getElementById('diag-google').innerText = data.seoIntel.domainAuthority;
                 document.getElementById('diag-bing').innerText = data.seoIntel.trustFlow;
 
-                // 3. Populate Competitors
+                // 3. Competitors
                 const compList = document.getElementById('competitor-list');
                 compList.innerHTML = '';
                 if(data.competitorIntel && data.competitorIntel.length > 0) {
                     data.competitorIntel.forEach(comp => {
                         compList.innerHTML += `
-                            <div class="bg-slate-800/60 p-3 rounded-lg border border-red-500/20 flex justify-between items-center hover:border-red-500/60 transition group">
-                                <div class="overflow-hidden pr-2">
-                                    <div class="text-sm font-bold text-slate-200 truncate group-hover:text-red-400 transition">${comp.domain}</div>
-                                    <div class="text-[10px] text-slate-400 truncate mt-0.5">${comp.title}</div>
+                            <div class="bg-slate-800/60 p-3 rounded-lg border border-red-500/20 flex justify-between items-center">
+                                <div>
+                                    <div class="text-sm font-bold text-slate-200 truncate hover:text-red-400 transition cursor-pointer">${comp.domain}</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">${comp.title}</div>
                                 </div>
-                                <div class="bg-red-900/40 text-red-400 font-bold text-xs px-2.5 py-1 rounded-md shrink-0 shadow-inner"># ${comp.position}</div>
+                                <div class="bg-red-900/40 text-red-400 font-bold text-xs px-2.5 py-1 rounded-md"># ${comp.position}</div>
                             </div>`;
                     });
                 } else {
-                    compList.innerHTML = '<div class="text-xs text-slate-500 italic p-2">Awaiting SerpApi configuration...</div>';
+                    compList.innerHTML = '<div class="text-xs text-slate-500 italic p-2">Awaiting SerpApi integration...</div>';
                 }
 
-                // 4. Populate AEO Matrix
+                // 4. AEO Matrix
                 const aeoMatrix = document.getElementById('aeo-matrix');
                 aeoMatrix.innerHTML = '';
                 data.aeoIntel.llmPerformance.forEach(llm => {
-                    let color = "text-brandBlue"; // Default blue
-                    let glow = "";
-                    if(llm.recommendationProbability.includes("%") && parseInt(llm.recommendationProbability) > 70) {
-                        color = "text-brandGreen";
-                        glow = "drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]";
-                    } else if(llm.recommendationProbability.includes("Awaiting")) {
-                        color = "text-yellow-500 text-xs";
-                    }
+                    let color = "text-brandBlue";
+                    if(llm.recommendationProbability.includes("%") && parseInt(llm.recommendationProbability) > 70) color = "text-brandGreen drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]";
                     
                     aeoMatrix.innerHTML += `
-                        <div class="bg-slate-800/40 p-3.5 rounded-lg border border-slate-700/50 flex justify-between items-center hover:bg-slate-800 transition">
+                        <div class="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 flex justify-between items-center">
                             <div>
                                 <p class="text-sm font-bold text-slate-200 flex items-center">
-                                    ${llm.model.includes("ChatGPT") ? '<i class="ph-fill ph-robot text-brandGreen mr-1.5"></i>' : ''}
-                                    ${llm.model.includes("Perplexity") ? '<i class="ph-fill ph-brain text-brandBlue mr-1.5"></i>' : ''}
-                                    ${llm.model.includes("Claude") ? '<i class="ph-fill ph-magic-wand text-purple-400 mr-1.5"></i>' : ''}
+                                    ${llm.model.includes("ChatGPT") ? '<i class="ph-fill ph-robot text-brandGreen mr-1.5"></i>' : '<i class="ph-fill ph-brain text-purple-400 mr-1.5"></i>'}
                                     ${llm.model}
                                 </p>
-                                <p class="text-[10px] text-slate-500 font-mono mt-1">CTX: ${llm.primaryContext}</p>
                             </div>
-                            <div class="text-right">
-                                <p class="${color} ${glow} font-black text-lg tracking-tight">${llm.recommendationProbability}</p>
-                            </div>
+                            <p class="${color} font-black text-lg">${llm.recommendationProbability}</p>
                         </div>`;
                 });
 
-                // 5. Populate Global Log & Ticker
+                // 5. REDDIT LEAD RADAR
+                const redditFeed = document.getElementById('reddit-feed');
+                redditFeed.innerHTML = '';
+                if(data.socialIntel.redditFeed.length > 0) {
+                    data.socialIntel.redditFeed.forEach(post => {
+                        let intentClass = post.intent === "HOT LEAD" 
+                            ? "border-brandGreen bg-brandGreen/5 shadow-[inset_0_0_10px_rgba(16,185,129,0.1)]" 
+                            : "border-slate-700 bg-slate-800/30";
+                        let intentBadge = post.intent === "HOT LEAD"
+                            ? `<span class="text-[9px] font-bold bg-brandGreen text-black px-1.5 py-0.5 rounded ml-2 animate-pulse">HOT LEAD</span>`
+                            : `<span class="text-[9px] text-slate-500 border border-slate-600 px-1.5 py-0.5 rounded ml-2">CHATTER</span>`;
+                            
+                        redditFeed.innerHTML += `
+                            <a href="${post.url}" target="_blank" class="block p-3 rounded-lg border ${intentClass} hover:bg-slate-700/50 transition">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <div class="text-[10px] text-slate-400 font-mono">u/${post.author} • ${post.time}</div>
+                                    ${intentBadge}
+                                </div>
+                                <p class="text-sm text-slate-200 font-medium">${post.text}</p>
+                            </a>`;
+                    });
+                } else {
+                    redditFeed.innerHTML = '<div class="text-sm text-slate-500 p-4 font-mono">Scanning r/Calgary... No immediate leads detected.</div>';
+                }
+
+                // 6. YOUTUBE RADAR
+                const ytFeed = document.getElementById('youtube-feed');
+                ytFeed.innerHTML = '';
+                if(data.socialIntel.youtubeFeed.length > 0) {
+                    data.socialIntel.youtubeFeed.forEach(vid => {
+                        ytFeed.innerHTML += `
+                            <div class="flex items-start space-x-2 bg-slate-800/40 p-2 rounded border border-slate-700/50">
+                                <i class="ph-fill ph-play-circle text-red-500 text-xl mt-0.5 shrink-0"></i>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-200 leading-tight">${vid.title}</p>
+                                    <p class="text-[9px] text-slate-400 mt-1">${vid.channel} • ${vid.views.toLocaleString()} views</p>
+                                </div>
+                            </div>`;
+                    });
+                } else {
+                    ytFeed.innerHTML = '<div class="text-xs text-slate-500 italic">Awaiting SerpApi...</div>';
+                }
+
+                // 7. NEWS RADAR
+                const newsFeed = document.getElementById('news-feed');
+                newsFeed.innerHTML = '';
+                if(data.socialIntel.newsFeed.length > 0) {
+                    data.socialIntel.newsFeed.forEach(news => {
+                        newsFeed.innerHTML += `
+                            <div class="border-l-2 border-brandBlue pl-2 py-1 mb-2">
+                                <p class="text-[11px] font-bold text-slate-300 leading-tight">${news.title}</p>
+                                <p class="text-[9px] text-slate-500 mt-0.5">${news.date}</p>
+                            </div>`;
+                    });
+                }
+
+                // 8. GLOBAL TICKER
                 let tickerText = "";
-                const logContainer = document.getElementById('live-log');
-                logContainer.innerHTML = '';
-                
                 data.socialIntel.liveStream.forEach(log => {
                     tickerText += `[${log.source.toUpperCase()}] ${log.text} ••• `;
-                    
-                    let srcColor = "text-brandGreen";
-                    if(log.source === "Reddit") srcColor = "text-orange-500";
-                    if(log.source === "Google" || log.source === "Trends") srcColor = "text-brandBlue";
-                    if(log.source === "ERROR") srcColor = "text-red-500";
-                    if(log.source === "Archive") srcColor = "text-purple-400";
-                    
-                    logContainer.innerHTML += `
-                        <div class="flex items-start border-b border-slate-700/50 pb-2 mb-2 last:border-0">
-                            <span class="text-[10px] text-slate-500 w-14 pt-0.5 shrink-0">${log.time}</span>
-                            <div>
-                                <span class="${srcColor} text-[11px] font-bold tracking-wider">>${log.source}<br></span>
-                                <span class="text-slate-300 text-xs">${log.text}</span>
-                            </div>
-                        </div>`;
                 });
-                // Repeat ticker text so it scrolls continuously
-                document.getElementById('ticker-content').innerText = tickerText.repeat(8);
+                document.getElementById('ticker-content').innerText = tickerText.repeat(5);
 
-                // 6. Render Chart.js
+                // 9. CHART.JS
                 const ctx = document.getElementById('velocityChart').getContext('2d');
                 if(myChart) myChart.destroy();
-                
-                // Chart aesthetic configuration
-                Chart.defaults.color = '#64748b'; // slate-500
+                Chart.defaults.color = '#64748b'; 
                 Chart.defaults.font.family = 'monospace';
-                Chart.defaults.scale.grid.color = 'rgba(51, 65, 85, 0.3)'; // slate-700
+                Chart.defaults.scale.grid.color = 'rgba(51, 65, 85, 0.3)';
 
-                // Create gradient for lines
-                let gradientBlue = ctx.createLinearGradient(0, 0, 0, 400);
-                gradientBlue.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
+                let gradientBlue = ctx.createLinearGradient(0, 0, 0, 300);
+                gradientBlue.addColorStop(0, 'rgba(56, 189, 248, 0.5)');
                 gradientBlue.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
-                
-                let gradientPurple = ctx.createLinearGradient(0, 0, 0, 400);
-                gradientPurple.addColorStop(0, 'rgba(168, 85, 247, 0.4)');
-                gradientPurple.addColorStop(1, 'rgba(168, 85, 247, 0.0)');
 
                 myChart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: data.chartData.labels,
-                        datasets: [
-                            {
-                                label: 'Google Search Volume',
-                                data: data.chartData.searchVolume,
-                                borderColor: '#38bdf8', // brandBlue
-                                backgroundColor: gradientBlue, 
-                                borderWidth: 2, fill: true, tension: 0.4, pointRadius: 3, pointHoverRadius: 6
-                            },
-                            {
-                                label: 'AI Indexing Score',
-                                data: data.chartData.aiMentions,
-                                borderColor: '#a855f7', // purple-500
-                                backgroundColor: gradientPurple, 
-                                borderWidth: 2, fill: true, tension: 0.4, yAxisID: 'y1', pointRadius: 3, pointHoverRadius: 6
-                            }
-                        ]
+                        datasets: [{
+                            label: 'Google Search Volume (Alberta)',
+                            data: data.chartData.searchVolume,
+                            borderColor: '#38bdf8', 
+                            backgroundColor: gradientBlue, 
+                            borderWidth: 2, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#0f172a'
+                        }]
                     },
                     options: {
-                        responsive: true, 
-                        maintainAspectRatio: false,
-                        interaction: { mode: 'index', intersect: false },
-                        plugins: {
-                            legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } }
-                        },
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
                         scales: {
                             x: { border: { display: false } },
-                            y: { 
-                                type: 'linear', display: true, position: 'left',
-                                border: { display: false },
-                                title: { display: true, text: 'Search Volume', color: '#38bdf8', font: {size: 10} }
-                            },
-                            y1: { 
-                                type: 'linear', display: true, position: 'right', 
-                                grid: { drawOnChartArea: false },
-                                border: { display: false },
-                                title: { display: true, text: 'AI Mentions', color: '#a855f7', font: {size: 10} }
-                            }
+                            y: { border: { display: false }, beginAtZero: true }
                         }
                     }
                 });
 
-                // UI State: Reveal
                 document.getElementById('loader').classList.add('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
 
             } catch (error) {
                 console.error("Dashboard Render Error:", error);
                 document.getElementById('loader').innerHTML = `
-                    <div class="text-red-500 font-mono text-center flex flex-col items-center p-8 bg-red-900/10 rounded-xl border border-red-500/30">
-                        <i class="ph ph-warning-octagon text-6xl mb-4 animate-pulse drop-shadow-[0_0_10px_rgba(239,68,68,0.6)]"></i>
-                        <span class="font-bold text-xl tracking-widest uppercase">CRITICAL ERROR</span>
-                        <span class="text-sm text-slate-300 mt-2 block tracking-wide">Data stream disconnected. Server may be unreachable.</span>
-                        <span class="text-xs text-slate-500 mt-4 bg-black/50 p-2 rounded block font-mono border border-slate-700">${error.message}</span>
+                    <div class="text-red-500 font-mono text-center p-8 bg-red-900/10 rounded-xl border border-red-500/30">
+                        <i class="ph ph-warning-octagon text-6xl mb-4 animate-pulse"></i>
+                        <span class="font-bold text-xl block tracking-widest uppercase">CRITICAL ERROR</span>
+                        <span class="text-xs text-slate-500 mt-4 block">${error.message}</span>
                     </div>`;
             }
         }
 
-        // Fire synchronization immediately upon loading
         window.onload = fetchData;
     </script>
 </body>
