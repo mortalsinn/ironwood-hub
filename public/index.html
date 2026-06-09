@@ -51,229 +51,282 @@
         </div>
     </nav>
 
-    <!-- Main Dashboard Content -->
-    <main class="flex-grow max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8 space-y-6">
+    <!-- Main Dashboard Content (GOD MODE) -->
+    <main class="flex-grow max-w-[100rem] mx-auto w-full p-2 sm:p-4 space-y-4">
         
-        <!-- Header & Date -->
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end border-b border-slate-700 pb-4">
-            <div>
-                <h2 class="text-2xl font-semibold text-white">Global Search & AI Intelligence</h2>
-                <p class="text-slate-400 text-sm mt-1">Aggregating SEO, AEO (Answer Engine Optimization), and Social footprints.</p>
-            </div>
-            <div class="mt-4 sm:mt-0 text-sm text-slate-500" id="last-updated">
-                Last updated: Fetching...
+        <!-- Live Ticker Bar -->
+        <div class="bg-black border border-slate-700 rounded-lg p-2 flex items-center overflow-hidden">
+            <span class="bg-brandBlue text-black font-bold text-xs px-2 py-1 rounded mr-3 whitespace-nowrap uppercase">Live Intel</span>
+            <div class="w-full overflow-hidden relative">
+                <div id="ticker-content" class="whitespace-nowrap text-sm text-brandBlue font-mono animate-[marquee_20s_linear_infinite]">
+                    INITIALIZING CONNECTION TO GLOBAL NODES...
+                </div>
             </div>
         </div>
+
+        <style>
+            @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+            .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(71, 85, 105, 0.5); }
+        </style>
 
         <!-- Loading State -->
         <div id="loader" class="flex justify-center items-center py-20">
-            <i class="ph ph-spinner-gap animate-spin text-4xl text-brandBlue"></i>
+            <div class="relative flex justify-center items-center">
+                <div class="absolute animate-ping w-16 h-16 rounded-full border-2 border-brandBlue opacity-20"></div>
+                <i class="ph ph-hexagon text-5xl text-brandBlue animate-pulse"></i>
+            </div>
         </div>
 
         <!-- Dashboard Grid (Hidden until loaded) -->
-        <div id="dashboard" class="hidden fade-in space-y-6">
+        <div id="dashboard" class="hidden fade-in space-y-4">
             
-            <!-- Top KPI Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Card 1 -->
-                <div class="bg-cardBg p-5 rounded-xl border border-slate-700 shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Domain Authority</p>
-                            <h3 class="text-3xl font-bold text-white mt-1" id="kpi-da">--</h3>
-                        </div>
-                        <div class="p-2 bg-slate-800 rounded-lg text-brandBlue"><i class="ph ph-globe text-xl"></i></div>
-                    </div>
+            <!-- Row 1: Mega KPIs -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-brandBlue/5 group-hover:bg-brandBlue/10 transition"></div>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Global Omni-Score</p>
+                    <h3 class="text-4xl font-black text-white mt-1 font-mono tracking-tighter" id="kpi-omni">--</h3>
+                    <div class="h-1 w-full bg-slate-800 mt-2 rounded-full overflow-hidden"><div class="h-full bg-brandBlue w-[94%]"></div></div>
                 </div>
-                <!-- Card 2 -->
-                <div class="bg-cardBg p-5 rounded-xl border border-slate-700 shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Organic Traffic</p>
-                            <h3 class="text-3xl font-bold text-white mt-1" id="kpi-traffic">--</h3>
-                        </div>
-                        <div class="p-2 bg-slate-800 rounded-lg text-brandGreen"><i class="ph ph-trend-up text-xl"></i></div>
-                    </div>
+                <div class="glass-panel p-4 rounded-xl">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Brand Velocity</p>
+                    <h3 class="text-3xl font-bold text-brandGreen mt-1" id="kpi-velocity">--</h3>
                 </div>
-                <!-- Card 3 -->
-                <div class="bg-cardBg p-5 rounded-xl border border-slate-700 shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Backlinks</p>
-                            <h3 class="text-3xl font-bold text-white mt-1" id="kpi-backlinks">--</h3>
-                        </div>
-                        <div class="p-2 bg-slate-800 rounded-lg text-purple-400"><i class="ph ph-link text-xl"></i></div>
-                    </div>
+                <div class="glass-panel p-4 rounded-xl">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Total Social Reach</p>
+                    <h3 class="text-3xl font-bold text-white mt-1" id="kpi-reach">--</h3>
                 </div>
-                <!-- Card 4 -->
-                <div class="bg-cardBg p-5 rounded-xl border border-slate-700 shadow-lg border-t-2 border-t-yellow-400">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">AI Visibility (AEO)</p>
-                            <h3 class="text-3xl font-bold text-white mt-1" id="kpi-ai">--<span class="text-lg text-slate-500">/100</span></h3>
-                        </div>
-                        <div class="p-2 bg-slate-800 rounded-lg text-yellow-400"><i class="ph ph-robot text-xl"></i></div>
+                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-red-500">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Threat Intel Status</p>
+                    <h3 class="text-2xl font-bold text-brandGreen mt-2 flex items-center" id="kpi-threat"><i class="ph-fill ph-shield-check mr-2"></i> SECURE</h3>
+                </div>
+                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-yellow-400">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Local Rep (Google)</p>
+                    <div class="flex items-end space-x-2 mt-1">
+                        <h3 class="text-3xl font-bold text-white" id="kpi-rating">--</h3>
+                        <div class="text-yellow-400 text-sm mb-1">★★★★★</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Data Sections -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Row 2: Charts & AEO Matrix -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
-                <!-- Left Column: SEO Keywords -->
-                <div class="bg-cardBg rounded-xl border border-slate-700 p-5 shadow-lg lg:col-span-1">
-                    <div class="flex items-center space-x-2 mb-4 border-b border-slate-700 pb-3">
-                        <i class="ph ph-magnifying-glass text-brandBlue text-xl"></i>
-                        <h3 class="text-lg font-semibold text-white">Top Tracked Keywords</h3>
+                <!-- Chart Container (Spans 2 columns) -->
+                <div class="glass-panel p-4 rounded-xl lg:col-span-2 shadow-2xl relative">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
+                        <h3 class="text-sm font-bold text-slate-200 tracking-widest uppercase flex items-center"><i class="ph ph-chart-line-up text-brandBlue mr-2 text-lg"></i> Brand Indexing & AI Citation Velocity</h3>
+                        <span class="text-xs text-brandGreen flex items-center animate-pulse"><span class="w-2 h-2 bg-brandGreen rounded-full mr-2"></span>LIVE SYNC</span>
                     </div>
-                    <div class="space-y-3" id="keyword-list">
-                        <!-- Keywords injected here via JS -->
-                    </div>
-                </div>
-
-                <!-- Middle Column: AEO (Answer Engine Optimization) -->
-                <div class="bg-cardBg rounded-xl border border-slate-700 p-5 shadow-lg lg:col-span-1">
-                    <div class="flex items-center space-x-2 mb-4 border-b border-slate-700 pb-3">
-                        <i class="ph ph-brain text-purple-400 text-xl"></i>
-                        <h3 class="text-lg font-semibold text-white">LLM & AEO Presence</h3>
-                    </div>
-                    
-                    <div class="mb-5">
-                        <h4 class="text-xs text-slate-400 uppercase tracking-wider mb-2">Model Mentions Frequency</h4>
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded">
-                                <span class="flex items-center"><i class="ph ph-open-ai-logo mr-2"></i> ChatGPT</span>
-                                <span id="llm-chatgpt" class="text-sm font-bold text-brandGreen">--</span>
-                            </div>
-                            <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded">
-                                <span class="flex items-center"><i class="ph ph-robot mr-2"></i> Claude</span>
-                                <span id="llm-claude" class="text-sm font-bold text-yellow-400">--</span>
-                            </div>
-                            <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded">
-                                <span class="flex items-center"><i class="ph ph-google-logo mr-2"></i> Gemini</span>
-                                <span id="llm-gemini" class="text-sm font-bold text-brandBlue">--</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 class="text-xs text-slate-400 uppercase tracking-wider mb-2">AI Snippet Queries</h4>
-                        <ul class="text-sm space-y-2 text-slate-300 list-disc pl-4" id="aeo-questions">
-                            <!-- Questions injected here -->
-                        </ul>
+                    <div class="h-64 w-full">
+                        <canvas id="velocityChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Right Column: Social Mentions -->
-                <div class="bg-cardBg rounded-xl border border-slate-700 p-5 shadow-lg lg:col-span-1">
-                    <div class="flex items-center space-x-2 mb-4 border-b border-slate-700 pb-3">
-                        <i class="ph ph-share-network text-brandGreen text-xl"></i>
-                        <h3 class="text-lg font-semibold text-white">Recent Social Mentions</h3>
-                    </div>
-                    <div class="space-y-4 overflow-y-auto max-h-[300px] pr-2" id="social-feed">
-                        <!-- Social items injected here -->
+                <!-- Answer Engine Matrix -->
+                <div class="glass-panel p-4 rounded-xl lg:col-span-1 shadow-2xl">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-brain text-purple-400 mr-2 text-lg"></i> AEO Matrix (LLM Status)</h3>
+                    <div class="space-y-3" id="aeo-matrix">
+                        <!-- Injected via JS -->
                     </div>
                 </div>
             </div>
 
+            <!-- Row 3: Deep Search & Live Feed -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- Search Engine Diagnostics -->
+                <div class="glass-panel p-4 rounded-xl col-span-1">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-magnifying-glass text-orange-400 mr-2 text-lg"></i> Search Diagnostics</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-google-logo mr-2 text-slate-400"></i> Google Organics</span>
+                            <span class="font-mono text-brandGreen text-sm" id="diag-google">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-microsoft-logo mr-2 text-slate-400"></i> Bing Engine</span>
+                            <span class="font-mono text-brandBlue text-sm" id="diag-bing">--</span>
+                        </div>
+                        <div class="pt-3 border-t border-slate-700/50">
+                            <p class="text-xs text-slate-400 uppercase">Backlink Velocity (7d)</p>
+                            <div class="flex justify-between mt-2">
+                                <div class="text-center"><span class="block text-xl font-bold text-brandGreen" id="diag-links-new">--</span><span class="text-[10px] text-slate-500">NEW</span></div>
+                                <div class="text-center"><span class="block text-xl font-bold text-red-400" id="diag-links-lost">--</span><span class="text-[10px] text-slate-500">LOST</span></div>
+                                <div class="text-center"><span class="block text-xl font-bold text-yellow-400" id="diag-links-toxic">--</span><span class="text-[10px] text-slate-500">BLOCKED</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Radar Grid -->
+                <div class="glass-panel p-4 rounded-xl col-span-1">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-radar text-pink-400 mr-2 text-lg"></i> Social Radar</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-800/50 p-2 rounded border border-slate-700">
+                            <div class="flex items-center text-xs text-slate-400 mb-1"><i class="ph-fill ph-linkedin-logo text-blue-500 mr-1"></i> LinkedIn</div>
+                            <div class="text-lg font-bold text-white" id="soc-li">--</div>
+                        </div>
+                        <div class="bg-slate-800/50 p-2 rounded border border-slate-700">
+                            <div class="flex items-center text-xs text-slate-400 mb-1"><i class="ph-fill ph-twitter-logo text-white mr-1"></i> X (Twitter)</div>
+                            <div class="text-lg font-bold text-white" id="soc-x">--</div>
+                        </div>
+                        <div class="bg-slate-800/50 p-2 rounded border border-slate-700">
+                            <div class="flex items-center text-xs text-slate-400 mb-1"><i class="ph-fill ph-reddit-logo text-orange-500 mr-1"></i> Reddit</div>
+                            <div class="text-lg font-bold text-white" id="soc-rd">--</div>
+                        </div>
+                        <div class="bg-slate-800/50 p-2 rounded border border-slate-700">
+                            <div class="flex items-center text-xs text-slate-400 mb-1"><i class="ph-fill ph-tiktok-logo text-pink-500 mr-1"></i> TikTok</div>
+                            <div class="text-lg font-bold text-white" id="soc-tk">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Global Activity Log -->
+                <div class="glass-panel p-4 rounded-xl col-span-1 relative overflow-hidden">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-terminal-window text-brandGreen mr-2 text-lg"></i> Global Log</h3>
+                    <div class="space-y-3 max-h-[200px] overflow-y-auto pr-2 text-sm font-mono" id="live-log">
+                        <!-- Logs injected here -->
+                    </div>
+                    <!-- Gradient fade at bottom -->
+                    <div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-[#1e293b] to-transparent pointer-events-none"></div>
+                </div>
+
+            </div>
         </div>
     </main>
 
     <!-- JavaScript to Fetch and Bind Data -->
     <script>
-        // Format large numbers with commas
         const formatNum = (num) => new Intl.NumberFormat('en-US').format(num);
-
-        // Utility to get the right icon for social platforms
-        const getPlatformIcon = (platform) => {
-            const p = platform.toLowerCase();
-            if(p.includes('reddit')) return '<i class="ph-fill ph-reddit-logo text-orange-500 text-2xl"></i>';
-            if(p.includes('twitter') || p.includes('x')) return '<i class="ph-fill ph-twitter-logo text-blue-400 text-2xl"></i>';
-            if(p.includes('linkedin')) return '<i class="ph-fill ph-linkedin-logo text-blue-600 text-2xl"></i>';
-            return '<i class="ph-fill ph-users text-slate-400 text-2xl"></i>';
-        };
-
-        // Utility to colorize sentiment
-        const getSentimentClass = (sentiment) => {
-            const s = sentiment.toLowerCase();
-            if(s === 'positive') return 'text-brandGreen bg-brandGreen/10 border-brandGreen/20';
-            if(s === 'negative') return 'text-red-400 bg-red-400/10 border-red-400/20';
-            return 'text-slate-400 bg-slate-700/50 border-slate-600';
-        };
+        let myChart = null; // Store chart instance
 
         async function fetchData() {
-            // Show loader, hide dashboard
             document.getElementById('loader').classList.remove('hidden');
             document.getElementById('dashboard').classList.add('hidden');
 
             try {
-                // Fetch data from our Node.js backend
-                // Using relative path '/api/ironwood-data' assumes frontend and backend are hosted together.
-                // Fallback to localhost if developing locally without running the server properly.
                 const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/ironwood-data' : '/api/ironwood-data';
-                
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
 
-                // 1. Populate KPIs
-                document.getElementById('kpi-da').innerText = data.seoMetrics.domainAuthority;
-                document.getElementById('kpi-traffic').innerText = formatNum(data.seoMetrics.organicTraffic);
-                document.getElementById('kpi-backlinks').innerText = formatNum(data.seoMetrics.totalBacklinks);
-                document.getElementById('kpi-ai').innerHTML = `${data.aeoMetrics.aiVisibilityScore}<span class="text-lg text-slate-500">/100</span>`;
+                // 1. Bind Mega KPIs
+                document.getElementById('kpi-omni').innerText = data.globalOmniScore;
+                document.getElementById('kpi-velocity').innerText = data.brandVelocity;
+                document.getElementById('kpi-reach').innerText = data.socialIntel.totalReach;
+                document.getElementById('kpi-rating').innerText = data.localIntel.googleBusiness.rating;
                 
-                const dateObj = new Date(data.lastUpdated);
-                document.getElementById('last-updated').innerText = `Last updated: ${dateObj.toLocaleTimeString()} - ${dateObj.toLocaleDateString()}`;
+                const threatEl = document.getElementById('kpi-threat');
+                if(data.threatIntel.status === "SECURE") {
+                    threatEl.innerHTML = `<i class="ph-fill ph-shield-check mr-2"></i> ${data.threatIntel.status}`;
+                    threatEl.className = "text-2xl font-bold text-brandGreen mt-2 flex items-center";
+                }
 
-                // 2. Populate Keywords
-                const kwContainer = document.getElementById('keyword-list');
-                kwContainer.innerHTML = ''; // clear existing
-                data.seoMetrics.topKeywords.forEach(kw => {
-                    kwContainer.innerHTML += `
-                        <div class="flex justify-between items-center p-2 hover:bg-slate-800 rounded transition border border-transparent hover:border-slate-700">
+                // 2. Bind Search Diagnostics
+                document.getElementById('diag-google').innerText = formatNum(data.seoIntel.searchEngines.google.organicTraffic);
+                document.getElementById('diag-bing').innerText = formatNum(data.seoIntel.searchEngines.bing.organicTraffic);
+                document.getElementById('diag-links-new').innerText = `+${data.seoIntel.backlinkVelocity.newThisWeek}`;
+                document.getElementById('diag-links-lost').innerText = `-${data.seoIntel.backlinkVelocity.lostThisWeek}`;
+                document.getElementById('diag-links-toxic').innerText = data.seoIntel.backlinkVelocity.toxicLinksBlocked;
+
+                // 3. Bind Social Radar
+                document.getElementById('soc-li').innerText = formatNum(data.socialIntel.platforms.linkedin.followers);
+                document.getElementById('soc-x').innerText = formatNum(data.socialIntel.platforms.x.followers);
+                document.getElementById('soc-rd').innerText = `${data.socialIntel.platforms.reddit.activeThreads} thrd`;
+                document.getElementById('soc-tk').innerText = formatNum(data.socialIntel.platforms.tiktok.views);
+
+                // 4. Bind AEO Matrix
+                const aeoMatrix = document.getElementById('aeo-matrix');
+                aeoMatrix.innerHTML = '';
+                data.aeoIntel.llmPerformance.forEach(llm => {
+                    let color = llm.recommendationProbability > "90%" ? "text-brandGreen" : "text-yellow-400";
+                    aeoMatrix.innerHTML += `
+                        <div class="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 flex justify-between items-center">
                             <div>
-                                <p class="text-sm font-semibold text-slate-200">${kw.keyword}</p>
-                                <p class="text-xs text-slate-500">Vol: ${formatNum(kw.volume)}</p>
+                                <p class="text-sm font-bold text-slate-200">${llm.model}</p>
+                                <p class="text-[10px] text-slate-500 font-mono">CTX: ${llm.primaryContext}</p>
                             </div>
-                            <div class="bg-brandBlue/10 text-brandBlue text-xs font-bold px-2 py-1 rounded-full">
-                                Rank #${kw.position}
+                            <div class="text-right">
+                                <p class="${color} font-black text-lg">${llm.recommendationProbability}</p>
+                                <p class="text-[9px] uppercase tracking-wider text-slate-400">Rec. Prob</p>
                             </div>
                         </div>
                     `;
                 });
 
-                // 3. Populate AEO
-                document.getElementById('llm-chatgpt').innerText = data.aeoMetrics.llmMentions.chatgpt;
-                document.getElementById('llm-claude').innerText = data.aeoMetrics.llmMentions.claude;
-                document.getElementById('llm-gemini').innerText = data.aeoMetrics.llmMentions.gemini;
+                // 5. Bind Live Ticker & Global Log
+                let tickerText = "";
+                const logContainer = document.getElementById('live-log');
+                logContainer.innerHTML = '';
                 
-                const aeoQuestions = document.getElementById('aeo-questions');
-                aeoQuestions.innerHTML = '';
-                data.aeoMetrics.frequentQuestionsAnswered.forEach(q => {
-                    aeoQuestions.innerHTML += `<li class="hover:text-white transition cursor-default mb-1">${q}</li>`;
-                });
-
-                // 4. Populate Social Mentions
-                const socialContainer = document.getElementById('social-feed');
-                socialContainer.innerHTML = '';
-                data.socialMentions.forEach(mention => {
-                    socialContainer.innerHTML += `
-                        <div class="bg-slate-800/40 p-4 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center space-x-2">
-                                    ${getPlatformIcon(mention.platform)}
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-300">${mention.user || mention.subreddit}</p>
-                                        <p class="text-[10px] text-slate-500">${mention.date}</p>
-                                    </div>
-                                </div>
-                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${getSentimentClass(mention.sentiment)}">
-                                    ${mention.sentiment}
-                                </span>
+                data.socialIntel.liveStream.forEach(log => {
+                    // Build Ticker
+                    tickerText += `[${log.source.toUpperCase()}] ${log.text} ••• `;
+                    
+                    // Build Terminal Log
+                    let srcColor = "text-slate-400";
+                    if(log.source === "Reddit") srcColor = "text-orange-500";
+                    if(log.source === "Perplexity") srcColor = "text-purple-400";
+                    if(log.source === "LinkedIn") srcColor = "text-blue-400";
+                    
+                    logContainer.innerHTML += `
+                        <div class="flex items-start border-b border-slate-800 pb-2">
+                            <span class="text-[10px] text-slate-500 w-12 pt-1 shrink-0">${log.time}</span>
+                            <div>
+                                <span class="${srcColor} text-xs font-bold">[${log.source}]</span>
+                                <span class="text-slate-300 text-xs ml-1">${log.text}</span>
                             </div>
-                            <p class="text-sm text-slate-300 italic">"${mention.snippet}"</p>
                         </div>
                     `;
+                });
+                document.getElementById('ticker-content').innerText = tickerText.repeat(5); // Repeat for marquee effect
+
+                // 6. Render Chart.js
+                const ctx = document.getElementById('velocityChart').getContext('2d');
+                
+                // Destroy old chart if it exists (for refresh button)
+                if(myChart) myChart.destroy();
+
+                Chart.defaults.color = '#94a3b8';
+                Chart.defaults.font.family = 'monospace';
+
+                myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.chartData.labels,
+                        datasets: [
+                            {
+                                label: 'Organic Search Vol',
+                                data: data.chartData.searchVolume,
+                                borderColor: '#38bdf8', // brandBlue
+                                backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'AI Citations (AEO)',
+                                data: data.chartData.aiMentions,
+                                borderColor: '#a855f7', // purple
+                                backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4,
+                                yAxisID: 'y1' // Use secondary axis for scale differences
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } } },
+                        scales: {
+                            x: { grid: { color: 'rgba(71, 85, 105, 0.2)' } },
+                            y: { type: 'linear', display: true, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.2)' } },
+                            y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
+                        }
+                    }
                 });
 
                 // Hide loader, show dashboard
@@ -282,18 +335,14 @@
 
             } catch (error) {
                 console.error("Error fetching data:", error);
-                document.getElementById('loader').innerHTML = `
-                    <div class="text-center text-red-400">
-                        <i class="ph ph-warning text-4xl mb-2"></i>
-                        <p>Failed to connect to the backend server.</p>
-                        <p class="text-sm text-slate-500 mt-1">Make sure you ran 'node server.js'</p>
-                    </div>
-                `;
+                document.getElementById('loader').innerHTML = `<div class="text-red-500 font-mono text-center">CRITICAL ERROR: DATA STREAM DISCONNECTED</div>`;
             }
         }
 
-        // Fetch data on initial load
         window.onload = fetchData;
+        
+        // Auto-refresh data every 60 seconds to simulate a live command center
+        setInterval(fetchData, 60000); 
     </script>
 </body>
 </html>
