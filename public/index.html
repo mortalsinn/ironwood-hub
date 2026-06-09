@@ -139,12 +139,16 @@
                     <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-magnifying-glass text-orange-400 mr-2 text-lg"></i> Search Diagnostics</h3>
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
-                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-google-logo mr-2 text-slate-400"></i> Google Organics</span>
+                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-google-logo mr-2 text-slate-400"></i> Google SEO Score</span>
                             <span class="font-mono text-brandGreen text-sm" id="diag-google">--</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-microsoft-logo mr-2 text-slate-400"></i> Bing Engine</span>
+                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-lightning mr-2 text-slate-400"></i> Tech Perf. Score</span>
                             <span class="font-mono text-brandBlue text-sm" id="diag-bing">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-timer mr-2 text-slate-400"></i> First Paint (Speed)</span>
+                            <span class="font-mono text-yellow-400 text-sm" id="diag-speed">--</span>
                         </div>
                         <div class="pt-3 border-t border-slate-700/50">
                             <p class="text-xs text-slate-400 uppercase">Backlink Velocity (7d)</p>
@@ -226,8 +230,9 @@
                 }
 
                 // 2. Bind Search Diagnostics
-                document.getElementById('diag-google').innerText = formatNum(data.seoIntel.searchEngines.google.organicTraffic);
-                document.getElementById('diag-bing').innerText = formatNum(data.seoIntel.searchEngines.bing.organicTraffic);
+                document.getElementById('diag-google').innerText = `${data.seoIntel.domainAuthority}/100`;
+                document.getElementById('diag-bing').innerText = `${data.seoIntel.trustFlow}/100`;
+                document.getElementById('diag-speed').innerText = data.seoIntel.indexedPages;
                 document.getElementById('diag-links-new').innerText = `+${data.seoIntel.backlinkVelocity.newThisWeek}`;
                 document.getElementById('diag-links-lost').innerText = `-${data.seoIntel.backlinkVelocity.lostThisWeek}`;
                 document.getElementById('diag-links-toxic').innerText = data.seoIntel.backlinkVelocity.toxicLinksBlocked;
