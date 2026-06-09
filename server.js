@@ -41,6 +41,7 @@ app.get('/api/ironwood-data', async (req, res) => {
         let realGoogleRating = 4.9; // Fallback
         let realGoogleReviews = 128; // Fallback
         let serpLog = { time: "SYS", source: "Google", type: "Status", text: "Waiting for SerpApi Key to pull live reviews." };
+        let liveNews = []; // NEW: Array to hold live local news
 
         if (process.env.SERP_API_KEY) {
             try {
@@ -53,9 +54,68 @@ app.get('/api/ironwood-data', async (req, res) => {
                     realGoogleReviews = serpRes.data.place_results.reviews || realGoogleReviews;
                     serpLog = { time: "LIVE", source: "Google", type: "Update", text: `Live Google Rating Synced: ${realGoogleRating} Stars (${realGoogleReviews} reviews).` };
                 }
+
+                // NEW: Fetching Live Local Construction News using the SAME SerpApi Key (Google News)
+                const newsUrl = `https://serpapi.com/search.json?engine=google&q=Calgary+construction+OR+renovation+OR+stairs&tbm=nws&api_key=${process.env.SERP_API_KEY}`;
+                const newsRes = await axios.get(newsUrl);
+                if (newsRes.data.news_results) {
+                    liveNews = newsRes.data.news_results.slice(0, 2).map(article => ({
+                        time: "LIVE",
+                        source: "G-News",
+                        type: "Update",
+                        text: article.title.substring(0, 65) + "..."
+                    }));
+                }
             } catch (err) {
                 console.error("SerpApi Fetch Failed:", err.message);
                 serpLog = { time: "ERROR", source: "Google", type: "Alert", text: "Failed to connect to Google Maps API." };
+            }
+        }
+
+        // --- NEW: LIVE AEO (LLM INTERROGATION) VIA OPENAI ---
+        let chatGptData = { model: "ChatGPT-4o", recommendationProbability: "85%", sentiment: "Positive", primaryContext: "Awaiting Live OpenAI Key" };
+        let openaiLog = { time: "SYS", source: "OpenAI", type: "Status", text: "Waiting for OPENAI_API_KEY." };
+
+        if (process.env.OPENAI_API_KEY) {
+            try {
+                const aiRes = await axios.post(
+                    'https://api.openai.com/v1/chat/completions',
+                    {
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            { 
+                                role: "system", 
+                                content: "You are an AI Answer Engine analyzing local businesses. A user asks about 'Ironwood Stair & Rail Inc' in Calgary. Respond strictly in JSON format with three keys: 'probability' (a percentage string like '92%'), 'sentiment' (Positive, Neutral, or Negative), and 'context' (a 2-3 word summary of why)." 
+                            },
+                            { 
+                                role: "user", 
+                                content: "Would you recommend Ironwood Stair & Rail in Calgary for custom stairs?" 
+                            }
+                        ]
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                
+                // Parse the AI's JSON response
+                const aiText = aiRes.data.choices[0].message.content;
+                const aiParse = JSON.parse(aiText);
+                
+                chatGptData = { 
+                    model: "ChatGPT (Live)", 
+                    recommendationProbability: aiParse.probability || "80%", 
+                    sentiment: aiParse.sentiment || "Positive", 
+                    primaryContext: (aiParse.context || "Live Citation").substring(0, 25) 
+                };
+                openaiLog = { time: "LIVE", source: "OpenAI", type: "Scan", text: `Live ChatGPT AEO Scan Complete: ${chatGptData.recommendationProbability} Recommendation.` };
+                
+            } catch (err) {
+                console.error("OpenAI Fetch Failed:", err.message);
+                openaiLog = { time: "ERROR", source: "OpenAI", type: "Alert", text: "Failed to interrogate OpenAI API. Check API Credits." };
             }
         }
 
@@ -81,7 +141,7 @@ app.get('/api/ironwood-data', async (req, res) => {
             aeoIntel: {
                 overallVisibility: 72,
                 llmPerformance: [
-                    { model: "ChatGPT-4o", recommendationProbability: "85%", sentiment: "Positive", primaryContext: "Custom Stairs, Quality" },
+                    chatGptData, // <--- INJECTING REAL LIVE OPENAI DATA HERE
                     { model: "Claude 3.5 Sonnet", recommendationProbability: "78%", sentiment: "Positive", primaryContext: "Calgary Contractors" },
                     { model: "Gemini Pro", recommendationProbability: "82%", sentiment: "Positive", primaryContext: "Metal Railings" },
                     { model: "Perplexity AI", recommendationProbability: "88%", sentiment: "Highly Positive", primaryContext: "Source Citation" }
@@ -104,8 +164,10 @@ app.get('/api/ironwood-data', async (req, res) => {
                     tiktok: { views: 4500, viralIndex: "Low", sentimentScore: 8.0 }
                 },
                 liveStream: [
-                    ...liveRedditPosts, // <--- INJECTING REAL LIVE DATA HERE
+                    ...liveRedditPosts, // <--- INJECTING REAL LIVE REDDIT DATA
+                    ...liveNews, // <--- INJECTING REAL LIVE GOOGLE NEWS DATA
                     serpLog, // <--- INJECTING GOOGLE API STATUS
+                    openaiLog, // <--- INJECTING OPENAI STATUS
                     { time: "3h ago", source: "Houzz", type: "Review", text: "New project photos indexed." },
                     { time: "5h ago", source: "Pinterest", type: "Pin", text: "Custom glass railing pin gained 40 impressions." }
                 ]
