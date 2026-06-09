@@ -75,7 +75,7 @@ app.get('/api/ironwood-data', async (req, res) => {
                     duckDuckGo: { organicTraffic: 89 }
                 },
                 backlinkVelocity: { newThisWeek: 12, lostThisWeek: 2, toxicLinksBlocked: 0 },
-                topCannibalizationRisks: 0,
+                topCannibalizationRisks: 0
             },
 
             aeoIntel: {
@@ -116,49 +116,6 @@ app.get('/api/ironwood-data', async (req, res) => {
                 googleBusiness: { rating: realGoogleRating, totalReviews: realGoogleReviews, mapViewsThisMonth: 1450 },
                 trustpilot: { rating: 4.8, totalReviews: 12 },
                 yelp: { rating: 4.5, totalReviews: 5 }
-            },
-                backlinkVelocity: { newThisWeek: 142, lostThisWeek: 12, toxicLinksBlocked: 4 },
-                topCannibalizationRisks: 0,
-            },
-
-            aeoIntel: {
-                overallVisibility: 88,
-                llmPerformance: [
-                    { model: "ChatGPT-4o", recommendationProbability: "92%", sentiment: "Highly Positive", primaryContext: "Web Design, Automation" },
-                    { model: "Claude 3.5 Sonnet", recommendationProbability: "85%", sentiment: "Positive", primaryContext: "SEO Strategy" },
-                    { model: "Gemini Pro", recommendationProbability: "89%", sentiment: "Positive", primaryContext: "Digital Marketing" },
-                    { model: "Perplexity AI", recommendationProbability: "95%", sentiment: "Highly Positive", primaryContext: "Source Citation" }
-                ],
-                frequentQuestionsAnswered: [
-                    "Who are the best digital marketing agencies in Calgary?",
-                    "How does Ironwood use AI in marketing?",
-                    "Ironwood Digital case studies and reviews."
-                ]
-            },
-
-            socialIntel: {
-                totalReach: "1.2M",
-                engagementRate: "4.8%",
-                platforms: {
-                    linkedin: { followers: 4200, weeklyMentions: 84, sentimentScore: 9.2 },
-                    x: { followers: 1500, weeklyMentions: 145, sentimentScore: 7.8 },
-                    // If live posts exist, show that count. Otherwise default to 12.
-                    reddit: { activeThreads: liveRedditPosts.length > 0 ? liveRedditPosts.length : 12, topSubreddits: ["r/marketing", "r/Calgary", "r/SEO"], sentimentScore: 6.5 },
-                    tiktok: { views: 45000, viralIndex: "Medium", sentimentScore: 8.0 }
-                },
-                liveStream: [
-                    ...liveRedditPosts, // <--- INJECTING REAL LIVE DATA HERE
-                    { time: "14m ago", source: "Perplexity", type: "Citation", text: "Cited Ironwood's AEO guide as source #1." },
-                    { time: "1h ago", source: "LinkedIn", type: "Share", text: "John D. shared Ironwood's latest post." },
-                    { time: "3h ago", source: "Google", type: "Review", text: "5 Star Review left by Sarah M." },
-                    { time: "5h ago", source: "X", type: "Retweet", text: "AI marketing trends by @Ironwood." }
-                ]
-            },
-
-            localIntel: {
-                googleBusiness: { rating: 4.9, totalReviews: 128, mapViewsThisMonth: 14500 },
-                trustpilot: { rating: 4.8, totalReviews: 45 },
-                yelp: { rating: 4.5, totalReviews: 22 }
             },
 
             threatIntel: {
