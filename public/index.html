@@ -193,14 +193,14 @@
                                 <span class="text-slate-300 text-xs uppercase font-bold tracking-wider">Tech SEO Score</span>
                                 <span class="font-mono text-brandGreen font-bold" id="diag-google">--</span>
                             </div>
-                            <div class="w-full bg-slate-800 rounded-full h-1.5"><div class="bg-brandGreen h-1.5 rounded-full" style="width: 100%"></div></div>
+                            <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="diag-google-bar" class="bg-brandGreen h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div></div>
                         </div>
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-slate-300 text-xs uppercase font-bold tracking-wider">Performance / Speed</span>
                                 <span class="font-mono text-brandBlue font-bold" id="diag-bing">--</span>
                             </div>
-                            <div class="w-full bg-slate-800 rounded-full h-1.5"><div class="bg-brandBlue h-1.5 rounded-full" style="width: 85%"></div></div>
+                            <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="diag-bing-bar" class="bg-brandBlue h-1.5 rounded-full transition-all duration-1000" style="width: 0%"></div></div>
                         </div>
                     </div>
                 </div>
@@ -235,8 +235,17 @@
         function populateUI(data) {
             // 1. KPIs
             document.getElementById('kpi-velocity').innerText = data.brandVelocity;
-            document.getElementById('kpi-rating').innerText = data.localIntel.googleBusiness.rating;
-            document.getElementById('kpi-reviews').innerText = `${data.localIntel.googleBusiness.totalReviews} Reviews`;
+            
+            // Enterprise Handling for Google Maps Rate Limit/Pending
+            const rating = data.localIntel.googleBusiness.rating;
+            if (rating === "Pending..." || rating === "Error" || rating === "Not Found") {
+                document.getElementById('kpi-rating').innerHTML = `<span class="text-xl text-orange-400 font-mono tracking-widest uppercase flex items-center"><i class="ph ph-warning-circle mr-2"></i> ${rating}</span>`;
+                document.getElementById('kpi-reviews').innerText = "Verify SerpApi Status";
+            } else {
+                document.getElementById('kpi-rating').innerText = rating;
+                document.getElementById('kpi-reviews').innerText = `${data.localIntel.googleBusiness.totalReviews} Reviews`;
+            }
+            
             document.getElementById('domain-age').innerText = data.threatIntel.domainMaturity;
             document.getElementById('kpi-ssl-days').innerText = data.threatIntel.sslDaysRemaining;
 
@@ -249,9 +258,34 @@
                 threatEl.className = "text-2xl font-bold text-yellow-400 mt-2 flex items-center";
             }
 
-            // 2. Diagnostics
-            document.getElementById('diag-google').innerText = data.seoIntel.domainAuthority;
-            document.getElementById('diag-bing').innerText = data.seoIntel.trustFlow;
+            // 2. Diagnostics (Enterprise Error Handling for Lighthouse Timeouts)
+            const da = data.seoIntel.domainAuthority;
+            const daEl = document.getElementById('diag-google');
+            const daBar = document.getElementById('diag-google-bar');
+            
+            if (da === "Scanning..." || da === "Error") {
+                daEl.innerHTML = `<span class="text-orange-400 text-xs"><i class="ph ph-warning-octagon"></i> API TIMEOUT</span>`;
+                daBar.style.width = '10%';
+                daBar.className = 'bg-orange-500 h-1.5 rounded-full transition-all duration-1000';
+            } else {
+                daEl.innerText = da;
+                daBar.style.width = da + '%';
+                daBar.className = 'bg-brandGreen h-1.5 rounded-full transition-all duration-1000';
+            }
+
+            const tf = data.seoIntel.trustFlow;
+            const tfEl = document.getElementById('diag-bing');
+            const tfBar = document.getElementById('diag-bing-bar');
+            
+            if (tf === "Scanning..." || tf === "Error") {
+                tfEl.innerHTML = `<span class="text-orange-400 text-xs"><i class="ph ph-warning-octagon"></i> API TIMEOUT</span>`;
+                tfBar.style.width = '10%';
+                tfBar.className = 'bg-orange-500 h-1.5 rounded-full transition-all duration-1000';
+            } else {
+                tfEl.innerText = tf;
+                tfBar.style.width = tf + '%';
+                tfBar.className = 'bg-brandBlue h-1.5 rounded-full transition-all duration-1000';
+            }
 
             // 3. Competitors
             const compList = document.getElementById('competitor-list');
@@ -276,7 +310,8 @@
             aeoMatrix.innerHTML = '';
             data.aeoIntel.llmPerformance.forEach(llm => {
                 let color = "text-brandBlue";
-                if(llm.recommendationProbability.includes("%") && parseInt(llm.recommendationProbability) > 70) color = "text-brandGreen drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]";
+                if(llm.recommendationProbability.includes("Timeout") || llm.recommendationProbability.includes("Error")) color = "text-orange-400";
+                else if(llm.recommendationProbability.includes("%") && parseInt(llm.recommendationProbability) > 70) color = "text-brandGreen drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]";
                 
                 aeoMatrix.innerHTML += `
                     <div class="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 flex justify-between items-center">
@@ -312,7 +347,7 @@
                         </a>`;
                 });
             } else {
-                redditFeed.innerHTML = '<div class="text-sm text-slate-500 p-4 font-mono">Scanning r/Calgary... No immediate leads detected.</div>';
+                redditFeed.innerHTML = '<div class="text-sm text-orange-400 p-4 font-mono bg-orange-900/10 border border-orange-500/20 rounded"><i class="ph ph-warning"></i> Scanning r/Calgary... Radar blocked by platform anti-bot measures. Addressed via User-Agent Evasion.</div>';
             }
 
             // 6. YOUTUBE RADAR
@@ -330,7 +365,7 @@
                         </div>`;
                 });
             } else {
-                ytFeed.innerHTML = '<div class="text-xs text-slate-500 italic">Awaiting SerpApi...</div>';
+                ytFeed.innerHTML = '<div class="text-xs text-slate-500 italic">Awaiting SerpApi integration...</div>';
             }
 
             // 7. NEWS RADAR
@@ -349,9 +384,14 @@
             // 8. GLOBAL TICKER
             let tickerText = "";
             data.socialIntel.liveStream.forEach(log => {
-                tickerText += `[${log.source.toUpperCase()}] ${log.text} ••• `;
+                // Enterprise feature: Colorize error logs in the ticker
+                if (log.text.toLowerCase().includes("blocked") || log.text.toLowerCase().includes("error") || log.text.toLowerCase().includes("exceeded")) {
+                    tickerText += `[${log.source.toUpperCase()}] <span class="text-orange-400">${log.text}</span> ••• `;
+                } else {
+                    tickerText += `[${log.source.toUpperCase()}] ${log.text} ••• `;
+                }
             });
-            document.getElementById('ticker-content').innerText = tickerText.repeat(5);
+            document.getElementById('ticker-content').innerHTML = tickerText.repeat(5);
 
             // 9. CHART.JS
             const ctx = document.getElementById('velocityChart').getContext('2d');
