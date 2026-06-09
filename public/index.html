@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ironwood SEO/AEO Social Hub</title>
-    <!-- Tailwind CSS for styling -->
+    <title>Ironwood Command Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,12 +20,10 @@
             }
         }
     </script>
-    <!-- Phosphor Icons for UI symbols -->
+    <!-- Phosphor Icons for UI and Chart.js for data visualization -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Custom scrollbar for a sleek look */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -37,266 +34,287 @@
         .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(71, 85, 105, 0.5); }
     </style>
 </head>
-<body class="bg-darkBg text-slate-200 font-sans min-h-screen flex flex-col">
+<body class="bg-darkBg text-slate-200 font-sans min-h-screen flex flex-col overflow-x-hidden">
 
-    <!-- Top Navigation -->
-    <nav class="bg-cardBg border-b border-slate-700 p-4 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <nav class="bg-cardBg border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
+        <div class="max-w-[100rem] mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <i class="ph-fill ph-steps text-brandGreen text-3xl"></i>
-                <h1 class="text-xl font-bold tracking-wider text-white">IRONWOOD <span class="text-slate-400 font-light">HUB</span></h1>
+                <h1 class="text-xl font-bold tracking-wider text-white">IRONWOOD <span class="text-slate-400 font-light">COMMAND CENTER</span></h1>
             </div>
             <div class="flex items-center space-x-4">
-                <div class="text-xs text-slate-400 hidden sm:block">Status: <span class="text-brandGreen font-bold tracking-wide">● LIVE SYNCHRONIZATION</span></div>
-                <button onclick="fetchData()" class="bg-brandBlue/10 hover:bg-brandBlue/20 text-brandBlue border border-brandBlue/30 px-4 py-2 rounded-md transition flex items-center text-sm font-semibold">
-                    <i class="ph ph-arrows-clockwise mr-2"></i> Refresh Data
+                <div class="text-xs text-slate-400 hidden sm:block">Target: <span class="text-white font-mono bg-slate-800 px-2 py-1 rounded">ironwoodstair.com</span></div>
+                <button onclick="fetchData()" class="bg-brandBlue/10 hover:bg-brandBlue/20 text-brandBlue border border-brandBlue/30 px-4 py-2 rounded-md transition flex items-center text-sm font-semibold shadow-[0_0_10px_rgba(56,189,248,0.2)]">
+                    <i class="ph ph-arrows-clockwise mr-2"></i> Sync Intel
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Dashboard Content (GOD MODE) -->
     <main class="flex-grow max-w-[100rem] mx-auto w-full p-2 sm:p-4 space-y-4">
         
-        <!-- Live Ticker Bar -->
-        <div class="bg-black border border-slate-700 rounded-lg p-2 flex items-center overflow-hidden">
-            <span class="bg-brandBlue text-black font-bold text-xs px-2 py-1 rounded mr-3 whitespace-nowrap uppercase">Live Intel</span>
+        <!-- Live Global Ticker -->
+        <div class="bg-black border border-slate-700 rounded-lg p-2 flex items-center overflow-hidden shadow-lg">
+            <span class="bg-brandBlue text-black font-bold text-xs px-2 py-1 rounded mr-3 whitespace-nowrap uppercase">Live Feed</span>
             <div class="w-full overflow-hidden relative">
                 <div id="ticker-content" class="whitespace-nowrap text-sm text-brandBlue font-mono animate-[marquee_20s_linear_infinite]">
-                    SCANNING CALGARY CONSTRUCTION & MANUFACTURING SECTORS... 
+                    INITIALIZING GLOBAL INTEL SCRAPE... 
                 </div>
             </div>
         </div>
 
-        <!-- Loading State -->
-        <div id="loader" class="flex justify-center items-center py-20">
-            <div class="relative flex justify-center items-center">
-                <div class="absolute animate-ping w-16 h-16 rounded-full border-2 border-brandBlue opacity-20"></div>
-                <i class="ph ph-hexagon text-5xl text-brandBlue animate-pulse"></i>
+        <!-- System Loader (Visible during API calls) -->
+        <div id="loader" class="flex flex-col justify-center items-center py-32 fade-in">
+            <div class="relative flex justify-center items-center mb-4">
+                <div class="absolute animate-ping w-20 h-20 rounded-full border-2 border-brandBlue opacity-20"></div>
+                <i class="ph ph-hexagon text-6xl text-brandBlue animate-pulse"></i>
             </div>
+            <p class="font-mono text-brandBlue tracking-widest text-sm uppercase">Synchronizing Nodes...</p>
         </div>
 
-        <!-- Dashboard Grid (Hidden until loaded) -->
         <div id="dashboard" class="hidden fade-in space-y-4">
             
-            <!-- Row 1: Mega KPIs -->
+            <!-- Top Row: High-Level KPIs -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div class="glass-panel p-4 rounded-xl relative overflow-hidden group">
-                    <div class="absolute inset-0 bg-brandBlue/5 group-hover:bg-brandBlue/10 transition"></div>
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Global Omni-Score</p>
-                    <h3 class="text-4xl font-black text-white mt-1 font-mono tracking-tighter" id="kpi-omni">--</h3>
-                    <div class="h-1 w-full bg-slate-800 mt-2 rounded-full overflow-hidden"><div class="h-full bg-brandBlue w-[94%]"></div></div>
+                <div class="glass-panel p-4 rounded-xl relative overflow-hidden group shadow-lg">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Brand Search Velocity</p>
+                    <h3 class="text-3xl font-black text-white mt-1 font-mono tracking-tighter" id="kpi-velocity">--</h3>
+                    <div class="h-1 w-full bg-slate-800 mt-2 rounded-full overflow-hidden"><div class="h-full bg-brandBlue w-[92%]"></div></div>
                 </div>
-                <div class="glass-panel p-4 rounded-xl">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Brand Velocity</p>
-                    <h3 class="text-3xl font-bold text-brandGreen mt-1" id="kpi-velocity">--</h3>
-                </div>
-                <div class="glass-panel p-4 rounded-xl">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Total Social Reach</p>
-                    <h3 class="text-3xl font-bold text-white mt-1" id="kpi-reach">--</h3>
-                </div>
-                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-red-500">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Threat Intel Status</p>
-                    <h3 class="text-2xl font-bold text-brandGreen mt-2 flex items-center" id="kpi-threat"><i class="ph-fill ph-shield-check mr-2"></i> SECURE</h3>
-                </div>
-                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-yellow-400">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Local Rep (Google)</p>
+                
+                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-yellow-400 shadow-lg">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Google Map Authority</p>
                     <div class="flex items-end space-x-2 mt-1">
                         <h3 class="text-3xl font-bold text-white" id="kpi-rating">--</h3>
-                        <div class="text-yellow-400 text-sm mb-1">★★★★★</div>
+                        <div class="text-yellow-400 text-lg mb-1"><i class="ph-fill ph-star"></i></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1 font-mono" id="kpi-reviews">-- Reviews</p>
+                </div>
+
+                <div class="glass-panel p-4 rounded-xl shadow-lg border-t-2 border-t-purple-500">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Domain Maturity</p>
+                    <div class="flex items-center mt-2">
+                        <i class="ph ph-clock-counter-clockwise text-purple-400 text-3xl mr-2"></i>
+                        <h3 class="text-lg font-bold text-white leading-tight" id="domain-age">Scanning...</h3>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-4 rounded-xl border-t-2 border-t-brandBlue md:col-span-2 flex justify-between items-center shadow-lg">
+                    <div>
+                        <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Cyber & SSL Threat Intel</p>
+                        <h3 class="text-2xl font-bold mt-2 flex items-center" id="kpi-threat">
+                            <i class="ph ph-shield text-slate-500 mr-2"></i> Scanning...
+                        </h3>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest">Certificate Validity</p>
+                        <p class="text-xl font-mono text-white mt-1" id="kpi-ssl-days">--</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Days Remaining</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Row 2: Charts & AEO Matrix -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
-                <!-- Chart Container (Spans 2 columns) -->
+                <!-- Chart Area -->
                 <div class="glass-panel p-4 rounded-xl lg:col-span-2 shadow-2xl relative">
                     <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
-                        <h3 class="text-sm font-bold text-slate-200 tracking-widest uppercase flex items-center"><i class="ph ph-chart-line-up text-brandBlue mr-2 text-lg"></i> Brand Indexing & AI Citation Velocity</h3>
-                        <span class="text-xs text-brandGreen flex items-center animate-pulse"><span class="w-2 h-2 bg-brandGreen rounded-full mr-2"></span>LIVE SYNC</span>
+                        <h3 class="text-sm font-bold text-slate-200 tracking-widest uppercase flex items-center"><i class="ph ph-chart-line-up text-brandBlue mr-2 text-lg"></i> Search Volume vs AI Indexing</h3>
                     </div>
-                    <div class="h-64 w-full">
-                        <canvas id="velocityChart"></canvas>
-                    </div>
+                    <!-- Fixed height container for Chart.js -->
+                    <div class="h-72 w-full"><canvas id="velocityChart"></canvas></div>
                 </div>
 
                 <!-- Answer Engine Matrix -->
                 <div class="glass-panel p-4 rounded-xl lg:col-span-1 shadow-2xl">
-                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-brain text-purple-400 mr-2 text-lg"></i> AEO Matrix (LLM Status)</h3>
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-brain text-purple-400 mr-2 text-lg"></i> Answer Engine Matrix</h3>
+                    <p class="text-xs text-slate-400 mb-4">Probability of AI recommending Ironwood for queries.</p>
                     <div class="space-y-3" id="aeo-matrix">
-                        <!-- Injected via JS -->
+                        <!-- AI Data injected here -->
                     </div>
                 </div>
             </div>
 
-            <!-- Row 3: Deep Search & Live Feed -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
-                <!-- Search Engine Diagnostics -->
-                <div class="glass-panel p-4 rounded-xl col-span-1">
-                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-magnifying-glass text-orange-400 mr-2 text-lg"></i> Search Diagnostics</h3>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-google-logo mr-2 text-slate-400"></i> Google SEO Score</span>
-                            <span class="font-mono text-brandGreen text-sm" id="diag-google">--</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-lightning mr-2 text-slate-400"></i> Tech Perf. Score</span>
-                            <span class="font-mono text-brandBlue text-sm" id="diag-bing">--</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-300 text-sm flex items-center"><i class="ph ph-timer mr-2 text-slate-400"></i> First Paint (Speed)</span>
-                            <span class="font-mono text-yellow-400 text-sm" id="diag-speed">--</span>
-                        </div>
-                        <div class="pt-3 border-t border-slate-700/50">
-                            <p class="text-xs text-slate-400 uppercase">Backlink Velocity (7d)</p>
-                            <div class="flex justify-between mt-2">
-                                <div class="text-center"><span class="block text-xl font-bold text-brandGreen" id="diag-links-new">--</span><span class="text-[10px] text-slate-500">NEW</span></div>
-                                <div class="text-center"><span class="block text-xl font-bold text-red-400" id="diag-links-lost">--</span><span class="text-[10px] text-slate-500">LOST</span></div>
-                                <div class="text-center"><span class="block text-xl font-bold text-yellow-400" id="diag-links-toxic">--</span><span class="text-[10px] text-slate-500">BLOCKED</span></div>
+                <!-- Google Lighthouse Data -->
+                <div class="glass-panel p-4 rounded-xl col-span-1 shadow-lg">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-magnifying-glass text-brandBlue mr-2 text-lg"></i> Official Lighthouse Diagnostics</h3>
+                    <div class="space-y-6 mt-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-slate-300 text-xs uppercase font-bold tracking-wider">Tech SEO Score</span>
+                                <span class="font-mono text-brandGreen font-bold" id="diag-google">--</span>
                             </div>
+                            <div class="w-full bg-slate-800 rounded-full h-1.5"><div class="bg-brandGreen h-1.5 rounded-full" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-slate-300 text-xs uppercase font-bold tracking-wider">Performance / Speed</span>
+                                <span class="font-mono text-brandBlue font-bold" id="diag-bing">--</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-1.5"><div class="bg-brandBlue h-1.5 rounded-full" style="width: 85%"></div></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Social Radar Grid -->
-                <div class="glass-panel p-4 rounded-xl col-span-1">
-                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-radar text-pink-400 mr-2 text-lg"></i> Social Radar</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-800/50 p-2 rounded border border-slate-700">
-                            <div class="flex items-center text-xs text-slate-400 mb-1"><i class="ph-fill ph-linkedin-logo text-blue-500 mr-1"></i> LinkedIn</div>
-                            <div class="text-lg font-bold text-white" id="soc-li">--</div>
-                        </div>
-                        <div class="bg-slate-800/50 p-2 rounded border border-slate-700">
-                            <div class="flex items-center text-xs text-slate-400 mb-1"><i class="ph-fill ph-twitter-logo text-white mr-1"></i> X (Twitter)</div>
-                            <div class="text-lg font-bold text-white" id="soc-x">--</div>
-                        </div>
-                        <div class="bg-slate-800/50 p-2 rounded border border-slate-700">
-                            <div class="flex items-center text-xs text-slate-400 mb-1"><i class="ph-fill ph-reddit-logo text-orange-500 mr-1"></i> Reddit</div>
-                            <div class="text-lg font-bold text-white" id="soc-rd">--</div>
-                        </div>
-                        <div class="bg-slate-800/50 p-2 rounded border border-slate-700">
-                            <div class="flex items-center text-xs text-slate-400 mb-1"><i class="ph-fill ph-tiktok-logo text-pink-500 mr-1"></i> TikTok</div>
-                            <div class="text-lg font-bold text-white" id="soc-tk">--</div>
-                        </div>
+                <!-- Competitor Hit-List -->
+                <div class="glass-panel p-4 rounded-xl col-span-1 shadow-lg flex flex-col">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-crosshairs text-red-400 mr-2 text-lg"></i> Live Competitor Intel</h3>
+                    <div class="mb-3">
+                        <span class="text-[10px] text-slate-400 uppercase">Targeting Keyword:</span>
+                        <span class="bg-slate-800 text-slate-200 text-[10px] px-2 py-1 rounded ml-1 font-mono border border-slate-600 shadow-inner">"custom stairs calgary"</span>
+                    </div>
+                    <div class="space-y-3 flex-grow" id="competitor-list">
+                        <!-- Competitors injected here -->
                     </div>
                 </div>
 
-                <!-- Global Activity Log -->
-                <div class="glass-panel p-4 rounded-xl col-span-1 relative overflow-hidden">
-                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-terminal-window text-brandGreen mr-2 text-lg"></i> Global Log</h3>
-                    <div class="space-y-3 max-h-[200px] overflow-y-auto pr-2 text-sm font-mono" id="live-log">
+                <!-- Live OSINT Terminal -->
+                <div class="glass-panel p-4 rounded-xl col-span-1 relative overflow-hidden shadow-lg border border-slate-600">
+                    <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-terminal-window text-brandGreen mr-2 text-lg"></i> Global OSINT Stream</h3>
+                    <div class="space-y-3 max-h-[220px] overflow-y-auto pr-2 text-sm font-mono" id="live-log">
                         <!-- Logs injected here -->
                     </div>
-                    <!-- Gradient fade at bottom -->
-                    <div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-[#1e293b] to-transparent pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-cardBg to-transparent pointer-events-none rounded-b-xl"></div>
                 </div>
 
             </div>
         </div>
     </main>
 
-    <!-- JavaScript to Fetch and Bind Data -->
     <script>
-        const formatNum = (num) => new Intl.NumberFormat('en-US').format(num);
-        let myChart = null; // Store chart instance
+        let myChart = null;
 
         async function fetchData() {
+            // UI State: Loading
             document.getElementById('loader').classList.remove('hidden');
             document.getElementById('dashboard').classList.add('hidden');
 
             try {
+                // Determine environment dynamically
                 const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/ironwood-data' : '/api/ironwood-data';
+                
                 const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`Server responded with status: ${response.status}`);
-                }
-                
+                if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
                 const data = await response.json();
 
-                // 1. Bind Mega KPIs
-                document.getElementById('kpi-omni').innerText = data.globalOmniScore;
+                // 1. Populate KPI Cards
                 document.getElementById('kpi-velocity').innerText = data.brandVelocity;
-                document.getElementById('kpi-reach').innerText = data.socialIntel.totalReach;
                 document.getElementById('kpi-rating').innerText = data.localIntel.googleBusiness.rating;
+                document.getElementById('kpi-reviews').innerText = `${data.localIntel.googleBusiness.totalReviews} Map Reviews`;
                 
+                // Threat Intel logic
                 const threatEl = document.getElementById('kpi-threat');
                 if(data.threatIntel.status === "SECURE") {
-                    threatEl.innerHTML = `<i class="ph-fill ph-shield-check mr-2"></i> ${data.threatIntel.status}`;
-                    threatEl.className = "text-2xl font-bold text-brandGreen mt-2 flex items-center";
+                    threatEl.innerHTML = `<i class="ph-fill ph-shield-check mr-2"></i> SECURE`;
+                    threatEl.className = "text-2xl font-bold text-brandGreen mt-2 flex items-center drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]";
+                } else if(data.threatIntel.status === "WARNING") {
+                    threatEl.innerHTML = `<i class="ph-fill ph-warning-octagon mr-2"></i> EXPIRING`;
+                    threatEl.className = "text-2xl font-bold text-yellow-400 mt-2 flex items-center";
+                } else {
+                    threatEl.innerHTML = `<i class="ph-fill ph-warning mr-2"></i> OFFLINE`;
+                    threatEl.className = "text-2xl font-bold text-red-500 mt-2 flex items-center";
+                }
+                
+                document.getElementById('kpi-ssl-days').innerText = data.threatIntel.sslDaysRemaining;
+                document.getElementById('domain-age').innerText = data.threatIntel.domainMaturity;
+
+                // 2. Populate Diagnostics
+                document.getElementById('diag-google').innerText = data.seoIntel.domainAuthority;
+                document.getElementById('diag-bing').innerText = data.seoIntel.trustFlow;
+
+                // 3. Populate Competitors
+                const compList = document.getElementById('competitor-list');
+                compList.innerHTML = '';
+                if(data.competitorIntel && data.competitorIntel.length > 0) {
+                    data.competitorIntel.forEach(comp => {
+                        compList.innerHTML += `
+                            <div class="bg-slate-800/60 p-3 rounded-lg border border-red-500/20 flex justify-between items-center hover:border-red-500/60 transition group">
+                                <div class="overflow-hidden pr-2">
+                                    <div class="text-sm font-bold text-slate-200 truncate group-hover:text-red-400 transition">${comp.domain}</div>
+                                    <div class="text-[10px] text-slate-400 truncate mt-0.5">${comp.title}</div>
+                                </div>
+                                <div class="bg-red-900/40 text-red-400 font-bold text-xs px-2.5 py-1 rounded-md shrink-0 shadow-inner"># ${comp.position}</div>
+                            </div>`;
+                    });
+                } else {
+                    compList.innerHTML = '<div class="text-xs text-slate-500 italic p-2">Awaiting SerpApi configuration...</div>';
                 }
 
-                // 2. Bind Search Diagnostics
-                document.getElementById('diag-google').innerText = `${data.seoIntel.domainAuthority}/100`;
-                document.getElementById('diag-bing').innerText = `${data.seoIntel.trustFlow}/100`;
-                document.getElementById('diag-speed').innerText = data.seoIntel.indexedPages;
-                document.getElementById('diag-links-new').innerText = `+${data.seoIntel.backlinkVelocity.newThisWeek}`;
-                document.getElementById('diag-links-lost').innerText = `-${data.seoIntel.backlinkVelocity.lostThisWeek}`;
-                document.getElementById('diag-links-toxic').innerText = data.seoIntel.backlinkVelocity.toxicLinksBlocked;
-
-                // 3. Bind Social Radar
-                document.getElementById('soc-li').innerText = formatNum(data.socialIntel.platforms.linkedin.followers);
-                document.getElementById('soc-x').innerText = formatNum(data.socialIntel.platforms.x.followers);
-                document.getElementById('soc-rd').innerText = `${data.socialIntel.platforms.reddit.activeThreads} thrd`;
-                document.getElementById('soc-tk').innerText = formatNum(data.socialIntel.platforms.tiktok.views);
-
-                // 4. Bind AEO Matrix
+                // 4. Populate AEO Matrix
                 const aeoMatrix = document.getElementById('aeo-matrix');
                 aeoMatrix.innerHTML = '';
                 data.aeoIntel.llmPerformance.forEach(llm => {
-                    let color = llm.recommendationProbability > "90%" ? "text-brandGreen" : "text-yellow-400";
+                    let color = "text-brandBlue"; // Default blue
+                    let glow = "";
+                    if(llm.recommendationProbability.includes("%") && parseInt(llm.recommendationProbability) > 70) {
+                        color = "text-brandGreen";
+                        glow = "drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]";
+                    } else if(llm.recommendationProbability.includes("Awaiting")) {
+                        color = "text-yellow-500 text-xs";
+                    }
+                    
                     aeoMatrix.innerHTML += `
-                        <div class="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 flex justify-between items-center">
+                        <div class="bg-slate-800/40 p-3.5 rounded-lg border border-slate-700/50 flex justify-between items-center hover:bg-slate-800 transition">
                             <div>
-                                <p class="text-sm font-bold text-slate-200">${llm.model}</p>
-                                <p class="text-[10px] text-slate-500 font-mono">CTX: ${llm.primaryContext}</p>
+                                <p class="text-sm font-bold text-slate-200 flex items-center">
+                                    ${llm.model.includes("ChatGPT") ? '<i class="ph-fill ph-robot text-brandGreen mr-1.5"></i>' : ''}
+                                    ${llm.model.includes("Perplexity") ? '<i class="ph-fill ph-brain text-brandBlue mr-1.5"></i>' : ''}
+                                    ${llm.model.includes("Claude") ? '<i class="ph-fill ph-magic-wand text-purple-400 mr-1.5"></i>' : ''}
+                                    ${llm.model}
+                                </p>
+                                <p class="text-[10px] text-slate-500 font-mono mt-1">CTX: ${llm.primaryContext}</p>
                             </div>
                             <div class="text-right">
-                                <p class="${color} font-black text-lg">${llm.recommendationProbability}</p>
-                                <p class="text-[9px] uppercase tracking-wider text-slate-400">Rec. Prob</p>
+                                <p class="${color} ${glow} font-black text-lg tracking-tight">${llm.recommendationProbability}</p>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
 
-                // 5. Bind Live Ticker & Global Log
+                // 5. Populate Global Log & Ticker
                 let tickerText = "";
                 const logContainer = document.getElementById('live-log');
                 logContainer.innerHTML = '';
                 
                 data.socialIntel.liveStream.forEach(log => {
-                    // Build Ticker
                     tickerText += `[${log.source.toUpperCase()}] ${log.text} ••• `;
                     
-                    // Build Terminal Log
-                    let srcColor = "text-slate-400";
-                    if(log.source === "Reddit") srcColor = "text-orange-500 animate-pulse";
-                    if(log.source === "Perplexity") srcColor = "text-purple-400";
-                    if(log.source === "LinkedIn") srcColor = "text-blue-400";
+                    let srcColor = "text-brandGreen";
+                    if(log.source === "Reddit") srcColor = "text-orange-500";
+                    if(log.source === "Google" || log.source === "Trends") srcColor = "text-brandBlue";
+                    if(log.source === "ERROR") srcColor = "text-red-500";
+                    if(log.source === "Archive") srcColor = "text-purple-400";
                     
                     logContainer.innerHTML += `
-                        <div class="flex items-start border-b border-slate-800 pb-2">
-                            <span class="text-[10px] text-slate-500 w-12 pt-1 shrink-0">${log.time}</span>
+                        <div class="flex items-start border-b border-slate-700/50 pb-2 mb-2 last:border-0">
+                            <span class="text-[10px] text-slate-500 w-14 pt-0.5 shrink-0">${log.time}</span>
                             <div>
-                                <span class="${srcColor} text-xs font-bold">[${log.source}]</span>
-                                <span class="text-slate-300 text-xs ml-1">${log.text}</span>
+                                <span class="${srcColor} text-[11px] font-bold tracking-wider">>${log.source}<br></span>
+                                <span class="text-slate-300 text-xs">${log.text}</span>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
-                document.getElementById('ticker-content').innerText = tickerText.repeat(5); // Repeat for marquee effect
+                // Repeat ticker text so it scrolls continuously
+                document.getElementById('ticker-content').innerText = tickerText.repeat(8);
 
                 // 6. Render Chart.js
                 const ctx = document.getElementById('velocityChart').getContext('2d');
-                
-                // Destroy old chart if it exists (for refresh button)
                 if(myChart) myChart.destroy();
-
-                Chart.defaults.color = '#94a3b8';
+                
+                // Chart aesthetic configuration
+                Chart.defaults.color = '#64748b'; // slate-500
                 Chart.defaults.font.family = 'monospace';
+                Chart.defaults.scale.grid.color = 'rgba(51, 65, 85, 0.3)'; // slate-700
+
+                // Create gradient for lines
+                let gradientBlue = ctx.createLinearGradient(0, 0, 0, 400);
+                gradientBlue.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
+                gradientBlue.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+                
+                let gradientPurple = ctx.createLinearGradient(0, 0, 0, 400);
+                gradientPurple.addColorStop(0, 'rgba(168, 85, 247, 0.4)');
+                gradientPurple.addColorStop(1, 'rgba(168, 85, 247, 0.0)');
 
                 myChart = new Chart(ctx, {
                     type: 'line',
@@ -304,62 +322,63 @@
                         labels: data.chartData.labels,
                         datasets: [
                             {
-                                label: 'Organic Search Vol',
+                                label: 'Google Search Volume',
                                 data: data.chartData.searchVolume,
                                 borderColor: '#38bdf8', // brandBlue
-                                backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.4
+                                backgroundColor: gradientBlue, 
+                                borderWidth: 2, fill: true, tension: 0.4, pointRadius: 3, pointHoverRadius: 6
                             },
                             {
-                                label: 'AI Citations (AEO)',
+                                label: 'AI Indexing Score',
                                 data: data.chartData.aiMentions,
-                                borderColor: '#a855f7', // purple
-                                backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.4,
-                                yAxisID: 'y1' // Use secondary axis for scale differences
+                                borderColor: '#a855f7', // purple-500
+                                backgroundColor: gradientPurple, 
+                                borderWidth: 2, fill: true, tension: 0.4, yAxisID: 'y1', pointRadius: 3, pointHoverRadius: 6
                             }
                         ]
                     },
                     options: {
-                        responsive: true,
+                        responsive: true, 
                         maintainAspectRatio: false,
                         interaction: { mode: 'index', intersect: false },
-                        plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true } } },
+                        plugins: {
+                            legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } }
+                        },
                         scales: {
-                            x: { grid: { color: 'rgba(71, 85, 105, 0.2)' } },
-                            y: { type: 'linear', display: true, position: 'left', grid: { color: 'rgba(71, 85, 105, 0.2)' } },
-                            y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
+                            x: { border: { display: false } },
+                            y: { 
+                                type: 'linear', display: true, position: 'left',
+                                border: { display: false },
+                                title: { display: true, text: 'Search Volume', color: '#38bdf8', font: {size: 10} }
+                            },
+                            y1: { 
+                                type: 'linear', display: true, position: 'right', 
+                                grid: { drawOnChartArea: false },
+                                border: { display: false },
+                                title: { display: true, text: 'AI Mentions', color: '#a855f7', font: {size: 10} }
+                            }
                         }
                     }
                 });
 
-                // Hide loader, show dashboard
+                // UI State: Reveal
                 document.getElementById('loader').classList.add('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
 
             } catch (error) {
-                // RENDER ERROR TO UI
-                console.error("Error fetching data:", error);
+                console.error("Dashboard Render Error:", error);
                 document.getElementById('loader').innerHTML = `
-                    <div class="text-red-500 font-mono text-center flex flex-col items-center p-8 bg-red-900/20 rounded-xl border border-red-500/50">
-                        <i class="ph ph-warning-octagon text-5xl mb-3 animate-pulse"></i>
-                        <span class="font-bold text-lg">CRITICAL ERROR: DATA STREAM DISCONNECTED</span>
-                        <span class="text-sm text-slate-300 mt-3 block">Error Details: ${error.message}</span>
-                        <span class="text-xs text-slate-500 mt-2 block max-w-md">
-                            If you are on Render, check your Render dashboard logs. The backend server likely crashed or failed to boot.
-                        </span>
+                    <div class="text-red-500 font-mono text-center flex flex-col items-center p-8 bg-red-900/10 rounded-xl border border-red-500/30">
+                        <i class="ph ph-warning-octagon text-6xl mb-4 animate-pulse drop-shadow-[0_0_10px_rgba(239,68,68,0.6)]"></i>
+                        <span class="font-bold text-xl tracking-widest uppercase">CRITICAL ERROR</span>
+                        <span class="text-sm text-slate-300 mt-2 block tracking-wide">Data stream disconnected. Server may be unreachable.</span>
+                        <span class="text-xs text-slate-500 mt-4 bg-black/50 p-2 rounded block font-mono border border-slate-700">${error.message}</span>
                     </div>`;
             }
         }
 
+        // Fire synchronization immediately upon loading
         window.onload = fetchData;
-        
-        // Auto-refresh data every 60 seconds to simulate a live command center
-        setInterval(fetchData, 60000); 
     </script>
 </body>
 </html>
