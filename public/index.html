@@ -124,7 +124,7 @@
                 <div class="glass-panel p-4 rounded-xl lg:col-span-2 shadow-2xl relative">
                     <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
                         <h3 class="text-sm font-bold text-slate-200 tracking-widest uppercase flex items-center"><i class="ph ph-chart-line-up text-brandBlue mr-2 text-lg"></i> Google Trends: Search Interest (30 Days)</h3>
-                        <span class="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-400">Target: "Custom Stairs"</span>
+                        <span id="trends-target" class="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-400 transition-all">Target: "custom stairs calgary"</span>
                     </div>
                     <div class="h-64 w-full"><canvas id="velocityChart"></canvas></div>
                 </div>
@@ -180,7 +180,14 @@
                     <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><i class="ph ph-crosshairs text-red-400 mr-2 text-lg"></i> Local Competitor Intel</h3>
                     <div class="mb-3 flex justify-between items-center">
                         <span class="text-[10px] text-slate-400 uppercase">Targeting Keywords:</span>
-                        <span class="bg-slate-800 text-slate-200 text-[10px] px-2 py-1 rounded font-mono border border-slate-600 shadow-inner">"custom stairs calgary"</span>
+                        
+                        <!-- Enterprise Interactive Dropdown -->
+                        <select id="keyword-selector" onchange="fetchData()" class="bg-slate-800 text-brandBlue text-[10px] px-2 py-1 rounded font-mono border border-slate-600 shadow-inner outline-none cursor-pointer hover:border-brandBlue/50 transition">
+                            <option value="custom stairs calgary">"custom stairs calgary"</option>
+                            <option value="glass railings calgary">"glass railings calgary"</option>
+                            <option value="stair renovation calgary">"stair renovation calgary"</option>
+                            <option value="ironwood stairs">"ironwood stairs"</option>
+                        </select>
                     </div>
                     <div class="space-y-3" id="competitor-list"></div>
                 </div>
@@ -211,28 +218,55 @@
     <script>
         let myChart = null;
 
-        function getMockData() {
+        function getMockData(keyword) {
+            // Dynamic mock data based on the keyword selection for previewing functionality
+            const isGlass = keyword.includes('glass');
+            const isRenovation = keyword.includes('renovation');
+            
+            let chartDataArr = [10, 25, 45, 95, 60, 80];
+            let velocity = "+14.2%";
+            let mockComps = [ { domain: "houzz.com", title: "IRONWOOD STAIR & RAIL INC. - Project...", position: 2 }, { domain: "calgaryarea.com", title: "Ironwood Stair & Rail Inc. - Calgary...", position: 4 }, { domain: "greatstairs.com", title: "Stairs, Spindles & Railings - local...", position: 7 } ];
+
+            if (isGlass) {
+                chartDataArr = [50, 45, 60, 80, 100, 110];
+                velocity = "+22.5%";
+                mockComps = [ { domain: "glasscrafters.ca", title: "Custom Glass Railings Calgary", position: 1 }, { domain: "houzz.com", title: "Best Glass Railings in Calgary...", position: 2 }, { domain: "calgaryrailings.com", title: "Modern Glass Railing Systems", position: 5 } ];
+            } else if (isRenovation) {
+                chartDataArr = [80, 85, 80, 95, 90, 85];
+                velocity = "+6.2%";
+                mockComps = [ { domain: "stairrenos.com", title: "Calgary Stair Renovation Experts", position: 1 }, { domain: "homestars.com", title: "Best Stair Builders in Calgary", position: 3 }, { domain: "renovationfind.com", title: "Top 10 Stair Companies", position: 4 } ];
+            }
+
             return {
-                brandVelocity: "+14.2%",
+                brandVelocity: velocity,
                 seoIntel: { domainAuthority: 42, trustFlow: 85 },
                 localIntel: { googleBusiness: { rating: "4.9", totalReviews: 142 } },
                 threatIntel: { status: "SECURE", sslDaysRemaining: 84, domainMaturity: "Active since 2013" },
-                chartData: { labels: ["May 10", "May 17", "May 24", "May 31", "Jun 7", "Jun 14"], searchVolume: [10, 25, 45, 95, 60, 80] },
+                chartData: { labels: ["May 10", "May 17", "May 24", "May 31", "Jun 7", "Jun 14"], searchVolume: chartDataArr },
                 aeoIntel: { llmPerformance: [ { model: "ChatGPT-4o (Sim)", recommendationProbability: "85%" }, { model: "Perplexity (Sim)", recommendationProbability: "72%" }, { model: "Claude 3.5 (Sim)", recommendationProbability: "88%" } ] },
                 socialIntel: {
                     redditFeed: [ 
-                        { author: "yyc_builder", time: "2 hours ago", text: "Anyone know a good contractor for custom glass railings? Need them for a new build in SW Calgary.", intent: "HOT LEAD", url: "#" }, 
+                        { author: "yyc_builder", time: "2 hours ago", text: `Anyone know a good contractor for ${keyword}? Need them for a new build in SW Calgary.`, intent: "HOT LEAD", url: "#" }, 
                         { author: "homeowner_calgary", time: "1 day ago", text: "Got a quote for stairs, checking if Ironwood is good?", intent: "CHATTER", url: "#" } 
                     ],
-                    youtubeFeed: [ { title: "Modern Stair Railing Remodel // Start to Finish", channel: "DIY Calgary", views: 347474, url: "#" }, { title: "Prestige Railings & Stairs Ltd - Staircase Renovation", channel: "ShopInCities", views: 946, url: "#" } ],
+                    youtubeFeed: [ { title: `Top ${keyword} Ideas for 2024`, channel: "DIY Calgary", views: 347474, url: "#" }, { title: "Prestige Railings & Stairs Ltd - Staircase Renovation", channel: "ShopInCities", views: 946, url: "#" } ],
                     newsFeed: [ { title: "The biggest night of the year for Calgary's building industry", date: "4/13/2026", url: "#" }, { title: "Pilot project takes aim at Calgary hail, wind damage", date: "4/10/2026", url: "#" } ],
-                    liveStream: [ { source: "SYSTEM", text: "Dashboard operating in PREVIEW mode. Live backend data disabled for security." } ]
+                    liveStream: [ { source: "SYSTEM", text: `Dashboard operating in PREVIEW mode. Target updated to: ${keyword}` } ]
                 },
-                competitorIntel: [ { domain: "houzz.com", title: "IRONWOOD STAIR & RAIL INC. - Project...", position: 2 }, { domain: "calgaryarea.com", title: "Ironwood Stair & Rail Inc. - Calgary...", position: 4 }, { domain: "greatstairs.com", title: "Stairs, Spindles & Railings - local...", position: 7 } ]
+                competitorIntel: mockComps
             };
         }
 
-        function populateUI(data) {
+        function populateUI(data, currentKeyword) {
+            // Update UI dynamically with the selected keyword
+            const trendsTarget = document.getElementById('trends-target');
+            if (trendsTarget && currentKeyword) {
+                trendsTarget.innerText = `Target: "${currentKeyword}"`;
+                // Add a little highlight pulse effect
+                trendsTarget.classList.add('text-brandBlue');
+                setTimeout(() => trendsTarget.classList.remove('text-brandBlue'), 1000);
+            }
+
             // 1. KPIs
             document.getElementById('kpi-velocity').innerText = data.brandVelocity;
             
@@ -431,21 +465,25 @@
         }
 
         async function fetchData() {
+            // Retrieve current selected keyword
+            const keywordSelect = document.getElementById('keyword-selector');
+            const keyword = keywordSelect ? keywordSelect.value : 'custom stairs calgary';
+
             document.getElementById('loader').classList.remove('hidden');
             document.getElementById('dashboard').classList.add('hidden');
 
             try {
-                // Determine appropriate API URL
+                // Determine appropriate API URL and attach keyword query parameter
                 const apiUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
-                    ? 'http://localhost:3000/api/ironwood-data' 
-                    : '/api/ironwood-data';
+                    ? `http://localhost:3000/api/ironwood-data?keyword=${encodeURIComponent(keyword)}` 
+                    : `/api/ironwood-data?keyword=${encodeURIComponent(keyword)}`;
 
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error(`HTTP Status: ${response.status}`);
                 const data = await response.json();
                 
                 // Success: populate with real data
-                populateUI(data);
+                populateUI(data, keyword);
 
             } catch (error) {
                 console.warn("Backend unreachable or preview environment detected. Injecting simulated fallback data.", error);
@@ -456,8 +494,8 @@
                     targetBadge.innerHTML = `<span class="text-orange-400 font-mono bg-orange-900/40 px-2 py-1 rounded border border-orange-500/50 animate-pulse text-[10px] tracking-widest">PREVIEW (SIMULATED DATA)</span>`;
                 }
 
-                // Fallback: populate with realistic mock data so the dashboard still functions visually in previews
-                populateUI(getMockData());
+                // Fallback: populate with realistic mock data based on the selected keyword
+                populateUI(getMockData(keyword), keyword);
             }
         }
 

@@ -53,9 +53,11 @@ async function checkDomainMaturity() {
 }
 
 // 3. Reddit Lead Radar (With Bot-Bypass User-Agent)
-async function fetchRedditLeads() {
+async function fetchRedditLeads(keyword) {
     try {
-        const response = await axios.get(`https://www.reddit.com/r/Calgary/search.json?q=stairs+OR+railings+OR+renovation+OR+contractor&restrict_sr=on&sort=new`, {
+        // Break keyword into components to broaden the search, plus some fallbacks
+        const searchTerms = encodeURIComponent(`${keyword} OR stairs OR railings OR contractor`);
+        const response = await axios.get(`https://www.reddit.com/r/Calgary/search.json?q=${searchTerms}&restrict_sr=on&sort=new`, {
             headers: { 
                 // Enterprise Bot-Bypass: Disguise the server as a normal Chrome Browser
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 IronwoodCommand/1.0' 
@@ -122,6 +124,11 @@ async function fetchGoogleNews() {
 
 app.get('/api/ironwood-data', async (req, res) => {
     
+    // Capture dynamic keyword from frontend dropdown (fallback to default)
+    const targetKeyword = req.query.keyword || "custom stairs calgary";
+    // Strip "calgary" for trends to get broader regional volume data
+    const trendsKeyword = targetKeyword.replace(/ calgary/gi, '').trim() || "custom stairs";
+
     // Initialize the massive intelligence object
     let intel = {
         brandVelocity: "+12.4%",
@@ -134,7 +141,7 @@ app.get('/api/ironwood-data', async (req, res) => {
         competitorIntel: []
     };
 
-    intel.socialIntel.liveStream.push({ source: "SYSTEM", text: "Global target acquisition initiated." });
+    intel.socialIntel.liveStream.push({ source: "SYSTEM", text: `Global target acquisition initiated for: ${targetKeyword}` });
 
     // 1. FREE OSINT: SSL & Domain Age
     const sslData = await checkSSL();
@@ -144,7 +151,7 @@ app.get('/api/ironwood-data', async (req, res) => {
     intel.socialIntel.liveStream.push({ source: "ARCHIVE", text: "Domain legacy verified." });
 
     // 2. SOCIAL & PR RADAR
-    const redditData = await fetchRedditLeads();
+    const redditData = await fetchRedditLeads(targetKeyword);
     if(redditData.length > 0) {
         intel.socialIntel.redditFeed = redditData;
         intel.socialIntel.liveStream.push({ source: "REDDIT", text: `Scanned r/Calgary. Captured ${redditData.length} relevant signals.` });
@@ -155,10 +162,9 @@ app.get('/api/ironwood-data', async (req, res) => {
     intel.socialIntel.newsFeed = await fetchGoogleNews();
     intel.socialIntel.liveStream.push({ source: "PR-RADAR", text: `Intercepted ${intel.socialIntel.newsFeed.length} local construction news articles.` });
 
-    // 3. OFFICIAL LIGHTHOUSE SEO DIAGNOSTICS (With Auth fix)
+    // 3. OFFICIAL LIGHTHOUSE SEO DIAGNOSTICS
     try {
         let lhUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://${TARGET_DOMAIN}`;
-        // If you add a Google API key later, it will use it to bypass rate limits
         if (process.env.GOOGLE_API_KEY) {
             lhUrl += `&key=${process.env.GOOGLE_API_KEY}`;
         }
@@ -187,8 +193,8 @@ app.get('/api/ironwood-data', async (req, res) => {
                 intel.localIntel.googleBusiness.rating = "Not Found";
             }
 
-            // B: Local Competitor Hit-List
-            const compRes = await axios.get(`https://serpapi.com/search.json?engine=google&q=custom+stairs+calgary&location=Calgary,+Alberta,+Canada&api_key=${process.env.SERP_API_KEY}`);
+            // B: Local Competitor Hit-List (Dynamic Keyword)
+            const compRes = await axios.get(`https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(targetKeyword)}&location=Calgary,+Alberta,+Canada&api_key=${process.env.SERP_API_KEY}`);
             if (compRes.data.organic_results) {
                 let rank = 1;
                 compRes.data.organic_results.forEach(res => {
@@ -201,11 +207,11 @@ app.get('/api/ironwood-data', async (req, res) => {
                         rank++;
                     }
                 });
-                intel.socialIntel.liveStream.push({ source: "GOOGLE", text: "Local Competitor Matrix Generated." });
+                intel.socialIntel.liveStream.push({ source: "GOOGLE", text: `Competitor Matrix Generated for "${targetKeyword}".` });
             }
 
-            // C: YouTube Video SEO Radar
-            const ytRes = await axios.get(`https://serpapi.com/search.json?engine=youtube&search_query=custom+stairs+calgary&api_key=${process.env.SERP_API_KEY}`);
+            // C: YouTube Video SEO Radar (Dynamic Keyword)
+            const ytRes = await axios.get(`https://serpapi.com/search.json?engine=youtube&search_query=${encodeURIComponent(targetKeyword)}&api_key=${process.env.SERP_API_KEY}`);
             if (ytRes.data.video_results) {
                 ytRes.data.video_results.slice(0, 3).forEach(vid => {
                     intel.socialIntel.youtubeFeed.push({
@@ -217,8 +223,8 @@ app.get('/api/ironwood-data', async (req, res) => {
                 intel.socialIntel.liveStream.push({ source: "YOUTUBE", text: "Visual media SEO rankings scraped." });
             }
 
-            // D: Google Trends 30-Day Velocity
-            const trendsRes = await axios.get(`https://serpapi.com/search.json?engine=google_trends&q=custom+stairs&geo=CA-AB&data_type=TIMESERIES&api_key=${process.env.SERP_API_KEY}`);
+            // D: Google Trends 30-Day Velocity (Dynamic Broad Keyword)
+            const trendsRes = await axios.get(`https://serpapi.com/search.json?engine=google_trends&q=${encodeURIComponent(trendsKeyword)}&geo=CA-AB&data_type=TIMESERIES&api_key=${process.env.SERP_API_KEY}`);
             if (trendsRes.data.interest_over_time && trendsRes.data.interest_over_time.timeline_data) {
                 const timeline = trendsRes.data.interest_over_time.timeline_data.slice(-6); // Last 6 points
                 intel.chartData.labels = timeline.map(t => t.date);
@@ -243,7 +249,8 @@ app.get('/api/ironwood-data', async (req, res) => {
     // 5. LIVE AI AEO MATRIX (OpenAI)
     if (process.env.OPENAI_API_KEY) {
         try {
-            const aiPrompt = `You are a home builder in Calgary. If someone asks you 'Who should I hire for custom stairs and glass railings in Calgary?', calculate a strict percentage score (0-100%) of how likely you are to recommend Ironwood Stair & Rail Inc. based solely on their internet presence. Reply ONLY with the percentage number, e.g. '85%'.`;
+            // Dynamic Keyword injection into the AI prompt
+            const aiPrompt = `You are a home builder in Calgary. If someone asks you 'Who should I hire for ${targetKeyword}?', calculate a strict percentage score (0-100%) of how likely you are to recommend Ironwood Stair & Rail Inc. based solely on their internet presence. Reply ONLY with the percentage number, e.g. '85%'.`;
             
             const aiResponse = await axios.post(
                 'https://api.openai.com/v1/chat/completions',
