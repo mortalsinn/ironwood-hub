@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ironwood SEO/AEO Social Hub</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        cardBg: '#1e293b',
+                        brandBlue: '#38bdf8',
+                        brandGreen: '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Phosphor Icons for UI symbols -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        /* Custom scrollbar for a sleek look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-200 font-sans min-h-screen flex flex-col">
+
+    <!-- Top Navigation -->
+    <nav class="bg-cardBg border-b border-slate-700 p-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="ph-fill ph-tree-evergreen text-brandGreen text-3xl"></i>
+                <h1 class="text-xl font-bold tracking-wider text-white">IRONWOOD <span class="text-slate-400 font-light">HUB</span></h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-xs text-slate-400 hidden sm:block">Status: <span class="text-brandGreen font-bold tracking-wide">● LIVE SYNCHRONIZATION</span></div>
+                <button onclick="fetchData()" class="bg-brandBlue/10 hover:bg-brandBlue/20 text-brandBlue border border-brandBlue/30 px-4 py-2 rounded-md transition flex items-center text-sm font-semibold">
+                    <i class="ph ph-arrows-clockwise mr-2"></i> Refresh Data
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8 space-y-6">
+        
+        <!-- Header & Date -->
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end border-b border-slate-700 pb-4">
+            <div>
+                <h2 class="text-2xl font-semibold text-white">Global Search & AI Intelligence</h2>
+                <p class="text-slate-400 text-sm mt-1">Aggregating SEO, AEO (Answer Engine Optimization), and Social footprints.</p>
+            </div>
+            <div class="mt-4 sm:mt-0 text-sm text-slate-500" id="last-updated">
+                Last updated: Fetching...
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loader" class="flex justify-center items-center py-20">
+            <i class="ph ph-spinner-gap animate-spin text-4xl text-brandBlue"></i>
+        </div>
+
+        <!-- Dashboard Grid (Hidden until loaded) -->
+        <div id="dashboard" class="hidden fade-in space-y-6">
+            
+            <!-- Top KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1 -->
+                <div class="bg-cardBg p-5 rounded-xl border border-slate-700 shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Domain Authority</p>
+                            <h3 class="text-3xl font-bold text-white mt-1" id="kpi-da">--</h3>
+                        </div>
+                        <div class="p-2 bg-slate-800 rounded-lg text-brandBlue"><i class="ph ph-globe text-xl"></i></div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-cardBg p-5 rounded-xl border border-slate-700 shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Organic Traffic</p>
+                            <h3 class="text-3xl font-bold text-white mt-1" id="kpi-traffic">--</h3>
+                        </div>
+                        <div class="p-2 bg-slate-800 rounded-lg text-brandGreen"><i class="ph ph-trend-up text-xl"></i></div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-cardBg p-5 rounded-xl border border-slate-700 shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Backlinks</p>
+                            <h3 class="text-3xl font-bold text-white mt-1" id="kpi-backlinks">--</h3>
+                        </div>
+                        <div class="p-2 bg-slate-800 rounded-lg text-purple-400"><i class="ph ph-link text-xl"></i></div>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-cardBg p-5 rounded-xl border border-slate-700 shadow-lg border-t-2 border-t-yellow-400">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">AI Visibility (AEO)</p>
+                            <h3 class="text-3xl font-bold text-white mt-1" id="kpi-ai">--<span class="text-lg text-slate-500">/100</span></h3>
+                        </div>
+                        <div class="p-2 bg-slate-800 rounded-lg text-yellow-400"><i class="ph ph-robot text-xl"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Data Sections -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Left Column: SEO Keywords -->
+                <div class="bg-cardBg rounded-xl border border-slate-700 p-5 shadow-lg lg:col-span-1">
+                    <div class="flex items-center space-x-2 mb-4 border-b border-slate-700 pb-3">
+                        <i class="ph ph-magnifying-glass text-brandBlue text-xl"></i>
+                        <h3 class="text-lg font-semibold text-white">Top Tracked Keywords</h3>
+                    </div>
+                    <div class="space-y-3" id="keyword-list">
+                        <!-- Keywords injected here via JS -->
+                    </div>
+                </div>
+
+                <!-- Middle Column: AEO (Answer Engine Optimization) -->
+                <div class="bg-cardBg rounded-xl border border-slate-700 p-5 shadow-lg lg:col-span-1">
+                    <div class="flex items-center space-x-2 mb-4 border-b border-slate-700 pb-3">
+                        <i class="ph ph-brain text-purple-400 text-xl"></i>
+                        <h3 class="text-lg font-semibold text-white">LLM & AEO Presence</h3>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <h4 class="text-xs text-slate-400 uppercase tracking-wider mb-2">Model Mentions Frequency</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded">
+                                <span class="flex items-center"><i class="ph ph-open-ai-logo mr-2"></i> ChatGPT</span>
+                                <span id="llm-chatgpt" class="text-sm font-bold text-brandGreen">--</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded">
+                                <span class="flex items-center"><i class="ph ph-robot mr-2"></i> Claude</span>
+                                <span id="llm-claude" class="text-sm font-bold text-yellow-400">--</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded">
+                                <span class="flex items-center"><i class="ph ph-google-logo mr-2"></i> Gemini</span>
+                                <span id="llm-gemini" class="text-sm font-bold text-brandBlue">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs text-slate-400 uppercase tracking-wider mb-2">AI Snippet Queries</h4>
+                        <ul class="text-sm space-y-2 text-slate-300 list-disc pl-4" id="aeo-questions">
+                            <!-- Questions injected here -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right Column: Social Mentions -->
+                <div class="bg-cardBg rounded-xl border border-slate-700 p-5 shadow-lg lg:col-span-1">
+                    <div class="flex items-center space-x-2 mb-4 border-b border-slate-700 pb-3">
+                        <i class="ph ph-share-network text-brandGreen text-xl"></i>
+                        <h3 class="text-lg font-semibold text-white">Recent Social Mentions</h3>
+                    </div>
+                    <div class="space-y-4 overflow-y-auto max-h-[300px] pr-2" id="social-feed">
+                        <!-- Social items injected here -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JavaScript to Fetch and Bind Data -->
+    <script>
+        // Format large numbers with commas
+        const formatNum = (num) => new Intl.NumberFormat('en-US').format(num);
+
+        // Utility to get the right icon for social platforms
+        const getPlatformIcon = (platform) => {
+            const p = platform.toLowerCase();
+            if(p.includes('reddit')) return '<i class="ph-fill ph-reddit-logo text-orange-500 text-2xl"></i>';
+            if(p.includes('twitter') || p.includes('x')) return '<i class="ph-fill ph-twitter-logo text-blue-400 text-2xl"></i>';
+            if(p.includes('linkedin')) return '<i class="ph-fill ph-linkedin-logo text-blue-600 text-2xl"></i>';
+            return '<i class="ph-fill ph-users text-slate-400 text-2xl"></i>';
+        };
+
+        // Utility to colorize sentiment
+        const getSentimentClass = (sentiment) => {
+            const s = sentiment.toLowerCase();
+            if(s === 'positive') return 'text-brandGreen bg-brandGreen/10 border-brandGreen/20';
+            if(s === 'negative') return 'text-red-400 bg-red-400/10 border-red-400/20';
+            return 'text-slate-400 bg-slate-700/50 border-slate-600';
+        };
+
+        async function fetchData() {
+            // Show loader, hide dashboard
+            document.getElementById('loader').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+
+            try {
+                // Fetch data from our Node.js backend
+                // Using relative path '/api/ironwood-data' assumes frontend and backend are hosted together.
+                // Fallback to localhost if developing locally without running the server properly.
+                const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000/api/ironwood-data' : '/api/ironwood-data';
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                // 1. Populate KPIs
+                document.getElementById('kpi-da').innerText = data.seoMetrics.domainAuthority;
+                document.getElementById('kpi-traffic').innerText = formatNum(data.seoMetrics.organicTraffic);
+                document.getElementById('kpi-backlinks').innerText = formatNum(data.seoMetrics.totalBacklinks);
+                document.getElementById('kpi-ai').innerHTML = `${data.aeoMetrics.aiVisibilityScore}<span class="text-lg text-slate-500">/100</span>`;
+                
+                const dateObj = new Date(data.lastUpdated);
+                document.getElementById('last-updated').innerText = `Last updated: ${dateObj.toLocaleTimeString()} - ${dateObj.toLocaleDateString()}`;
+
+                // 2. Populate Keywords
+                const kwContainer = document.getElementById('keyword-list');
+                kwContainer.innerHTML = ''; // clear existing
+                data.seoMetrics.topKeywords.forEach(kw => {
+                    kwContainer.innerHTML += `
+                        <div class="flex justify-between items-center p-2 hover:bg-slate-800 rounded transition border border-transparent hover:border-slate-700">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-200">${kw.keyword}</p>
+                                <p class="text-xs text-slate-500">Vol: ${formatNum(kw.volume)}</p>
+                            </div>
+                            <div class="bg-brandBlue/10 text-brandBlue text-xs font-bold px-2 py-1 rounded-full">
+                                Rank #${kw.position}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // 3. Populate AEO
+                document.getElementById('llm-chatgpt').innerText = data.aeoMetrics.llmMentions.chatgpt;
+                document.getElementById('llm-claude').innerText = data.aeoMetrics.llmMentions.claude;
+                document.getElementById('llm-gemini').innerText = data.aeoMetrics.llmMentions.gemini;
+                
+                const aeoQuestions = document.getElementById('aeo-questions');
+                aeoQuestions.innerHTML = '';
+                data.aeoMetrics.frequentQuestionsAnswered.forEach(q => {
+                    aeoQuestions.innerHTML += `<li class="hover:text-white transition cursor-default mb-1">${q}</li>`;
+                });
+
+                // 4. Populate Social Mentions
+                const socialContainer = document.getElementById('social-feed');
+                socialContainer.innerHTML = '';
+                data.socialMentions.forEach(mention => {
+                    socialContainer.innerHTML += `
+                        <div class="bg-slate-800/40 p-4 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center space-x-2">
+                                    ${getPlatformIcon(mention.platform)}
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-300">${mention.user || mention.subreddit}</p>
+                                        <p class="text-[10px] text-slate-500">${mention.date}</p>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${getSentimentClass(mention.sentiment)}">
+                                    ${mention.sentiment}
+                                </span>
+                            </div>
+                            <p class="text-sm text-slate-300 italic">"${mention.snippet}"</p>
+                        </div>
+                    `;
+                });
+
+                // Hide loader, show dashboard
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                document.getElementById('loader').innerHTML = `
+                    <div class="text-center text-red-400">
+                        <i class="ph ph-warning text-4xl mb-2"></i>
+                        <p>Failed to connect to the backend server.</p>
+                        <p class="text-sm text-slate-500 mt-1">Make sure you ran 'node server.js'</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Fetch data on initial load
+        window.onload = fetchData;
+    </script>
+</body>
+</html>
