@@ -12,7 +12,10 @@ function App() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:3000/api/dashboard?keyword=${encodeURIComponent(keyword)}`);
+      const apiUrl = import.meta.env.DEV 
+        ? `http://localhost:3000/api/dashboard?keyword=${encodeURIComponent(keyword)}` 
+        : `/api/dashboard?keyword=${encodeURIComponent(keyword)}`;
+      const res = await axios.get(apiUrl);
       setData(res.data);
     } catch (err) {
       console.error("Failed to fetch data:", err);
