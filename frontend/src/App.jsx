@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Navbar from './components/Navbar';
-import KPICards from './components/KPICards';
-import DashboardGrid from './components/DashboardGrid';
+import Sidebar from './components/Sidebar';
+import TopBar from './components/TopBar';
+import Overview from './pages/Overview';
+import LeadRadar from './pages/LeadRadar';
+import LocalPR from './pages/LocalPR';
+import Diagnostics from './pages/Diagnostics';
 
 function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState('custom stairs calgary');
+  const [currentPage, setCurrentPage] = useState('overview');
 
   const fetchData = async () => {
     setLoading(true);
@@ -28,45 +32,58 @@ function App() {
     fetchData();
   }, [keyword]);
 
+  const renderPage = () => {
+    if (!data) return null;
+    switch(currentPage) {
+      case 'overview': return <Overview data={data} keyword={keyword} />;
+      case 'lead_radar': return <LeadRadar data={data} />;
+      case 'local_pr': return <LocalPR data={data} keyword={keyword} />;
+      case 'diagnostics': return <Diagnostics data={data} />;
+      default: return <Overview data={data} keyword={keyword} />;
+    }
+  };
+
   return (
-    <>
-      <Navbar keyword={keyword} setKeyword={setKeyword} refresh={fetchData} />
+    <div className="flex min-h-screen w-full bg-bg">
+      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       
-      <main className="flex-grow max-w-[100rem] mx-auto w-full p-2 sm:p-4 space-y-4 pt-6">
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopBar keyword={keyword} setKeyword={setKeyword} refresh={fetchData} loading={loading} />
         
-        {/* Live Ticker */}
-        {data && (
-          <div className="bg-black border border-slate-700 rounded-lg p-2 flex items-center overflow-hidden shadow-lg">
-              <span className="bg-brandBlue text-black font-bold text-xs px-2 py-1 rounded mr-3 whitespace-nowrap uppercase">Live Stream</span>
-              <div className="w-full overflow-hidden relative">
-                  <div className="whitespace-nowrap text-sm text-brandBlue font-mono animate-[marquee_20s_linear_infinite]">
-                    {data.socialIntel.liveStream.map((log, i) => (
-                      <span key={i}>[{log.source}] {log.text} &bull; &bull; &bull; </span>
-                    )).reduce((acc, curr) => [acc, curr, acc, curr, acc, curr, acc, curr, acc, curr], [])}
+        <main className="flex-1 p-8 overflow-y-auto">
+          {loading && !data ? (
+            <div className="flex flex-col justify-center items-center py-32">
+              <div className="relative flex justify-center items-center mb-4">
+                <div className="absolute animate-ping w-16 h-16 rounded-full border-2 border-brandBlue opacity-20"></div>
+                <div className="w-8 h-8 border-4 border-brandBlue border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <p className="font-medium text-text-muted text-sm mt-2">Loading Intelligence...</p>
+            </div>
+          ) : data ? (
+            <div className="animate-in fade-in duration-500">
+              {/* Global Ticker moved to Overview or kept here as a toast-like feature. Let's place it at the top of the main area. */}
+              <div className="bg-brandDark text-white rounded-lg p-2 flex items-center overflow-hidden shadow-sm mb-6">
+                  <span className="bg-brandBlue text-white font-bold text-xs px-2 py-1 rounded mr-3 whitespace-nowrap uppercase">Live Feed</span>
+                  <div className="w-full overflow-hidden relative">
+                      <div className="whitespace-nowrap text-xs font-mono animate-[marquee_30s_linear_infinite]">
+                        {data.socialIntel.liveStream.map((log, i) => (
+                          <span key={i} className="mx-4 text-slate-300">[{log.source}] {log.text}</span>
+                        )).reduce((acc, curr) => [acc, ...Array(5).fill(curr)], [])}
+                      </div>
                   </div>
               </div>
-          </div>
-        )}
-
-        {loading ? (
-          <div className="flex flex-col justify-center items-center py-32 fade-in">
-            <div className="relative flex justify-center items-center mb-4">
-              <div className="absolute animate-ping w-24 h-24 rounded-full border-2 border-brandBlue opacity-20"></div>
-              <svg className="w-16 h-16 text-brandBlue animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+              
+              {renderPage()}
             </div>
-            <p className="font-mono text-brandBlue tracking-widest text-sm uppercase mt-2">Syncing with Command Center...</p>
-          </div>
-        ) : data ? (
-          <div className="fade-in space-y-4">
-            <KPICards data={data} />
-            <DashboardGrid data={data} keyword={keyword} />
-          </div>
-        ) : (
-          <div className="text-red-500 text-center py-20">Error loading data. Is the backend running?</div>
-        )}
-
-      </main>
-    </>
+          ) : (
+            <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200">
+              <p className="font-bold">Connection Error</p>
+              <p className="text-sm">Unable to connect to the backend server. Make sure it is running.</p>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
   );
 }
 
