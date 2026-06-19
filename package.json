@@ -1,21 +1,31 @@
 {
-"name": "ironwood-social-hub",
-"version": "1.0.0",
-"description": "A hub for tracking SEO and AEO data for Ironwood",
-"main": "server.js",
-"scripts": {
-"start": "node server.js",
-"dev": "node server.js"
-},
-"dependencies": {
-"express": "^4.19.2",
-"cors": "^2.8.5",
-"dotenv": "^16.4.5",
-"axios": "^1.7.2"
-},
-"engines": {
-"node": ">=18.0.0"
-},
-"author": "Ironwood Admin",
-"license": "MIT"
+  "name": "ironwood-seo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build:frontend": "cd frontend && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mortalsinn/ironwood-hub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mortalsinn/ironwood-hub/issues"
+  },
+  "homepage": "https://github.com/mortalsinn/ironwood-hub#readme",
+  "dependencies": {
+    "axios": "^1.18.0",
+    "better-sqlite3": "^12.11.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "node-cron": "^4.4.1"
+  }
 }
