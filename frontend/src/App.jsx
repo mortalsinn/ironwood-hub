@@ -44,7 +44,7 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col xl:flex-row min-h-screen w-full bg-bg">
+    <div className="flex flex-col xl:flex-row min-h-screen w-full bg-bg overflow-x-hidden">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       
       <div className="flex-1 flex flex-col min-w-0">
