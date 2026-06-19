@@ -1,6 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-darkBg: #0f172a;
+  --color-cardBg: #1e293b;
+  --color-brandBlue: #38bdf8;
+  --color-brandGreen: #10b981;
+  --color-brandOrange: #f97316;
+  --animate-spin-slow: spin 3s linear infinite;
+}
 
 @layer base {
   body {
