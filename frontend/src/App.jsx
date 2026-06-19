@@ -44,13 +44,13 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-bg">
+    <div className="flex flex-col xl:flex-row min-h-screen w-full bg-bg">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar keyword={keyword} setKeyword={setKeyword} refresh={fetchData} loading={loading} />
         
-        <main className="flex-1 p-8 overflow-y-auto">
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
           {loading && !data ? (
             <div className="flex flex-col justify-center items-center py-32">
               <div className="relative flex justify-center items-center mb-4">
