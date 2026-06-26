@@ -14,7 +14,7 @@ export default function KPICards({ data }) {
                 <Tooltip text="Measures the percentage increase in how frequently your target keywords are being searched for over a 90-day period.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
                       Brand Velocity
-                      <StatusBadge type="simulated" />
+                      <StatusBadge type="real" />
                   </p>
                 </Tooltip>
                 <h3 className="text-3xl font-black text-slate-900 mt-1 font-mono tracking-tighter">{data.brandVelocity}</h3>
@@ -28,7 +28,7 @@ export default function KPICards({ data }) {
                 <Tooltip text="A live snapshot of your local Google Maps presence, tracking ratings and review counts.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
                       Google Maps Intel
-                      <StatusBadge type="simulated" />
+                      <StatusBadge type="real" />
                   </p>
                 </Tooltip>
                 <div className="flex items-end space-x-2 mt-1">
@@ -46,7 +46,7 @@ export default function KPICards({ data }) {
                 <Tooltip text="How long Google has known about your domain. Older domains carry more inherent trust with search engines.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
                       Domain Maturity
-                      <StatusBadge type="simulated" />
+                      <StatusBadge type="real" />
                   </p>
                 </Tooltip>
                 <h3 className="text-xl font-bold text-slate-900 leading-tight mt-2 font-mono">{data.threatIntel.domainMaturity}</h3>

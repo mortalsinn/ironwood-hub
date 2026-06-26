@@ -49,7 +49,7 @@ function ChartPanel({ data, keyword }) {
         <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2 cursor-help">
           <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase flex items-center">
             <TrendingUp className="text-brandBlue mr-2 w-5 h-5" /> Search Trajectory
-            <StatusBadge type="simulated" />
+            <StatusBadge type="real" />
           </h3>
           <span className="text-[10px] bg-brandBlue/10 border border-brandBlue/30 text-brandBlue px-2 py-1 rounded font-mono uppercase tracking-widest">Target: "{keyword}"</span>
         </div>
@@ -171,7 +171,7 @@ function MockAnalyticsPanel({ data }) {
       <Tooltip text="Live traffic data directly from your Google Analytics 4 property for the last 30 days.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <ActivitySquare className="text-brandGreen mr-2 w-5 h-5" /> Web Analytics (GA4)
-          <StatusBadge type="simulated" />
+          <StatusBadge type="real" />
         </h3>
       </Tooltip>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
@@ -203,7 +203,7 @@ function SocialPanel({ data }) {
       <Tooltip text="A snapshot of your brand's presence, reach, and follower count across major social platforms.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <Share2 className="text-brandBlue mr-2 w-5 h-5" /> Social Engagement
-          <StatusBadge type="simulated" />
+          <StatusBadge type="real" />
         </h3>
       </Tooltip>
       <div className="space-y-4 mb-2 mt-2">
@@ -268,7 +268,7 @@ export default function DashboardGrid({ data, keyword }) {
         <div className="glass-panel p-4 col-span-1 border-t-2 border-t-red-500 group hover:shadow-md hover:z-50">
             <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2">
               <Search className="text-red-500 mr-2 w-5 h-5" /> Target Acquisition (Competitors)
-              <StatusBadge type="simulated" />
+              <StatusBadge type="real" />
             </h3>
             <div className="space-y-3">
               {data.competitorIntel.map((comp, idx) => (
@@ -287,7 +287,7 @@ export default function DashboardGrid({ data, keyword }) {
         <div className="glass-panel p-4 col-span-1 border-t-2 border-t-brandBlue group hover:shadow-md hover:z-50">
             <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2">
               <ActivitySquare className="text-brandBlue mr-2 w-5 h-5" /> System Diagnostics
-              <StatusBadge type="simulated" />
+              <StatusBadge type="real" />
             </h3>
             <div className="space-y-8 mt-8 px-2">
                 <div>

@@ -16,5 +16,13 @@ export default function StatusBadge({ type }) {
     );
   }
 
+  if (type === 'real') {
+    return (
+      <span className="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider cursor-default border border-indigo-200 shrink-0 ml-auto">
+        Real Data
+      </span>
+    );
+  }
+
   return null;
 }

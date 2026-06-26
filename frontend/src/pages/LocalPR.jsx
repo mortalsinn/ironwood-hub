@@ -19,7 +19,7 @@ export default function LocalPR({ data, keyword }) {
             <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center">
               <Search className="text-brandBlue w-5 h-5 mr-2" /> 
               Target Acquisition
-                <StatusBadge type="simulated" />
+                <StatusBadge type="real" />
             </h3>
             <span className="text-xs bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full font-medium">Rankings for: {keyword}</span>
           </div>

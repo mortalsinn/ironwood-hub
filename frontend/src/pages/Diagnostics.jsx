@@ -23,7 +23,7 @@ export default function Diagnostics({ data }) {
                   <ActivitySquare className="text-brandBlue w-5 h-5 mr-2" /> 
                   Backlink & Authority Audit
                 </h3>
-                <StatusBadge type="simulated" />
+                <StatusBadge type="real" />
               </div>
             </Tooltip>
           </div>
