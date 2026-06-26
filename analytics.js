@@ -1,11 +1,17 @@
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 const path = require('path');
 
-// Initialize the client using the credentials file
-const credentialsPath = path.join(__dirname, 'google-credentials.json');
-const analyticsDataClient = new BetaAnalyticsDataClient({
-  keyFilename: credentialsPath,
-});
+let analyticsDataClient;
+
+if (process.env.GOOGLE_CREDENTIALS_JSON) {
+  // Use environment variable for production (Render)
+  const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+  analyticsDataClient = new BetaAnalyticsDataClient({ credentials });
+} else {
+  // Fallback to local file for local development
+  const credentialsPath = path.join(__dirname, 'google-credentials.json');
+  analyticsDataClient = new BetaAnalyticsDataClient({ keyFilename: credentialsPath });
+}
 
 /**
  * Fetches metrics from Google Analytics 4
