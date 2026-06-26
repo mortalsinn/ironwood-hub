@@ -1,4 +1,5 @@
 import { ActivitySquare, BrainCircuit, CheckCircle2 } from 'lucide-react';
+import Tooltip from '../components/Tooltip';
 
 export default function Diagnostics({ data }) {
   const seoScore = parseInt(data.seoIntel.domainAuthority) || 0;
@@ -16,10 +17,12 @@ export default function Diagnostics({ data }) {
         {/* Technical SEO Score */}
         <div className="surface-panel">
           <div className="bg-slate-50 border-b border-border p-5">
-            <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center">
-              <ActivitySquare className="text-brandBlue w-5 h-5 mr-2" /> 
-              Lighthouse Technical Audit
-            </h3>
+            <Tooltip text="Measures the structural strength of your website and inbound link profile (scored out of 100).">
+              <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
+                <ActivitySquare className="text-brandBlue w-5 h-5 mr-2" /> 
+                Lighthouse Technical Audit
+              </h3>
+            </Tooltip>
           </div>
           <div className="p-6 space-y-8">
             <div>
@@ -61,10 +64,12 @@ export default function Diagnostics({ data }) {
         {/* AI Matrix */}
         <div className="surface-panel flex flex-col">
           <div className="bg-slate-50 border-b border-border p-5">
-            <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center">
-              <BrainCircuit className="text-purple-600 w-5 h-5 mr-2" /> 
-              AEO Recommendation Matrix
-            </h3>
+            <Tooltip text="Probability of leading LLMs explicitly recommending Ironwood Stair & Rail for local consumer queries.">
+              <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
+                <BrainCircuit className="text-purple-600 w-5 h-5 mr-2" /> 
+                AEO Recommendation Matrix
+              </h3>
+            </Tooltip>
           </div>
           <div className="p-6 flex-1 flex flex-col">
             <p className="text-sm text-text-muted mb-6">Probability of leading LLMs explicitly recommending Ironwood Stair & Rail for local consumer queries.</p>
