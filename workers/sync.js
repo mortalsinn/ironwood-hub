@@ -222,4 +222,4 @@ function startWorkers() {
     });
 }
 
-module.exports = { startWorkers };
+module.exports = { startWorkers, syncReddit };

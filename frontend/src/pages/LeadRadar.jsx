@@ -1,7 +1,31 @@
-import { RedditLogo } from '@phosphor-icons/react';
+import { useState } from 'react';
+import axios from 'axios';
+import { RedditLogo, ArrowsClockwise } from '@phosphor-icons/react';
 import StatusBadge from '../components/StatusBadge';
 
 export default function LeadRadar({ data }) {
+  const [syncing, setSyncing] = useState(false);
+
+  const handleSync = async () => {
+    setSyncing(true);
+    try {
+      const token = localStorage.getItem('dashboard_token');
+      const apiUrl = import.meta.env.DEV 
+        ? 'http://localhost:3000/api/sync/reddit'
+        : '/api/sync/reddit';
+      
+      await axios.post(apiUrl, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Optionally trigger a page reload or state lift to refresh data
+      window.location.reload();
+    } catch (err) {
+      console.error('Manual sync failed', err);
+      alert('Sync failed. Please check logs.');
+      setSyncing(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-end">
@@ -20,12 +44,20 @@ export default function LeadRadar({ data }) {
       </div>
 
       <div className="surface-panel overflow-hidden">
-        <div className="bg-slate-50 border-b border-border p-4">
+        <div className="bg-slate-50 border-b border-border p-4 flex justify-between items-center">
           <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center">
             <RedditLogo weight="fill" className="text-[#ff4500] w-6 h-6 mr-2" /> 
             r/Calgary Activity Feed
                 <StatusBadge type="live" />
           </h3>
+          <button 
+            onClick={handleSync} 
+            disabled={syncing}
+            className="flex items-center text-xs font-semibold bg-white border border-border px-3 py-1.5 rounded-md hover:bg-slate-50 transition-colors disabled:opacity-50"
+          >
+            <ArrowsClockwise className={`w-4 h-4 mr-1.5 ${syncing ? 'animate-spin' : ''}`} />
+            {syncing ? 'Syncing...' : 'Sync Now'}
+          </button>
         </div>
         <div className="divide-y divide-border">
           {data.socialIntel.redditFeed.map((post, idx) => {

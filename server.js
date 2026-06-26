@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { initDB, seedMockData, db } = require('./database');
-const { startWorkers } = require('./workers/sync');
+const { startWorkers, syncReddit } = require('./workers/sync');
 const { getGA4Metrics } = require('./analytics');
 
 // Simple cache for GA4 data (15 minutes)
@@ -46,6 +46,22 @@ app.post('/api/auth', (req, res) => {
         return res.json({ success: true, token: getAuthToken() });
     }
     return res.status(401).json({ success: false, message: 'Invalid password' });
+});
+
+app.post('/api/sync/reddit', async (req, res) => {
+    // Authentication Check
+    const authHeader = req.headers.authorization;
+    if (!authHeader || authHeader !== `Bearer ${getAuthToken()}`) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    try {
+        await syncReddit();
+        res.json({ success: true, message: 'Reddit sync triggered' });
+    } catch (error) {
+        console.error("Manual sync failed:", error);
+        res.status(500).json({ success: false, message: 'Sync failed' });
+    }
 });
 
 app.get('/api/dashboard', async (req, res) => {
