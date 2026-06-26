@@ -1,5 +1,7 @@
+require('dotenv').config();
 const cron = require('node-cron');
 const axios = require('axios');
+const { ApifyClient } = require('apify-client');
 const tls = require('tls');
 const { XMLParser } = require('fast-xml-parser');
 const { db } = require('../database');
@@ -37,48 +39,53 @@ async function syncSSL() {
 
 // 2. Live Reddit Sync
 async function syncReddit() {
-    console.log("[WORKER] Syncing Reddit leads from r/calgary...");
+    console.log("[WORKER] Syncing Reddit leads from r/calgary via Apify...");
     try {
-        const url = 'https://www.reddit.com/r/calgary/search.json?q=stairs+OR+railings+OR+contractor+OR+renovation&restrict_sr=on&sort=new';
-        const res = await axios.get(url, { 
-            headers: { 
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'application/json'
-            } 
-        });
+        const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
         
-        const posts = res.data.data.children.slice(0, 10); // Grab top 10 recent
+        const input = {
+            "startUrls": [
+                {
+                    "url": "https://www.reddit.com/r/calgary+alberta+airdrie/search/?q=%22Ironwood+Stairs%22+OR+%22Ironwood+Stair+%26+Rail%22+OR+%22Ironwood+Metalcraft%22+OR+%22Ironwood+Glass+Solutions%22+OR+%22Ironwood%22+OR+stairs+OR+railings+OR+contractor+OR+renovation+OR+%22new+builds%22&restrict_sr=1&sort=new"
+                }
+            ],
+            "maxItems": 10
+        };
+
+        console.log("[WORKER] Calling Apify actor...");
+        const run = await client.actor("trudax/reddit-scraper-lite").call(input);
+        const { items } = await client.dataset(run.defaultDatasetId).listItems();
+        
         const insert = db.prepare(`INSERT OR REPLACE INTO reddit_leads (id, author, date, time, text, intent, url) VALUES (?, ?, ?, ?, ?, ?, ?)`);
         
-        for (const post of posts) {
-            const data = post.data;
-            const text = data.title + (data.selftext ? " " + data.selftext : "");
+        for (const post of items) {
+            const text = (post.title || "") + (post.body ? " " + post.body : "");
             
             // Basic NLP intent matching
             const lowerText = text.toLowerCase();
             const isHotLead = /(quote|recommend|looking for|need|hire|cost|contractor)/.test(lowerText);
             const intent = isHotLead ? 'HOT LEAD' : 'CHATTER';
             
-            // Format relative time (mocking relative time for simplicity based on UTC)
-            const hoursAgo = Math.floor((Date.now() / 1000 - data.created_utc) / 3600);
-            const timeStr = hoursAgo === 0 ? 'Just now' : hoursAgo < 24 ? `${hoursAgo} hours ago` : `${Math.floor(hoursAgo/24)} days ago`;
+            // Format relative time 
+            const createdDate = new Date(post.createdAt || Date.now());
+            const hoursAgo = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 3600));
+            const timeStr = hoursAgo <= 0 ? 'Just now' : hoursAgo < 24 ? `${hoursAgo} hours ago` : `${Math.floor(hoursAgo/24)} days ago`;
 
             // Max 150 chars text preview
             const textPreview = text.substring(0, 150) + (text.length > 150 ? '...' : '');
-
-            const dateStr = new Date(data.created_utc * 1000).toISOString().replace('T', ' ').substring(0, 19);
+            const dateStr = createdDate.toISOString().replace('T', ' ').substring(0, 19);
 
             insert.run(
-                data.id, 
-                data.author, 
+                post.id || Math.random().toString(36).substring(7), 
+                post.author || "reddit_user", 
                 dateStr,
                 timeStr, 
                 textPreview, 
                 intent, 
-                `https://reddit.com${data.permalink}`
+                post.url || ""
             );
         }
-        console.log(`[WORKER] Reddit Sync complete. Upserted ${posts.length} leads.`);
+        console.log(`[WORKER] Reddit Sync complete: processed ${items.length} items from Apify.`);
     } catch (err) {
         console.error("[WORKER] Reddit Sync failed:", err.message);
     }
@@ -162,9 +169,9 @@ function startWorkers() {
     runAllSyncs();
 
     // Cron schedules
-    // Run every 12 hours to stay fresh without getting rate limited or abusing APIs
-    cron.schedule('0 */12 * * *', async () => {
-        console.log("[WORKER] Triggering 12-hour interval sync...");
+    // Run every 30 minutes to stay fresh (Apify safely bypasses rate limits)
+    cron.schedule('*/30 * * * *', async () => {
+        console.log("[WORKER] Triggering 30-min interval sync...");
         await syncReddit();
         await syncNews();
     });

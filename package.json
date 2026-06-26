@@ -23,12 +23,16 @@
   "dependencies": {
     "@google-analytics/data": "^6.1.0",
     "@google/genai": "^2.10.0",
+    "apify-client": "^2.23.4",
     "axios": "^1.18.0",
     "better-sqlite3": "^12.11.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "fast-xml-parser": "^5.9.3",
-    "node-cron": "^4.4.1"
+    "node-cron": "^4.4.1",
+    "puppeteer": "^25.2.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }
