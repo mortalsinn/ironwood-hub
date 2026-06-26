@@ -15,6 +15,8 @@ function App() {
   const [keyword, setKeyword] = useState('custom stairs calgary');
   const [currentPage, setCurrentPage] = useState('overview');
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('dashboard_token'));
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const fetchData = async () => {
     if (!isAuthenticated) return;
@@ -23,8 +25,8 @@ function App() {
     try {
       const token = localStorage.getItem('dashboard_token');
       const apiUrl = import.meta.env.DEV 
-        ? `http://localhost:3000/api/dashboard?keyword=${encodeURIComponent(keyword)}` 
-        : `/api/dashboard?keyword=${encodeURIComponent(keyword)}`;
+        ? `http://localhost:3000/api/dashboard?keyword=${encodeURIComponent(keyword)}&startDate=${startDate}&endDate=${endDate}` 
+        : `/api/dashboard?keyword=${encodeURIComponent(keyword)}&startDate=${startDate}&endDate=${endDate}`;
         
       const res = await axios.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` }
@@ -43,7 +45,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
-  }, [keyword, isAuthenticated]);
+  }, [keyword, isAuthenticated, startDate, endDate]);
 
   const renderPage = () => {
     if (!data) return null;
@@ -65,10 +67,19 @@ function App() {
     <div className="flex flex-col xl:flex-row min-h-screen w-full overflow-x-hidden">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       
-      <div className="flex-1 flex flex-col min-w-0">
-        <TopBar keyword={keyword} setKeyword={setKeyword} refresh={fetchData} loading={loading} />
+      <div className="flex-1 flex flex-col min-w-0 bg-slate-50 relative">
+        <TopBar 
+          keyword={keyword} 
+          setKeyword={setKeyword} 
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          refresh={fetchData} 
+          loading={loading} 
+        />
         
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto relative z-10">
+        <main className="flex-1 p-4 sm:p-8 overflow-y-auto z-10 relative">
           {loading && !data ? (
             <div className="flex flex-col justify-center items-center py-32">
               <div className="relative flex justify-center items-center mb-4">

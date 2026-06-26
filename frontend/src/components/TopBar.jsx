@@ -1,6 +1,6 @@
-import { Target, RefreshCw, TerminalSquare } from 'lucide-react';
+import { Target, RefreshCw, TerminalSquare, Calendar } from 'lucide-react';
 
-export default function TopBar({ keyword, setKeyword, refresh, loading }) {
+export default function TopBar({ keyword, setKeyword, startDate, setStartDate, endDate, setEndDate, refresh, loading }) {
   return (
     <header className="glass-panel border-x-0 border-t-0 rounded-none xl:rounded-bl-2xl px-4 sm:px-8 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center sticky top-0 z-40 gap-4 sm:gap-0">
       <div className="flex items-center w-full sm:w-auto">
@@ -16,7 +16,26 @@ export default function TopBar({ keyword, setKeyword, refresh, loading }) {
           <span className="font-mono text-xs text-brandBlue truncate max-w-[150px] sm:max-w-none">ironwoodstairs.com | v2.1 (Ultra Light)</span>
         </div>
       </div>
-      <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto pb-1 sm:pb-0">
+        <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus-within:border-brandBlue transition-colors shrink-0">
+          <Calendar className="w-4 h-4 text-slate-400" />
+          <input 
+            type="date" 
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="bg-transparent text-slate-700 text-xs sm:text-sm outline-none cursor-pointer font-mono"
+            placeholder="Start"
+          />
+          <span className="text-slate-300">-</span>
+          <input 
+            type="date" 
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="bg-transparent text-slate-700 text-xs sm:text-sm outline-none cursor-pointer font-mono"
+            placeholder="End"
+          />
+        </div>
+
         <select 
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
