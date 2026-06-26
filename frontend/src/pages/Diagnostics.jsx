@@ -1,5 +1,6 @@
 import { ActivitySquare, BrainCircuit, CheckCircle2 } from 'lucide-react';
 import Tooltip from '../components/Tooltip';
+import StatusBadge from '../components/StatusBadge';
 
 export default function Diagnostics({ data }) {
   const seoScore = parseInt(data.seoIntel.domainAuthority) || 0;
