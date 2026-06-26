@@ -13,7 +13,7 @@ export default function TopBar({ keyword, setKeyword, refresh, loading }) {
         </div>
         <div className="text-sm text-slate-400 flex items-center flex-wrap">
           <TerminalSquare className="w-4 h-4 mr-2 shrink-0 text-brandBlue" />
-          <span className="font-mono text-xs text-brandBlue truncate max-w-[150px] sm:max-w-none">ironwoodstairs.com</span>
+          <span className="font-mono text-xs text-brandBlue truncate max-w-[150px] sm:max-w-none">ironwoodstairs.com | v2.0 (Bronze Edition)</span>
         </div>
       </div>
       <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
