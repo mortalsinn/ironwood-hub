@@ -24,16 +24,16 @@
 
 @layer utilities {
   .surface-panel {
-    @apply bg-surface border border-border shadow-sm rounded-xl overflow-hidden;
+    @apply bg-surface border border-border shadow-sm rounded-xl;
   }
   
   .glass-panel {
-    @apply bg-white border border-slate-200 shadow-md rounded-xl relative overflow-hidden;
+    @apply bg-white border border-slate-200 shadow-md rounded-xl relative;
   }
   
   .glass-panel::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent pointer-events-none;
+    @apply absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent pointer-events-none rounded-xl;
   }
 }
 
