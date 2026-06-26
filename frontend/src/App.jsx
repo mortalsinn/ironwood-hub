@@ -67,6 +67,7 @@ function App() {
                   <span className="text-brandOrange font-bold text-[10px] tracking-widest px-3 border-r border-slate-200 mr-3 whitespace-nowrap uppercase flex items-center">
                     <span className="w-1.5 h-1.5 bg-brandOrange rounded-full mr-2 animate-pulse"></span>
                     Live Intercept
+                    <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded border border-amber-500/30 text-amber-700 bg-amber-500/10 font-mono hidden sm:inline-block">SIMULATED</span>
                   </span>
                   <div className="w-full overflow-hidden relative">
                       <div className="whitespace-nowrap text-xs font-mono text-slate-600 animate-[marquee_40s_linear_infinite]">
