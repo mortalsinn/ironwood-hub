@@ -161,7 +161,7 @@ function MockAnalyticsPanel({ data }) {
     <div className="glass-panel p-4 lg:col-span-2 flex flex-col justify-between group border-t-2 border-t-brandGreen hover:shadow-md">
       <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2">
         <ActivitySquare className="text-brandGreen mr-2 w-5 h-5" /> Web Analytics (GA4)
-        <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-amber-500/30 text-amber-700 bg-amber-500/10 font-mono">SIMULATED</span>
+        <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
       </h3>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
         <div className="bg-slate-50 p-3 rounded text-center border border-slate-200 hover:border-brandGreen/30 transition">

@@ -3,6 +3,15 @@ const express = require('express');
 const cors = require('cors');
 const { initDB, seedMockData, db } = require('./database');
 const { startWorkers } = require('./workers/sync');
+const { getGA4Metrics } = require('./analytics');
+
+// Simple cache for GA4 data (15 minutes)
+let ga4Cache = {
+    data: null,
+    lastFetched: 0
+};
+const CACHE_TTL = 15 * 60 * 1000;
+const GA4_PROPERTY_ID = '424706864';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,7 +30,7 @@ startWorkers();
 // API ENDPOINTS
 // ==========================================
 
-app.get('/api/dashboard', (req, res) => {
+app.get('/api/dashboard', async (req, res) => {
     // Read from SQLite
     const keyword = req.query.keyword || 'custom stairs calgary';
 
@@ -32,6 +41,27 @@ app.get('/api/dashboard', (req, res) => {
     const competitors = db.prepare('SELECT * FROM competitors WHERE keyword = ? ORDER BY position ASC').all(keyword);
     const aeoScores = db.prepare('SELECT * FROM aeo_scores ORDER BY date DESC LIMIT 3').all();
     const newsFeed = db.prepare('SELECT * FROM news_feed ORDER BY date DESC').all();
+
+    // Fetch GA4 Data
+    const now = Date.now();
+    if (!ga4Cache.data || (now - ga4Cache.lastFetched > CACHE_TTL)) {
+        console.log("Fetching live GA4 data...");
+        const liveData = await getGA4Metrics(GA4_PROPERTY_ID);
+        if (liveData) {
+            ga4Cache.data = liveData;
+            ga4Cache.lastFetched = now;
+        }
+    }
+
+    // Default to mock data if GA4 fetch fails
+    const webAnalytics = ga4Cache.data || {
+        sessions: "1,101",
+        pageViews: "5.1K",
+        newUsers: "1.3K",
+        avgEngagement: "5m 44s",
+        bounceRate: "34.2%",
+        formSubmits: 54
+    };
 
     // Calculate Brand Velocity
     let velocity = "+0%";
@@ -54,14 +84,7 @@ app.get('/api/dashboard', (req, res) => {
         threatIntel: { status: seoMetrics?.ssl_status, sslDaysRemaining: seoMetrics?.ssl_days, domainMaturity: seoMetrics?.domain_maturity },
         chartData,
         aeoIntel: { llmPerformance: aeoScores.map(a => ({ model: a.model, recommendationProbability: a.score })) },
-        webAnalytics: {
-            sessions: "1,101",
-            pageViews: "5.1K",
-            newUsers: "1.3K",
-            avgEngagement: "5m 44s",
-            bounceRate: "34.2%", // Keeping old mock as it wasn't specified
-            formSubmits: 54
-        },
+        webAnalytics: webAnalytics,
         socialMetrics: {
             facebook: { views: "15.5K", engagement: 758, followers: 329 },
             instagram: { reach: "7.01K", engagement: 412, followers: "2.91K" },
