@@ -46,7 +46,7 @@ async function syncReddit() {
         const input = {
             "startUrls": [
                 {
-                    "url": "https://www.reddit.com/r/calgary+alberta+airdrie/search/?q=%22Ironwood+Stairs%22+OR+%22Ironwood+Stair+%26+Rail%22+OR+%22Ironwood+Metalcraft%22+OR+%22Ironwood+Glass+Solutions%22+OR+%22Ironwood%22+OR+stairs+OR+railings+OR+contractor+OR+renovation+OR+%22new+builds%22&restrict_sr=1&sort=new"
+                    "url": "https://www.reddit.com/r/calgary+alberta+airdrie/search/?q=%22Ironwood+Stairs%22+OR+%22Ironwood+Stair+%26+Rail%22+OR+%22Ironwood+Metalcraft%22+OR+%22Ironwood+Glass+Solutions%22+OR+%22Ironwood%22+OR+stairs+OR+railing+OR+railings&restrict_sr=1&sort=new"
                 }
             ],
             "maxItems": 10
