@@ -11,6 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 import Tooltip from './Tooltip';
+import StatusBadge from './StatusBadge';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, ChartTooltip, Filler, Legend);
 
@@ -48,7 +49,7 @@ function ChartPanel({ data, keyword }) {
         <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2 cursor-help">
           <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase flex items-center">
             <TrendingUp className="text-brandBlue mr-2 w-5 h-5" /> Search Trajectory
-            <span className="ml-3 text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+            <StatusBadge type="simulated" />
           </h3>
           <span className="text-[10px] bg-brandBlue/10 border border-brandBlue/30 text-brandBlue px-2 py-1 rounded font-mono uppercase tracking-widest">Target: "{keyword}"</span>
         </div>
@@ -66,7 +67,7 @@ function AEOPanel({ data }) {
       <Tooltip text="Probability of leading LLMs explicitly recommending Ironwood Stair & Rail for local consumer queries.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <Brain className="text-purple-500 mr-2 w-5 h-5" /> AI Engine Matrix
-          <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-purple-500/30 text-purple-700 bg-purple-500/10 font-mono flex items-center"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-1.5 animate-pulse"></span>LIVE AEO</span>
+          <StatusBadge type="live" />
         </h3>
       </Tooltip>
       <div className="space-y-3 flex-grow">
@@ -98,7 +99,7 @@ function RedditPanel({ data }) {
         <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2 cursor-help">
             <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase flex items-center">
               <Radar className="text-brandOrange mr-2 w-5 h-5" /> Lead Radar
-              <span className="ml-3 text-[8px] px-1.5 py-0.5 rounded border border-amber-500/30 text-amber-700 bg-amber-500/10 font-mono">SIMULATED</span>
+              <StatusBadge type="live" />
             </h3>
             <div className="flex space-x-2">
                 <span className="flex items-center text-[10px] text-brandGreen font-bold font-mono tracking-widest uppercase"><span className="w-2 h-2 rounded-full bg-brandGreen mr-1 animate-pulse"></span> Live Intercept</span>
@@ -129,7 +130,7 @@ function PRPanel({ data }) {
       <Tooltip text="Aggregated video and news coverage across the industry.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <Radio className="text-red-500 mr-2 w-5 h-5" /> Network Scraper
-          <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+          <StatusBadge type="live" />
         </h3>
       </Tooltip>
         <div className="overflow-y-auto max-h-[300px] feed-scroll pr-2 space-y-4">
@@ -170,7 +171,7 @@ function MockAnalyticsPanel({ data }) {
       <Tooltip text="Live traffic data directly from your Google Analytics 4 property for the last 30 days.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <ActivitySquare className="text-brandGreen mr-2 w-5 h-5" /> Web Analytics (GA4)
-          <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+          <StatusBadge type="simulated" />
         </h3>
       </Tooltip>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
@@ -202,7 +203,7 @@ function SocialPanel({ data }) {
       <Tooltip text="A snapshot of your brand's presence, reach, and follower count across major social platforms.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <Share2 className="text-brandBlue mr-2 w-5 h-5" /> Social Engagement
-          <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+          <StatusBadge type="simulated" />
         </h3>
       </Tooltip>
       <div className="space-y-4 mb-2 mt-2">
@@ -267,7 +268,7 @@ export default function DashboardGrid({ data, keyword }) {
         <div className="glass-panel p-4 col-span-1 border-t-2 border-t-red-500 group hover:shadow-md hover:z-50">
             <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2">
               <Search className="text-red-500 mr-2 w-5 h-5" /> Target Acquisition (Competitors)
-              <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+              <StatusBadge type="simulated" />
             </h3>
             <div className="space-y-3">
               {data.competitorIntel.map((comp, idx) => (
@@ -286,7 +287,7 @@ export default function DashboardGrid({ data, keyword }) {
         <div className="glass-panel p-4 col-span-1 border-t-2 border-t-brandBlue group hover:shadow-md hover:z-50">
             <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2">
               <ActivitySquare className="text-brandBlue mr-2 w-5 h-5" /> System Diagnostics
-              <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-amber-500/30 text-amber-700 bg-amber-500/10 font-mono">SIMULATED</span>
+              <StatusBadge type="simulated" />
             </h3>
             <div className="space-y-8 mt-8 px-2">
                 <div>

@@ -1,4 +1,5 @@
 import { RedditLogo } from '@phosphor-icons/react';
+import StatusBadge from '../components/StatusBadge';
 
 export default function LeadRadar({ data }) {
   return (
@@ -23,6 +24,7 @@ export default function LeadRadar({ data }) {
           <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center">
             <RedditLogo weight="fill" className="text-[#ff4500] w-6 h-6 mr-2" /> 
             r/Calgary Activity Feed
+                <StatusBadge type="live" />
           </h3>
         </div>
         <div className="divide-y divide-border">

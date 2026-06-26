@@ -1,6 +1,7 @@
 import { TrendingUp, MapPin, Clock, ShieldCheck, ShieldAlert, Star } from 'lucide-react';
 
 import Tooltip from './Tooltip';
+import StatusBadge from './StatusBadge';
 
 export default function KPICards({ data }) {
   const isSecure = data.threatIntel.status === "SECURE";
@@ -12,8 +13,8 @@ export default function KPICards({ data }) {
             <div>
                 <Tooltip text="Measures the percentage increase in how frequently your target keywords are being searched for over a 90-day period.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
-                      Brand Velocity 
-                      <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+                      Brand Velocity
+                      <StatusBadge type="simulated" />
                   </p>
                 </Tooltip>
                 <h3 className="text-3xl font-black text-slate-900 mt-1 font-mono tracking-tighter">{data.brandVelocity}</h3>
@@ -27,7 +28,7 @@ export default function KPICards({ data }) {
                 <Tooltip text="A live snapshot of your local Google Maps presence, tracking ratings and review counts.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
                       Google Maps Intel
-                      <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+                      <StatusBadge type="simulated" />
                   </p>
                 </Tooltip>
                 <div className="flex items-end space-x-2 mt-1">
@@ -45,7 +46,7 @@ export default function KPICards({ data }) {
                 <Tooltip text="How long Google has known about your domain. Older domains carry more inherent trust with search engines.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
                       Domain Maturity
-                      <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+                      <StatusBadge type="simulated" />
                   </p>
                 </Tooltip>
                 <h3 className="text-xl font-bold text-slate-900 leading-tight mt-2 font-mono">{data.threatIntel.domainMaturity}</h3>
@@ -59,7 +60,7 @@ export default function KPICards({ data }) {
                 <Tooltip text="Monitors your website's security certificate. If the days remaining hit zero, browsers will block visitors from entering your site.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
                       SSL Threat Intel
-                      <span className="ml-2 text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+                      <StatusBadge type="live" />
                   </p>
                 </Tooltip>
                 <h3 className={`text-2xl font-bold mt-2 flex items-center font-mono ${isSecure ? 'text-brandGreen' : 'text-red-500'}`}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import StatusBadge from '../components/StatusBadge';
 import { Share2, Users, Building2, Briefcase, Network, Globe, Camera, AlertTriangle, TrendingUp } from 'lucide-react';
 import Tooltip from '../components/Tooltip';
 

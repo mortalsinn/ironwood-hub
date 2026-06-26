@@ -23,7 +23,7 @@ export default function Diagnostics({ data }) {
                   <ActivitySquare className="text-brandBlue w-5 h-5 mr-2" /> 
                   Backlink & Authority Audit
                 </h3>
-                <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ml-4 cursor-default border border-amber-200">Simulated</span>
+                <StatusBadge type="simulated" />
               </div>
             </Tooltip>
           </div>
@@ -71,6 +71,7 @@ export default function Diagnostics({ data }) {
               <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
                 <BrainCircuit className="text-purple-600 w-5 h-5 mr-2" /> 
                 AEO Recommendation Matrix
+                <StatusBadge type="live" />
               </h3>
             </Tooltip>
           </div>
