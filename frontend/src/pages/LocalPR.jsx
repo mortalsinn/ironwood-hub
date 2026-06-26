@@ -15,15 +15,24 @@ export default function LocalPR({ data, keyword }) {
         {/* Competitor Intel */}
         <div className="surface-panel flex flex-col h-[500px]">
           <div className="bg-slate-50 border-b border-border p-5 flex justify-between items-center">
-            <Tooltip text="Live Google Search ranking positions of competing websites for your target keyword. For example, a rank of #2 means they are the 2nd result on Google. Ironwood's SEO strategy aims to push these competitors down and take their spot.">
-              <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
-                <Search className="text-brandBlue w-5 h-5 mr-2" /> 
-                Local Competitor Matrix
-              </h3>
-            </Tooltip>
+            <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center">
+              <Search className="text-brandBlue w-5 h-5 mr-2" /> 
+              Target Acquisition
+            </h3>
             <span className="text-xs bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full font-medium">Rankings for: {keyword}</span>
           </div>
-          <div className="p-5 flex-1 overflow-y-auto space-y-3">
+          <div className="p-5 flex-1 overflow-y-auto">
+            {/* Description Area */}
+            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-5">
+              <p className="text-sm text-slate-700 leading-relaxed">
+                This tracks the live Google Search ranking positions of <span className="font-bold">competing websites</span> for your selected keyword.
+              </p>
+              <p className="text-sm text-slate-700 leading-relaxed mt-2">
+                <span className="font-bold">How to read this:</span> A rank of <span className="font-black bg-white px-1.5 py-0.5 rounded border border-slate-200">#2</span> means that competitor is the 2nd result on Google. Ironwood is not on this list because this is a list of your specific targets. The goal is to aggressively push these competitors down and take their spot.
+              </p>
+            </div>
+            
+            <div className="space-y-3">
             {data.competitorIntel.map((comp, idx) => (
               <div key={idx} className="bg-white p-4 rounded-lg border border-border flex justify-between items-center hover:shadow-md transition-shadow group">
                 <div>
@@ -38,6 +47,7 @@ export default function LocalPR({ data, keyword }) {
             {data.competitorIntel.length === 0 && (
               <div className="text-center text-text-muted p-8">No competitors found.</div>
             )}
+            </div>
           </div>
         </div>
 
