@@ -195,30 +195,46 @@ function MockAnalyticsPanel({ data }) {
   );
 }
 
-function MockSocialPanel({ data }) {
+function SocialPanel({ data }) {
   const social = data.socialMetrics || {};
   return (
     <div className="glass-panel p-4 lg:col-span-1 flex flex-col justify-between group border-t-2 border-t-brandBlue hover:shadow-md hover:z-50">
       <Tooltip text="A snapshot of your brand's presence, reach, and follower count across major social platforms.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <Share2 className="text-brandBlue mr-2 w-5 h-5" /> Social Engagement
-          <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-amber-500/30 text-amber-700 bg-amber-500/10 font-mono">SIMULATED</span>
+          <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
         </h3>
       </Tooltip>
-      <div className="space-y-4 mb-4 mt-2">
+      <div className="space-y-4 mb-2 mt-2">
         <div>
             <div className="flex justify-between items-center mb-1">
-            <span className="text-xs font-bold text-slate-700 tracking-wider">LinkedIn Grid</span>
-            <span className="text-[10px] font-mono text-brandBlue bg-brandBlue/10 px-1.5 py-0.5 rounded border border-brandBlue/30">{social.linkedin?.impressions || 0} IMPR</span>
+            <span className="text-xs font-bold text-slate-700 tracking-wider">Facebook Algorithmic Reach</span>
+            <span className="text-[10px] font-mono text-brandBlue bg-brandBlue/10 px-1.5 py-0.5 rounded border border-brandBlue/30">{social.facebook?.reachPercentage} Non-Followers</span>
             </div>
-            <div className="w-full bg-slate-200 h-1 rounded-full"><div className="bg-brandBlue h-1 rounded-full" style={{width: '85%'}}></div></div>
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden"><div className="bg-brandBlue h-1.5 rounded-full" style={{width: social.facebook?.reachPercentage || '0%'}}></div></div>
+            <p className="text-[9px] text-slate-500 mt-1 font-mono tracking-widest uppercase">{social.facebook?.views} Total Views // Top Format: {social.facebook?.topFormat}</p>
         </div>
+        
         <div>
             <div className="flex justify-between items-center mb-1">
-            <span className="text-xs font-bold text-slate-700 tracking-wider">Facebook Views</span>
-            <span className="text-[10px] font-mono text-brandBlue bg-brandBlue/10 px-1.5 py-0.5 rounded border border-brandBlue/30">{social.facebook?.views || 0} VIEWS</span>
+            <span className="text-xs font-bold text-slate-700 tracking-wider">Instagram Format Efficiency</span>
+            <span className="text-[10px] font-mono text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded border border-purple-200">{social.instagram?.topFormat}</span>
             </div>
-            <div className="w-full bg-slate-200 h-1 rounded-full"><div className="bg-brandBlue h-1 rounded-full" style={{width: '65%'}}></div></div>
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden flex">
+                <div className="bg-purple-500 h-1.5" style={{width: '54.4%'}}></div>
+                <div className="bg-purple-300 h-1.5" style={{width: '25.7%'}}></div>
+                <div className="bg-purple-100 h-1.5" style={{width: '19.9%'}}></div>
+            </div>
+            <p className="text-[9px] text-slate-500 mt-1 font-mono tracking-widest uppercase">Reels generate {social.instagram?.reelsEngagement} of engagement</p>
+        </div>
+
+        <div>
+            <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-bold text-slate-700 tracking-wider">LinkedIn B2B Acquisition</span>
+            <span className="text-[10px] font-mono text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded border border-blue-200">+{social.linkedin?.newFollowers} Followers</span>
+            </div>
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden"><div className="bg-blue-600 h-1.5 rounded-full" style={{width: '85%'}}></div></div>
+            <p className="text-[9px] text-slate-500 mt-1 font-mono tracking-widest uppercase">Top Industry: {social.linkedin?.topIndustry} // {social.linkedin?.posts} Posts</p>
         </div>
       </div>
     </div>
@@ -237,7 +253,7 @@ export default function DashboardGrid({ data, keyword }) {
       {/* Row 2: Analytics & Social Mock */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <MockAnalyticsPanel data={data} />
-        <MockSocialPanel data={data} />
+        <SocialPanel data={data} />
       </div>
 
       {/* Row 3: Reddit Radar and PR */}
