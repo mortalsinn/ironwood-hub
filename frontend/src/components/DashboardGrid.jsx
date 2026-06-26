@@ -239,4 +239,21 @@ export default function DashboardGrid({ data, keyword }) {
             <div className="space-y-8 mt-8 px-2">
                 <div>
                     <div className="flex justify-between items-center mb-2">
+                        <span className="text-brandGreen/80 text-[10px] uppercase font-bold tracking-widest font-mono">Tech SEO Score</span>
+                        <span className="font-mono text-brandGreen font-black text-lg">{data.seoIntel.domainAuthority || 0}</span>
+                    </div>
+                    <div className="w-full bg-slate-900 rounded-full h-2 border border-white/5"><div className="bg-brandGreen h-2 rounded-full transition-all duration-1000 shadow-[0_0_10px_#10b981]" style={{width: `${data.seoIntel.domainAuthority || 0}%`}}></div></div>
+                </div>
+                <div>
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-brandBlue/80 text-[10px] uppercase font-bold tracking-widest font-mono">Network Speed</span>
+                        <span className="font-mono text-brandBlue font-black text-lg">{data.seoIntel.trustFlow || 0}</span>
+                    </div>
+                    <div className="w-full bg-slate-900 rounded-full h-2 border border-white/5"><div className="bg-brandBlue h-2 rounded-full transition-all duration-1000 shadow-[0_0_10px_#06b6d4]" style={{width: `${data.seoIntel.trustFlow || 0}%`}}></div></div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  );
 }
