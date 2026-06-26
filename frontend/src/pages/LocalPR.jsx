@@ -1,5 +1,6 @@
 import { Search, Radio, Newspaper } from 'lucide-react';
 import { YoutubeLogo } from '@phosphor-icons/react';
+import Tooltip from '../components/Tooltip';
 
 export default function LocalPR({ data, keyword }) {
   return (
@@ -14,10 +15,12 @@ export default function LocalPR({ data, keyword }) {
         {/* Competitor Intel */}
         <div className="surface-panel flex flex-col h-[500px]">
           <div className="bg-slate-50 border-b border-border p-5 flex justify-between items-center">
-            <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center">
-              <Search className="text-brandBlue w-5 h-5 mr-2" /> 
-              Local Competitor Matrix
-            </h3>
+            <Tooltip text="Live Google Search ranking positions of competing websites for your target keyword. For example, a rank of #2 means they are the 2nd result on Google. Ironwood's SEO strategy aims to push these competitors down and take their spot.">
+              <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
+                <Search className="text-brandBlue w-5 h-5 mr-2" /> 
+                Local Competitor Matrix
+              </h3>
+            </Tooltip>
             <span className="text-xs bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full font-medium">Rankings for: {keyword}</span>
           </div>
           <div className="p-5 flex-1 overflow-y-auto space-y-3">
