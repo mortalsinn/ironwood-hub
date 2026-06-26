@@ -44,30 +44,36 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col xl:flex-row min-h-screen w-full bg-bg overflow-x-hidden">
+    <div className="flex flex-col xl:flex-row min-h-screen w-full overflow-x-hidden">
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar keyword={keyword} setKeyword={setKeyword} refresh={fetchData} loading={loading} />
         
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto relative z-10">
           {loading && !data ? (
             <div className="flex flex-col justify-center items-center py-32">
               <div className="relative flex justify-center items-center mb-4">
-                <div className="absolute animate-ping w-16 h-16 rounded-full border-2 border-brandBlue opacity-20"></div>
+                <div className="absolute animate-ping w-24 h-24 rounded-full border-2 border-brandBlue opacity-20"></div>
+                <div className="absolute animate-pulse w-16 h-16 rounded-full border-2 border-brandGreen opacity-40"></div>
                 <div className="w-8 h-8 border-4 border-brandBlue border-t-transparent rounded-full animate-spin"></div>
               </div>
-              <p className="font-medium text-text-muted text-sm mt-2">Loading Intelligence...</p>
+              <p className="font-mono text-brandBlue font-bold tracking-widest text-sm mt-4 animate-pulse">ESTABLISHING UPLINK...</p>
             </div>
           ) : data ? (
-            <div className="animate-in fade-in duration-500">
-              {/* Global Ticker moved to Overview or kept here as a toast-like feature. Let's place it at the top of the main area. */}
-              <div className="bg-brandDark text-white rounded-lg p-2 flex items-center overflow-hidden shadow-sm mb-6">
-                  <span className="bg-brandBlue text-white font-bold text-xs px-2 py-1 rounded mr-3 whitespace-nowrap uppercase">Live Feed</span>
+            <div className="animate-in fade-in duration-1000">
+              {/* Global Ticker */}
+              <div className="glass-panel p-2 flex items-center overflow-hidden mb-6 border-l-4 border-l-brandOrange shadow-[0_0_15px_rgba(249,115,22,0.15)]">
+                  <span className="text-brandOrange font-bold text-[10px] tracking-widest px-3 border-r border-white/10 mr-3 whitespace-nowrap uppercase flex items-center">
+                    <span className="w-1.5 h-1.5 bg-brandOrange rounded-full mr-2 animate-pulse"></span>
+                    Live Intercept
+                  </span>
                   <div className="w-full overflow-hidden relative">
-                      <div className="whitespace-nowrap text-xs font-mono animate-[marquee_30s_linear_infinite]">
+                      <div className="whitespace-nowrap text-xs font-mono text-cyan-400/80 animate-[marquee_40s_linear_infinite]">
                         {data.socialIntel.liveStream.map((log, i) => (
-                          <span key={i} className="mx-4 text-slate-300">[{log.source}] {log.text}</span>
+                          <span key={i} className="mx-6 hover:text-cyan-300 transition-colors cursor-default">
+                            <span className="text-brandOrange/70">[{log.source}]</span> {log.text}
+                          </span>
                         )).reduce((acc, curr) => [acc, ...Array(5).fill(curr)], [])}
                       </div>
                   </div>
@@ -76,9 +82,10 @@ function App() {
               {renderPage()}
             </div>
           ) : (
-            <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200">
-              <p className="font-bold">Connection Error</p>
-              <p className="text-sm">Unable to connect to the backend server. Make sure it is running.</p>
+            <div className="glass-panel border-red-500/50 bg-red-950/20 text-red-400 p-6 rounded-xl flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin-slow mb-4"></div>
+              <p className="font-mono text-xl font-bold tracking-widest mb-2 text-shadow-glow">CONNECTION SEVERED</p>
+              <p className="font-mono text-sm opacity-80">Unable to establish uplink to backend intelligence server.</p>
             </div>
           )}
         </main>

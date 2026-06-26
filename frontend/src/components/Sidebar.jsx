@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, Users, MapPin, Activity, Settings, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, MapPin, Activity, Settings, Menu, X, Hexagon } from 'lucide-react';
 
 export default function Sidebar({ currentPage, setCurrentPage }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,19 +12,22 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
   ];
 
   return (
-    <aside className="w-full xl:w-64 bg-surface border-b xl:border-b-0 xl:border-r border-border xl:h-screen flex flex-col xl:sticky xl:top-0 shrink-0 z-50">
-      <div className="p-4 xl:p-6 border-b border-border flex justify-between items-center">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded bg-brandBlue flex items-center justify-center text-white font-bold text-xl">I</div>
-          <h1 className="text-lg font-bold text-text-main tracking-tight">Ironwood SEO</h1>
+    <aside className="w-full xl:w-64 glass-panel border-y-0 border-l-0 rounded-none xl:rounded-r-2xl xl:h-screen flex flex-col xl:sticky xl:top-0 shrink-0 z-50">
+      <div className="p-4 xl:p-6 border-b border-white/10 flex justify-between items-center relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-brandBlue/10 rounded-full blur-3xl"></div>
+        <div className="flex items-center space-x-3 relative z-10">
+          <div className="w-8 h-8 rounded-lg bg-brandBlue/20 border border-brandBlue/50 flex items-center justify-center text-brandBlue shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+            <Hexagon className="w-5 h-5" />
+          </div>
+          <h1 className="text-lg font-bold text-white tracking-widest uppercase text-shadow-glow">Ironwood<span className="text-brandBlue">SEO</span></h1>
         </div>
-        <button className="xl:hidden text-text-main p-1" onClick={() => setIsOpen(!isOpen)}>
+        <button className="xl:hidden text-slate-300 p-1 relative z-10" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
       
-      <div className={`${isOpen ? 'block' : 'hidden'} xl:flex flex-col flex-grow p-4 space-y-1`}>
-        <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 ml-2 hidden xl:block">Dashboard</p>
+      <div className={`${isOpen ? 'block' : 'hidden'} xl:flex flex-col flex-grow p-4 space-y-2`}>
+        <p className="text-[10px] font-bold text-brandBlue/70 uppercase tracking-widest mb-3 ml-2 hidden xl:block">Command Module</p>
         {navItems.map(item => {
           const Icon = item.icon;
           const isActive = currentPage === item.id;
@@ -35,17 +38,18 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
                 setCurrentPage(item.id);
                 setIsOpen(false);
               }}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-brandBlue/10 text-brandBlue' : 'text-text-muted hover:bg-slate-50 hover:text-text-main'}`}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden ${isActive ? 'text-white bg-brandBlue/10 shadow-[inset_0_0_20px_rgba(14,165,233,0.15)]' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`}
             >
-              <Icon className="w-5 h-5 shrink-0" />
-              <span>{item.label}</span>
+              {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-brandBlue shadow-[0_0_10px_rgba(14,165,233,0.8)]"></div>}
+              <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-brandBlue' : ''}`} />
+              <span className="tracking-wide">{item.label}</span>
             </button>
           )
         })}
-        <div className="mt-auto pt-4 border-t border-border xl:block hidden">
-          <button className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:bg-slate-50 hover:text-text-main transition-colors">
+        <div className="mt-auto pt-4 border-t border-white/10 xl:block hidden">
+          <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-800/50 hover:text-slate-300 transition-colors">
             <Settings className="w-5 h-5 shrink-0" />
-            <span>Settings</span>
+            <span className="tracking-wide">Settings</span>
           </button>
         </div>
       </div>

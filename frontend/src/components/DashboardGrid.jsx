@@ -24,8 +24,8 @@ function ChartPanel({ data, keyword }) {
         fill: true,
         label: 'Search Volume',
         data: data.chartData.searchVolume,
-        borderColor: '#c29545',
-        backgroundColor: 'rgba(194, 149, 69, 0.2)',
+        borderColor: '#0ea5e9',
+        backgroundColor: 'rgba(14, 165, 233, 0.15)',
         tension: 0.4,
       },
     ],
@@ -36,16 +36,16 @@ function ChartPanel({ data, keyword }) {
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { border: { display: false }, grid: { color: 'rgba(51, 65, 85, 0.3)' } },
-      y: { border: { display: false }, grid: { color: 'rgba(51, 65, 85, 0.3)' } },
+      x: { border: { display: false }, grid: { color: 'rgba(14, 165, 233, 0.1)' }, ticks: { color: 'rgba(14, 165, 233, 0.5)', font: { family: 'monospace' } } },
+      y: { border: { display: false }, grid: { color: 'rgba(14, 165, 233, 0.1)' }, ticks: { color: 'rgba(14, 165, 233, 0.5)', font: { family: 'monospace' } } },
     },
   };
 
   return (
-    <div className="glass-panel p-4 rounded-xl lg:col-span-2 shadow-2xl relative h-80 flex flex-col">
-      <div className="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
-          <h3 className="text-sm font-bold text-slate-200 tracking-widest uppercase flex items-center"><LineChart className="text-brandBlue mr-2 w-5 h-5" /> Google Trends (30 Days)</h3>
-          <span className="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-400">Target: "{keyword}"</span>
+    <div className="glass-panel p-4 lg:col-span-2 h-80 flex flex-col group border-t-2 border-t-brandBlue/50 hover:border-t-brandBlue transition-all">
+      <div className="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
+          <h3 className="text-sm font-bold text-cyberCyan tracking-widest uppercase flex items-center text-shadow-glow"><LineChart className="text-brandBlue mr-2 w-5 h-5 group-hover:animate-pulse" /> Global Search Trends</h3>
+          <span className="text-[10px] bg-brandBlue/10 border border-brandBlue/30 text-brandBlue px-2 py-1 rounded font-mono uppercase tracking-widest">Target: "{keyword}"</span>
       </div>
       <div className="flex-grow w-full relative">
         <Line options={options} data={chartData} />
@@ -56,17 +56,23 @@ function ChartPanel({ data, keyword }) {
 
 function AEOPanel({ data }) {
   return (
-    <div className="glass-panel p-4 rounded-xl lg:col-span-1 shadow-2xl flex flex-col">
-      <h3 className="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><Brain className="text-purple-400 mr-2 w-5 h-5" /> AI Recommendation Matrix</h3>
-      <p className="text-xs text-slate-400 mb-4">Probability of AI recommending Ironwood for local queries.</p>
+    <div className="glass-panel p-4 lg:col-span-1 flex flex-col group border-t-2 border-t-cyberPurple/50 hover:border-t-cyberPurple transition-all">
+      <h3 className="text-sm font-bold text-cyberPurple tracking-widest uppercase mb-4 flex items-center border-b border-white/10 pb-2 text-shadow-glow"><Brain className="text-cyberPurple mr-2 w-5 h-5 group-hover:animate-pulse" /> AI Engine Matrix</h3>
+      <p className="text-[10px] font-mono text-cyberPurple/70 mb-4 uppercase tracking-widest">Probability of AI recommendation.</p>
       <div className="space-y-3 flex-grow">
         {data.aeoIntel.llmPerformance.map((llm, idx) => {
            const score = parseInt(llm.recommendationProbability) || 0;
-           const color = score > 70 ? "text-brandGreen drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]" : "text-brandBlue";
+           const color = score > 70 ? "text-brandGreen text-shadow-glow" : "text-brandBlue text-shadow-glow";
+           const barColor = score > 70 ? "bg-brandGreen" : "bg-brandBlue";
            return (
-            <div key={idx} className="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50 flex justify-between items-center">
-                <p className="text-sm font-bold text-slate-200">{llm.model}</p>
-                <p className={`${color} font-black text-lg`}>{llm.recommendationProbability}</p>
+            <div key={idx} className="bg-slate-900/50 p-3 rounded-lg border border-white/5 flex flex-col hover:bg-slate-800/50 transition">
+                <div className="flex justify-between items-center mb-2">
+                    <p className="text-xs font-mono font-bold text-slate-300 tracking-wider">{llm.model}</p>
+                    <p className={`${color} font-black text-sm font-mono`}>{llm.recommendationProbability}</p>
+                </div>
+                <div className="w-full bg-slate-800 rounded-full h-1 overflow-hidden">
+                    <div className={`${barColor} h-1 rounded-full shadow-[0_0_10px_currentColor]`} style={{width: llm.recommendationProbability}}></div>
+                </div>
             </div>
            );
         })}
@@ -77,24 +83,24 @@ function AEOPanel({ data }) {
 
 function RedditPanel({ data }) {
   return (
-    <div className="glass-panel p-4 rounded-xl lg:col-span-2 shadow-lg border border-slate-600 relative overflow-hidden flex flex-col">
-        <div className="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
-            <h3 className="text-sm font-bold text-white tracking-widest uppercase flex items-center"><RedditLogo weight="fill" className="text-brandOrange mr-2 w-5 h-5" /> Reddit Lead Radar (r/Calgary)</h3>
+    <div className="glass-panel p-4 lg:col-span-2 border-t-2 border-t-brandOrange/50 hover:border-t-brandOrange relative overflow-hidden flex flex-col group">
+        <div className="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
+            <h3 className="text-sm font-bold text-brandOrange tracking-widest uppercase flex items-center text-shadow-glow"><Radar className="text-brandOrange mr-2 w-5 h-5 group-hover:animate-spin-slow" /> Lead Radar</h3>
             <div className="flex space-x-2">
-                <span className="flex items-center text-[10px] text-brandGreen font-bold"><span className="w-2 h-2 rounded-full bg-brandGreen mr-1 animate-pulse"></span> HOT LEAD</span>
+                <span className="flex items-center text-[10px] text-brandGreen font-bold font-mono tracking-widest uppercase"><span className="w-2 h-2 rounded-full bg-brandGreen mr-1 animate-pulse shadow-[0_0_10px_#10b981]"></span> Live Intercept</span>
             </div>
         </div>
         <div className="space-y-3 overflow-y-auto max-h-[300px] feed-scroll pr-2">
             {data.socialIntel.redditFeed.map((post, idx) => (
-              <a key={idx} href={post.url} target="_blank" rel="noreferrer" className={`block p-3 rounded-lg border hover:bg-slate-700/50 transition ${post.intent === 'HOT LEAD' ? 'border-brandGreen bg-brandGreen/5 shadow-[inset_0_0_10px_rgba(16,185,129,0.1)]' : 'border-slate-700 bg-slate-800/30'}`}>
+              <a key={idx} href={post.url} target="_blank" rel="noreferrer" className={`block p-3 rounded-lg border hover:bg-slate-800/80 transition ${post.intent === 'HOT LEAD' ? 'border-brandGreen/50 bg-brandGreen/5 shadow-[inset_0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[inset_0_0_20px_rgba(16,185,129,0.2)]' : 'border-white/10 bg-slate-900/50'}`}>
                   <div className="flex justify-between items-center mb-1.5">
-                      <div className="text-[10px] text-slate-400 font-mono">u/{post.author} • {post.time}</div>
+                      <div className="text-[10px] text-brandBlue/70 font-mono tracking-widest">USR: {post.author} // {post.time}</div>
                       {post.intent === "HOT LEAD" ? 
-                        <span className="text-[9px] font-bold bg-brandGreen text-black px-1.5 py-0.5 rounded ml-2 animate-pulse">HOT LEAD</span> : 
-                        <span className="text-[9px] text-slate-500 border border-slate-600 px-1.5 py-0.5 rounded ml-2">CHATTER</span>
+                        <span className="text-[9px] font-bold font-mono bg-brandGreen/20 text-brandGreen px-1.5 py-0.5 rounded ml-2 border border-brandGreen/50 shadow-[0_0_5px_rgba(16,185,129,0.5)] animate-pulse">HOT LEAD</span> : 
+                        <span className="text-[9px] text-slate-500 font-mono border border-slate-700 px-1.5 py-0.5 rounded ml-2 uppercase">Chatter</span>
                       }
                   </div>
-                  <p className="text-sm text-slate-200 font-medium">{post.text}</p>
+                  <p className="text-sm text-slate-300 font-medium">{post.text}</p>
               </a>
             ))}
         </div>
@@ -104,30 +110,30 @@ function RedditPanel({ data }) {
 
 function PRPanel({ data }) {
   return (
-    <div className="glass-panel p-4 rounded-xl lg:col-span-1 shadow-lg border border-slate-600 flex flex-col">
-        <h3 className="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><Radio className="text-brandBlue mr-2 w-5 h-5" /> Media & Video PR</h3>
+    <div className="glass-panel p-4 lg:col-span-1 flex flex-col group border-t-2 border-t-red-500/50 hover:border-t-red-500">
+        <h3 className="text-sm font-bold text-red-500 tracking-widest uppercase mb-4 flex items-center border-b border-white/10 pb-2 text-shadow-glow"><Radio className="text-red-500 mr-2 w-5 h-5 group-hover:animate-pulse" /> Network Scraper</h3>
         <div className="overflow-y-auto max-h-[300px] feed-scroll pr-2 space-y-4">
             <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 flex items-center"><YoutubeLogo weight="fill" className="text-red-500 mr-1 w-4 h-4"/> Top Video Content</span>
+                <span className="text-[10px] text-red-400/80 font-bold font-mono uppercase tracking-widest mb-2 flex items-center"><YoutubeLogo weight="fill" className="text-red-500 mr-1 w-4 h-4"/> Video Nodes</span>
                 <div className="space-y-2">
                   {data.socialIntel.youtubeFeed.map((vid, idx) => (
-                    <div key={idx} className="flex items-start space-x-2 bg-slate-800/40 p-2 rounded border border-slate-700/50">
-                        <YoutubeLogo weight="fill" className="text-red-500 w-6 h-6 mt-0.5 shrink-0" />
+                    <div key={idx} className="flex items-start space-x-2 bg-slate-900/50 p-2 rounded border border-white/5 hover:border-red-500/30 transition">
+                        <YoutubeLogo weight="fill" className="text-red-500 w-6 h-6 mt-0.5 shrink-0 drop-shadow-[0_0_5px_rgba(239,68,68,0.5)]" />
                         <div>
                             <p className="text-xs font-bold text-slate-200 leading-tight">{vid.title}</p>
-                            <p className="text-[9px] text-slate-400 mt-1">{vid.channel} • {vid.views.toLocaleString()} views</p>
+                            <p className="text-[9px] text-red-400/70 mt-1 font-mono">{vid.channel} // {vid.views.toLocaleString()} VIEWS</p>
                         </div>
                     </div>
                   ))}
                 </div>
             </div>
-            <div className="pt-2 border-t border-slate-700/50">
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2 block">Local PR & News XML</span>
+            <div className="pt-2 border-t border-white/10">
+                <span className="text-[10px] text-cyan-400/80 font-bold font-mono uppercase tracking-widest mb-2 block">News XML Feed</span>
                 <div className="space-y-2">
                   {data.socialIntel.newsFeed.map((news, idx) => (
-                    <div key={idx} className="border-l-2 border-brandBlue pl-2 py-1 mb-2">
+                    <div key={idx} className="border-l-2 border-brandBlue pl-2 py-1 mb-2 hover:bg-brandBlue/5 transition px-2 rounded-r">
                         <p className="text-[11px] font-bold text-slate-300 leading-tight">{news.title}</p>
-                        <p className="text-[9px] text-slate-500 mt-0.5">{news.date}</p>
+                        <p className="text-[9px] text-brandBlue/70 font-mono mt-0.5">{news.date}</p>
                     </div>
                   ))}
                 </div>
@@ -139,42 +145,50 @@ function PRPanel({ data }) {
 
 function MockAnalyticsPanel() {
   return (
-    <div className="glass-panel p-4 rounded-xl lg:col-span-2 shadow-lg flex flex-col justify-between">
-      <h3 className="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><ActivitySquare className="text-brandOrange mr-2 w-5 h-5" /> Web Analytics (GA4 Mock)</h3>
+    <div className="glass-panel p-4 lg:col-span-2 flex flex-col justify-between group border-t-2 border-t-brandGreen/50 hover:border-t-brandGreen">
+      <h3 className="text-sm font-bold text-brandGreen tracking-widest uppercase mb-4 flex items-center border-b border-white/10 pb-2 text-shadow-glow"><ActivitySquare className="text-brandGreen mr-2 w-5 h-5 group-hover:animate-pulse" /> Terminal Analytics</h3>
       <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="bg-slate-800/50 p-3 rounded text-center border border-slate-700">
-          <p className="text-xs text-slate-400">Monthly Visitors</p>
-          <p className="text-xl font-bold text-brandBlue font-mono">1,402</p>
+        <div className="bg-slate-900/60 p-3 rounded text-center border border-brandGreen/20 shadow-[inset_0_0_10px_rgba(16,185,129,0.05)]">
+          <p className="text-[10px] text-brandGreen/70 font-bold tracking-widest uppercase mb-1">Incoming Packets</p>
+          <p className="text-2xl font-black text-brandGreen font-mono text-shadow-glow">1,402</p>
         </div>
-        <div className="bg-slate-800/50 p-3 rounded text-center border border-slate-700">
-          <p className="text-xs text-slate-400">Bounce Rate</p>
-          <p className="text-xl font-bold text-brandGreen font-mono">34.2%</p>
+        <div className="bg-slate-900/60 p-3 rounded text-center border border-brandOrange/20 shadow-[inset_0_0_10px_rgba(249,115,22,0.05)]">
+          <p className="text-[10px] text-brandOrange/70 font-bold tracking-widest uppercase mb-1">Signal Loss</p>
+          <p className="text-2xl font-black text-brandOrange font-mono text-shadow-glow">34.2%</p>
         </div>
-        <div className="bg-slate-800/50 p-3 rounded text-center border border-slate-700">
-          <p className="text-xs text-slate-400">Avg Session</p>
-          <p className="text-xl font-bold text-purple-400 font-mono">2m 14s</p>
+        <div className="bg-slate-900/60 p-3 rounded text-center border border-cyberPurple/20 shadow-[inset_0_0_10px_rgba(139,92,246,0.05)]">
+          <p className="text-[10px] text-cyberPurple/70 font-bold tracking-widest uppercase mb-1">Connection Time</p>
+          <p className="text-2xl font-black text-cyberPurple font-mono text-shadow-glow">2m 14s</p>
         </div>
       </div>
-      <p className="text-[10px] text-slate-500 italic text-center">Awaiting Google Analytics Service Account credentials to pull live data.</p>
+      <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden mt-2 relative">
+          <div className="absolute inset-y-0 left-0 bg-brandGreen w-1/3 shadow-[0_0_10px_#10b981] animate-pulse"></div>
+          <div className="absolute inset-y-0 left-1/3 bg-brandBlue w-1/4 shadow-[0_0_10px_#0ea5e9]"></div>
+      </div>
     </div>
   );
 }
 
 function MockSocialPanel() {
   return (
-    <div className="glass-panel p-4 rounded-xl lg:col-span-1 shadow-lg flex flex-col justify-between">
-      <h3 className="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><Users className="text-brandBlue mr-2 w-5 h-5" /> Social Engagement (Mock)</h3>
-      <div className="space-y-4 mb-4">
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-bold text-blue-500">Facebook Pages</span>
-          <span className="text-sm font-mono">+12.4% Reach</span>
+    <div className="glass-panel p-4 lg:col-span-1 flex flex-col justify-between group border-t-2 border-t-cyberCyan/50 hover:border-t-cyberCyan">
+      <h3 className="text-sm font-bold text-cyberCyan tracking-widest uppercase mb-4 flex items-center border-b border-white/10 pb-2 text-shadow-glow"><Users className="text-cyberCyan mr-2 w-5 h-5 group-hover:animate-pulse" /> Network Reach</h3>
+      <div className="space-y-5 mb-4 mt-2">
+        <div>
+            <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-bold text-slate-300 tracking-wider">Facebook Relay</span>
+            <span className="text-[10px] font-mono text-brandGreen bg-brandGreen/10 px-1.5 py-0.5 rounded border border-brandGreen/30">+12.4% Reach</span>
+            </div>
+            <div className="w-full bg-slate-800 h-1 rounded-full"><div className="bg-blue-500 h-1 rounded-full shadow-[0_0_5px_#3b82f6]" style={{width: '75%'}}></div></div>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-bold text-blue-700">LinkedIn Business</span>
-          <span className="text-sm font-mono">+44 Clicks</span>
+        <div>
+            <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-bold text-slate-300 tracking-wider">LinkedIn Grid</span>
+            <span className="text-[10px] font-mono text-brandGreen bg-brandGreen/10 px-1.5 py-0.5 rounded border border-brandGreen/30">+44 Clicks</span>
+            </div>
+            <div className="w-full bg-slate-800 h-1 rounded-full"><div className="bg-blue-600 h-1 rounded-full shadow-[0_0_5px_#2563eb]" style={{width: '45%'}}></div></div>
         </div>
       </div>
-      <p className="text-[10px] text-slate-500 italic text-center mt-auto">Awaiting Facebook/LinkedIn Graph API tokens.</p>
     </div>
   );
 }
@@ -202,38 +216,38 @@ export default function DashboardGrid({ data, keyword }) {
 
       {/* Row 4: Competitor Intel & Diagnostic */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="glass-panel p-4 rounded-xl col-span-1 shadow-lg">
-            <h3 className="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><Search className="text-red-400 mr-2 w-5 h-5" /> Local Competitor Intel</h3>
+        <div className="glass-panel p-4 col-span-1 border-t-2 border-t-red-500/50 hover:border-t-red-500 group">
+            <h3 className="text-sm font-bold text-red-500 tracking-widest uppercase mb-4 flex items-center border-b border-white/10 pb-2 text-shadow-glow"><Search className="text-red-500 mr-2 w-5 h-5 group-hover:animate-pulse" /> Target Acquisition (Competitors)</h3>
             <div className="space-y-3">
               {data.competitorIntel.map((comp, idx) => (
-                <div key={idx} className="bg-slate-800/60 p-3 rounded-lg border border-red-500/20 flex justify-between items-center">
+                <div key={idx} className="bg-slate-900/50 p-3 rounded-lg border border-red-500/20 flex justify-between items-center hover:bg-slate-800 transition">
                     <div>
-                        <div className="text-sm font-bold text-slate-200 truncate hover:text-red-400 transition cursor-pointer">{comp.domain}</div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">{comp.title}</div>
+                        <div className="text-sm font-bold text-slate-200 truncate hover:text-red-400 transition cursor-pointer font-mono">{comp.domain}</div>
+                        <div className="text-[10px] text-slate-500 mt-0.5 uppercase tracking-wide">{comp.title}</div>
                     </div>
-                    <div className="bg-red-900/40 text-red-400 font-bold text-xs px-2.5 py-1 rounded-md"># {comp.position}</div>
+                    <div className="bg-red-900/40 text-red-400 font-bold font-mono text-xs px-2.5 py-1 rounded-md border border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)] animate-pulse">RANK {comp.position}</div>
                 </div>
               ))}
-              {data.competitorIntel.length === 0 && <p className="text-xs text-slate-500 italic">No competitors found for this keyword.</p>}
+              {data.competitorIntel.length === 0 && <p className="text-xs text-slate-500 italic font-mono">No targets found in sector.</p>}
             </div>
         </div>
 
-        <div className="glass-panel p-4 rounded-xl col-span-1 shadow-lg">
-            <h3 className="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center border-b border-slate-700/50 pb-2"><ActivitySquare className="text-brandBlue mr-2 w-5 h-5" /> Technical SEO Diagnostics</h3>
-            <div className="space-y-6 mt-6">
+        <div className="glass-panel p-4 col-span-1 border-t-2 border-t-brandBlue/50 hover:border-t-brandBlue group">
+            <h3 className="text-sm font-bold text-brandBlue tracking-widest uppercase mb-4 flex items-center border-b border-white/10 pb-2 text-shadow-glow"><ActivitySquare className="text-brandBlue mr-2 w-5 h-5 group-hover:animate-pulse" /> System Diagnostics</h3>
+            <div className="space-y-8 mt-8 px-2">
                 <div>
-                    <div className="flex justify-between items-center mb-1">
-                        <span className="text-slate-300 text-xs uppercase font-bold tracking-wider">Tech SEO Score</span>
-                        <span className="font-mono text-brandGreen font-bold">{data.seoIntel.domainAuthority || 0}</span>
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-brandGreen/80 text-[10px] uppercase font-bold tracking-widest font-mono">Tech SEO Score</span>
+                        <span className="font-mono text-brandGreen font-black text-lg text-shadow-glow">{data.seoIntel.domainAuthority || 0}</span>
                     </div>
-                    <div className="w-full bg-slate-800 rounded-full h-1.5"><div className="bg-brandGreen h-1.5 rounded-full transition-all duration-1000" style={{width: `${data.seoIntel.domainAuthority || 0}%`}}></div></div>
+                    <div className="w-full bg-slate-900 rounded-full h-2 border border-white/5"><div className="bg-brandGreen h-2 rounded-full transition-all duration-1000 shadow-[0_0_10px_#10b981]" style={{width: `${data.seoIntel.domainAuthority || 0}%`}}></div></div>
                 </div>
                 <div>
-                    <div className="flex justify-between items-center mb-1">
-                        <span className="text-slate-300 text-xs uppercase font-bold tracking-wider">Performance / Speed</span>
-                        <span className="font-mono text-brandBlue font-bold">{data.seoIntel.trustFlow || 0}</span>
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-cyberCyan/80 text-[10px] uppercase font-bold tracking-widest font-mono">Network Speed</span>
+                        <span className="font-mono text-cyberCyan font-black text-lg text-shadow-glow">{data.seoIntel.trustFlow || 0}</span>
                     </div>
-                    <div className="w-full bg-slate-800 rounded-full h-1.5"><div className="bg-brandBlue h-1.5 rounded-full transition-all duration-1000" style={{width: `${data.seoIntel.trustFlow || 0}%`}}></div></div>
+                    <div className="w-full bg-slate-900 rounded-full h-2 border border-white/5"><div className="bg-cyberCyan h-2 rounded-full transition-all duration-1000 shadow-[0_0_10px_#06b6d4]" style={{width: `${data.seoIntel.trustFlow || 0}%`}}></div></div>
                 </div>
             </div>
         </div>
