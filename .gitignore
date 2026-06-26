@@ -2,3 +2,6 @@ node_modules/
 google-credentials.json
 .env
 .env
+test*.js
+*.png
+*.html
