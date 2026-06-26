@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0b1120;
-  --color-surface: rgba(15, 23, 42, 0.6);
-  --color-text-main: #f8fafc;
-  --color-text-muted: #94a3b8;
-  --color-border: rgba(255, 255, 255, 0.1);
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
   
   /* Brand colors */
   --color-brandBlue: #0ea5e9;
@@ -18,27 +18,27 @@
 
 @layer base {
   body {
-    @apply bg-bg text-text-main font-mono min-h-screen flex flex-col overflow-x-hidden antialiased w-full;
+    @apply bg-bg text-text-main font-sans min-h-screen flex flex-col overflow-x-hidden antialiased w-full;
   }
 }
 
 @layer utilities {
   .surface-panel {
-    @apply bg-surface border border-border shadow-sm rounded-xl overflow-hidden backdrop-blur-md;
+    @apply bg-surface border border-border shadow-sm rounded-xl overflow-hidden;
   }
   
   .glass-panel {
-    @apply bg-slate-800/80 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl relative overflow-hidden;
+    @apply bg-white border border-slate-200 shadow-md rounded-xl relative overflow-hidden;
   }
   
   .glass-panel::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50 pointer-events-none;
+    @apply absolute inset-0 bg-gradient-to-br from-slate-50/50 to-transparent pointer-events-none;
   }
 }
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 .feed-scroll::-webkit-scrollbar { width: 4px; }
