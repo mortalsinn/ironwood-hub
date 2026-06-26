@@ -17,10 +17,10 @@ export default function Diagnostics({ data }) {
         {/* Technical SEO Score */}
         <div className="surface-panel">
           <div className="bg-slate-50 border-b border-border p-5">
-            <Tooltip text="Measures the structural strength of your website and inbound link profile (scored out of 100).">
+            <Tooltip text="Measures the structural strength of your website and inbound link profile. Domain Authority and Trust Flow are scored out of 100 and determine your ability to rank on Google.">
               <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
                 <ActivitySquare className="text-brandBlue w-5 h-5 mr-2" /> 
-                Lighthouse Technical Audit
+                Backlink & Authority Audit
               </h3>
             </Tooltip>
           </div>
@@ -64,7 +64,7 @@ export default function Diagnostics({ data }) {
         {/* AI Matrix */}
         <div className="surface-panel flex flex-col">
           <div className="bg-slate-50 border-b border-border p-5">
-            <Tooltip text="Probability of leading LLMs explicitly recommending Ironwood Stair & Rail for local consumer queries.">
+            <Tooltip text="Answer Engine Optimization (AEO). The dashboard queries AI models daily to see if they recommend your brand for queries like 'custom stairs calgary'. A high score means the AI recommends you.">
               <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
                 <BrainCircuit className="text-purple-600 w-5 h-5 mr-2" /> 
                 AEO Recommendation Matrix
@@ -72,7 +72,7 @@ export default function Diagnostics({ data }) {
             </Tooltip>
           </div>
           <div className="p-6 flex-1 flex flex-col">
-            <p className="text-sm text-text-muted mb-6">Probability of leading LLMs explicitly recommending Ironwood Stair & Rail for local consumer queries.</p>
+            <p className="text-sm text-text-muted mb-6">Live tracking of generative AI systems. If a user asks ChatGPT 'who builds custom stairs in Calgary?', this is the probability it recommends Ironwood Stair & Rail.</p>
             
             <div className="space-y-4 flex-1">
               {data.aeoIntel.llmPerformance.map((llm, idx) => {
