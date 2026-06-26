@@ -48,7 +48,7 @@ async function syncReddit() {
         });
         
         const posts = res.data.data.children.slice(0, 10); // Grab top 10 recent
-        const insert = db.prepare(`INSERT OR REPLACE INTO reddit_leads (id, author, time, text, intent, url) VALUES (?, ?, ?, ?, ?, ?)`);
+        const insert = db.prepare(`INSERT OR REPLACE INTO reddit_leads (id, author, date, time, text, intent, url) VALUES (?, ?, ?, ?, ?, ?, ?)`);
         
         for (const post of posts) {
             const data = post.data;
@@ -66,9 +66,12 @@ async function syncReddit() {
             // Max 150 chars text preview
             const textPreview = text.substring(0, 150) + (text.length > 150 ? '...' : '');
 
+            const dateStr = new Date(data.created_utc * 1000).toISOString().replace('T', ' ').substring(0, 19);
+
             insert.run(
                 data.id, 
                 data.author, 
+                dateStr,
                 timeStr, 
                 textPreview, 
                 intent, 
@@ -98,8 +101,8 @@ async function syncNews() {
         db.prepare('DELETE FROM news_feed').run();
 
         items.forEach((item, index) => {
-            const dateStr = new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            insert.run(`news_${index}`, item.title, dateStr, item.link);
+            const isoDate = new Date(item.pubDate).toISOString().replace('T', ' ').substring(0, 19);
+            insert.run(`news_${index}`, item.title, isoDate, item.link);
         });
         
         console.log(`[WORKER] News Sync complete. Added ${items.length} PR articles.`);
@@ -113,6 +116,15 @@ async function syncNews() {
 async function syncAEO() {
     console.log("[WORKER] Syncing AI Engine Optimization (AEO) matrix...");
     try {
+        // Check if an AEO score has already been fetched today to save API costs
+        const todayStr = new Date().toISOString().substring(0, 10);
+        const existing = db.prepare(`SELECT count(*) as count FROM aeo_scores WHERE model = 'Gemini 2.5 (Live)' AND date LIKE ?`).get(`${todayStr}%`);
+        
+        if (existing.count > 0) {
+            console.log("[WORKER] AEO Sync skipped: Gemini was already queried today.");
+            return;
+        }
+
         const keywords = ['custom stairs calgary', 'glass railings calgary']; // Evaluate top targets
         const insert = db.prepare(`INSERT INTO aeo_scores (model, score) VALUES (?, ?)`);
         

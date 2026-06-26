@@ -32,6 +32,7 @@ function initDB() {
     CREATE TABLE IF NOT EXISTS reddit_leads (
       id TEXT PRIMARY KEY, -- using reddit post id or url as PK to avoid duplicates
       author TEXT,
+      date TEXT DEFAULT CURRENT_TIMESTAMP,
       time TEXT,
       text TEXT,
       intent TEXT,
@@ -88,9 +89,9 @@ function seedMockData() {
   insertTrend.run('2026-06-14', 'custom stairs calgary', 80);
 
   // Seed Reddit Leads
-  const insertReddit = db.prepare('INSERT INTO reddit_leads (id, author, time, text, intent, url) VALUES (?, ?, ?, ?, ?, ?)');
-  insertReddit.run('post1', 'yyc_builder', '2 hours ago', 'Anyone know a good contractor for custom stairs calgary? Need them for a new build in SW Calgary.', 'HOT LEAD', 'https://reddit.com/r/calgary/post1');
-  insertReddit.run('post2', 'homeowner_calgary', '1 day ago', 'Got a quote for stairs, checking if Ironwood is good?', 'CHATTER', 'https://reddit.com/r/calgary/post2');
+  const insertReddit = db.prepare('INSERT INTO reddit_leads (id, author, date, time, text, intent, url) VALUES (?, ?, ?, ?, ?, ?, ?)');
+  insertReddit.run('post1', 'yyc_builder', '2026-06-26 10:00:00', '2 hours ago', 'Anyone know a good contractor for custom stairs calgary? Need them for a new build in SW Calgary.', 'HOT LEAD', 'https://reddit.com/r/calgary/post1');
+  insertReddit.run('post2', 'homeowner_calgary', '2026-06-25 10:00:00', '1 day ago', 'Got a quote for stairs, checking if Ironwood is good?', 'CHATTER', 'https://reddit.com/r/calgary/post2');
 
   // Seed AEO Scores
   const insertAEO = db.prepare('INSERT INTO aeo_scores (model, score) VALUES (?, ?)');
@@ -106,8 +107,8 @@ function seedMockData() {
   
   // Seed News
   const insertNews = db.prepare('INSERT INTO news_feed (id, title, date, url) VALUES (?, ?, ?, ?)');
-  insertNews.run('news1', 'The biggest night of the year for Calgary building industry', '4/13/2026', 'https://news.google.com/1');
-  insertNews.run('news2', 'Pilot project takes aim at Calgary hail, wind damage', '4/10/2026', 'https://news.google.com/2');
+  insertNews.run('news1', 'The biggest night of the year for Calgary building industry', '2026-04-13 10:00:00', 'https://news.google.com/1');
+  insertNews.run('news2', 'Pilot project takes aim at Calgary hail, wind damage', '2026-04-10 10:00:00', 'https://news.google.com/2');
 }
 
 module.exports = {
