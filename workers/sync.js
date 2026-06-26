@@ -3,6 +3,7 @@ const axios = require('axios');
 const tls = require('tls');
 const { XMLParser } = require('fast-xml-parser');
 const { db } = require('../database');
+const { evaluateAEO } = require('../aeo_evaluator');
 
 // 1. Live SSL Sync
 async function syncSSL() {
@@ -107,11 +108,38 @@ async function syncNews() {
     }
 }
 
+
+// 4. Live AEO Sync (Gemini)
+async function syncAEO() {
+    console.log("[WORKER] Syncing AI Engine Optimization (AEO) matrix...");
+    try {
+        const keywords = ['custom stairs calgary', 'glass railings calgary']; // Evaluate top targets
+        const insert = db.prepare(`INSERT INTO aeo_scores (model, score) VALUES (?, ?)`);
+        
+        // We will evaluate each keyword and take an average, or just pick the top one for simplicity.
+        // For the dashboard UI we typically just display one overall score or breakdown by LLM. 
+        // We will use Gemini-2.5-Flash to simulate different engines, or just present it as Gemini's rating.
+        const score = await evaluateAEO(keywords[0]);
+        
+        if (score !== "N/A") {
+            // Delete old scores for Gemini to keep it fresh
+            db.prepare(`DELETE FROM aeo_scores WHERE model = 'Gemini 2.5 (Live)'`).run();
+            insert.run('Gemini 2.5 (Live)', score);
+            console.log(`[WORKER] AEO Sync complete. Gemini score: ${score}`);
+        } else {
+            console.warn("[WORKER] AEO Sync skipped or failed.");
+        }
+    } catch (err) {
+        console.error("[WORKER] AEO Sync failed:", err.message);
+    }
+}
+
 async function runAllSyncs() {
     console.log("[WORKER] Running manual/initial full sync...");
     await syncSSL();
     await syncReddit();
     await syncNews();
+    await syncAEO();
     console.log("[WORKER] Full sync finished.");
 }
 
@@ -133,6 +161,12 @@ function startWorkers() {
     cron.schedule('0 0 * * *', async () => {
         console.log("[WORKER] Triggering midnight SSL sync...");
         await syncSSL();
+    });
+
+    // Run AEO eval once a day (it costs API credits, so once a day is good)
+    cron.schedule('0 6 * * *', async () => {
+        console.log("[WORKER] Triggering daily AEO sync...");
+        await syncAEO();
     });
 }
 

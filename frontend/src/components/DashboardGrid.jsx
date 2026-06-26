@@ -62,7 +62,7 @@ function AEOPanel({ data }) {
     <div className="glass-panel p-4 lg:col-span-1 flex flex-col group border-t-2 border-t-purple-500 transition-all hover:shadow-md">
       <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2">
         <Brain className="text-purple-500 mr-2 w-5 h-5" /> AI Engine Matrix
-        <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
+        <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-purple-500/30 text-purple-700 bg-purple-500/10 font-mono flex items-center"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-1.5 animate-pulse"></span>LIVE AEO</span>
       </h3>
       <p className="text-[10px] font-mono text-slate-500 mb-4 uppercase tracking-widest">Probability of AI recommendation.</p>
       <div className="space-y-3 flex-grow">
