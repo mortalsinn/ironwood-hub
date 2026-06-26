@@ -63,16 +63,16 @@ function App() {
           ) : data ? (
             <div className="animate-in fade-in duration-1000">
               {/* Global Ticker */}
-              <div className="glass-panel p-2 flex items-center overflow-hidden mb-6 border-l-4 border-l-brandOrange shadow-[0_0_15px_rgba(249,115,22,0.15)]">
-                  <span className="text-brandOrange font-bold text-[10px] tracking-widest px-3 border-r border-white/10 mr-3 whitespace-nowrap uppercase flex items-center">
+              <div className="glass-panel p-2 flex items-center overflow-hidden mb-6 border-l-4 border-l-brandOrange shadow-sm">
+                  <span className="text-brandOrange font-bold text-[10px] tracking-widest px-3 border-r border-slate-200 mr-3 whitespace-nowrap uppercase flex items-center">
                     <span className="w-1.5 h-1.5 bg-brandOrange rounded-full mr-2 animate-pulse"></span>
                     Live Intercept
                   </span>
                   <div className="w-full overflow-hidden relative">
-                      <div className="whitespace-nowrap text-xs font-mono text-cyan-400/80 animate-[marquee_40s_linear_infinite]">
+                      <div className="whitespace-nowrap text-xs font-mono text-slate-600 animate-[marquee_40s_linear_infinite]">
                         {data.socialIntel.liveStream.map((log, i) => (
-                          <span key={i} className="mx-6 hover:text-cyan-300 transition-colors cursor-default">
-                            <span className="text-brandOrange/70">[{log.source}]</span> {log.text}
+                          <span key={i} className="mx-6 hover:text-slate-900 transition-colors cursor-default">
+                            <span className="text-brandOrange font-bold">[{log.source}]</span> {log.text}
                           </span>
                         )).reduce((acc, curr) => [acc, ...Array(5).fill(curr)], [])}
                       </div>

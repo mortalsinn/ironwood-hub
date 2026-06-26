@@ -9,13 +9,13 @@ export default {
     extend: {
       colors: {
         darkBg: '#0f172a', // Slate 900
-        cardBg: 'rgba(30, 41, 59, 0.7)', // Slate 800
-        brandBlue: '#38bdf8', // Soft sky blue
-        brandGreen: '#10b981', // Emerald green
-        brandOrange: '#f59e0b', // Amber
-        cyberCyan: '#cbd5e1', // Slate 300
-        brandGold: '#c29545', // Ironwood Bronze/Gold
-        cyberPurple: '#8b5cf6'
+        cardBg: '#ffffff', // White
+        brandBlue: '#0284c7', // Sky 600
+        brandGreen: '#059669', // Emerald 600
+        brandOrange: '#ea580c', // Orange 600
+        cyberCyan: '#0369a1', // Sky 700
+        brandGold: '#b45309', // Amber 700
+        cyberPurple: '#7c3aed' // Violet 600
       },
       animation: {
         'spin-slow': 'spin 3s linear infinite',
