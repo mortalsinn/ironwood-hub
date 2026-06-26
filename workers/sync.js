@@ -53,12 +53,12 @@ async function syncReddit() {
             "maxItems": 10
         };
 
+        // Clear old placeholders and previous leads immediately so we only show fresh data, even if Apify rate limits
+        db.prepare(`DELETE FROM reddit_leads`).run();
+
         console.log("[WORKER] Calling Apify actor...");
         const run = await client.actor("trudax/reddit-scraper-lite").call(input);
         const { items } = await client.dataset(run.defaultDatasetId).listItems();
-        
-        // Clear old placeholders and previous leads so we only show fresh data
-        db.prepare(`DELETE FROM reddit_leads`).run();
         
         const insert = db.prepare(`INSERT OR REPLACE INTO reddit_leads (id, author, date, time, text, intent, url) VALUES (?, ?, ?, ?, ?, ?, ?)`);
         
