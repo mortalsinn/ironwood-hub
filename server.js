@@ -86,9 +86,54 @@ app.get('/api/dashboard', async (req, res) => {
         aeoIntel: { llmPerformance: aeoScores.map(a => ({ model: a.model, recommendationProbability: a.score })) },
         webAnalytics: webAnalytics,
         socialMetrics: {
-            facebook: { views: "15.5K", engagement: 758, followers: 329 },
-            instagram: { reach: "7.01K", engagement: 412, followers: "2.91K" },
-            linkedin: { impressions: "5,138", clicks: 697, followers: 83 }
+            facebook: { views: "19,830", reachPercentage: "94.8%", topFormat: "Multi-photo" },
+            instagram: { topFormat: "Carousels (54.4%)", reelsEngagement: "68.8%" },
+            linkedin: { newFollowers: 77, topIndustry: "Construction", posts: 42 }
+        },
+        socialDeepDive: {
+            linkedin: {
+                growth: {
+                    ironwood: { posts: 42, newFollowers: 77 },
+                    competitor: { posts: 3, newFollowers: 9 }
+                },
+                demographics: {
+                    companySize: [
+                        { name: "11-50 employees", value: 39 },
+                        { name: "2-10 employees", value: 19 },
+                        { name: "51-200 employees", value: 19 },
+                        { name: "201-500 employees", value: 12 },
+                        { name: "501+ employees", value: 9 }
+                    ],
+                    industry: [
+                        { name: "Construction", value: 30 },
+                        { name: "Residential Building", value: 20 },
+                        { name: "Wholesale Materials", value: 11 },
+                        { name: "Real Estate", value: 10 }
+                    ],
+                    seniority: [
+                        { name: "Senior", value: 30 },
+                        { name: "Manager", value: 18 },
+                        { name: "Director", value: 17 },
+                        { name: "Owner", value: 13 }
+                    ]
+                }
+            },
+            meta: {
+                algorithmicReach: [
+                    { brand: "Ironwood Stairs", views: "19,830", growth: "+24%", reach: 94.8, format: "Multi-photo" },
+                    { brand: "Ironwood Metalcraft", views: "4,560", growth: "+277%", reach: 94.1, format: "Multi-photo" },
+                    { brand: "Ironwood Glass", views: "128", growth: "+8.5%", reach: 70.3, format: "Multi-photo" }
+                ],
+                instagramEfficiency: [
+                    { format: "Carousels", percentage: 54.4 },
+                    { format: "Images", percentage: 25.7 },
+                    { format: "Reels", percentage: 19.9 }
+                ],
+                warnings: {
+                    storyInefficiency: "126 Stories yielded only 16 exits and 68 taps forward. High production cost, negligible return.",
+                    reelsRecommendation: "Reels yielded 68.8% Likes, 15% Comments, 11.3% Saves. Reallocate production resources here."
+                }
+            }
         },
         socialIntel: {
             redditFeed: redditLeads,

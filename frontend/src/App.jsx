@@ -6,6 +6,7 @@ import Overview from './pages/Overview';
 import LeadRadar from './pages/LeadRadar';
 import LocalPR from './pages/LocalPR';
 import Diagnostics from './pages/Diagnostics';
+import SocialEngagement from './pages/SocialEngagement';
 
 function App() {
   const [data, setData] = useState(null);
@@ -38,6 +39,7 @@ function App() {
       case 'overview': return <Overview data={data} keyword={keyword} />;
       case 'lead_radar': return <LeadRadar data={data} />;
       case 'local_pr': return <LocalPR data={data} keyword={keyword} />;
+      case 'social_engagement': return <SocialEngagement data={data} />;
       case 'diagnostics': return <Diagnostics data={data} />;
       default: return <Overview data={data} keyword={keyword} />;
     }

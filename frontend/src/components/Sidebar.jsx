@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, Users, MapPin, Activity, Settings, Menu, X, Hexagon } from 'lucide-react';
+import { LayoutDashboard, Users, MapPin, Activity, Settings, Menu, X, Hexagon, Share2 } from 'lucide-react';
 
 export default function Sidebar({ currentPage, setCurrentPage }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +8,7 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'lead_radar', label: 'Lead Radar', icon: Users },
     { id: 'local_pr', label: 'Local & PR', icon: MapPin },
+    { id: 'social_engagement', label: 'Social Engagement', icon: Share2 },
     { id: 'diagnostics', label: 'SEO Diagnostics', icon: Activity },
   ];
 
