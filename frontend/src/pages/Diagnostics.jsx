@@ -25,8 +25,8 @@ export default function Diagnostics({ data }) {
             <div>
                 <div className="flex justify-between items-end mb-2">
                     <div>
-                      <span className="text-sm font-bold text-text-main block">Technical SEO</span>
-                      <span className="text-xs text-text-muted">Crawlability, metadata, and indexing.</span>
+                      <span className="text-sm font-bold text-text-main block">Domain Authority</span>
+                      <span className="text-xs text-text-muted">Overall backlink strength and authority.</span>
                     </div>
                     <span className="text-3xl font-black text-brandGreen">{seoScore}</span>
                 </div>
@@ -38,8 +38,8 @@ export default function Diagnostics({ data }) {
             <div>
                 <div className="flex justify-between items-end mb-2">
                     <div>
-                      <span className="text-sm font-bold text-text-main block">Performance & Speed</span>
-                      <span className="text-xs text-text-muted">Core Web Vitals and load times.</span>
+                      <span className="text-sm font-bold text-text-main block">Trust Flow</span>
+                      <span className="text-xs text-text-muted">Quality and relevance of inbound links.</span>
                     </div>
                     <span className="text-3xl font-black text-brandBlue">{speedScore}</span>
                 </div>
