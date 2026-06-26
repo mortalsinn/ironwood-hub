@@ -12,15 +12,15 @@ export default function TopBar({ keyword, setKeyword, refresh, loading }) {
             <span className="text-[10px] text-brandGreen font-bold tracking-widest uppercase">SYS_ONLINE</span>
         </div>
         <div className="text-sm text-slate-400 flex items-center flex-wrap">
-          <TerminalSquare className="w-4 h-4 mr-2 shrink-0 text-cyberCyan" />
-          <span className="font-mono text-xs text-cyberCyan truncate max-w-[150px] sm:max-w-none">ironwoodstairs.com</span>
+          <TerminalSquare className="w-4 h-4 mr-2 shrink-0 text-brandBlue" />
+          <span className="font-mono text-xs text-brandBlue truncate max-w-[150px] sm:max-w-none">ironwoodstairs.com</span>
         </div>
       </div>
       <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
         <select 
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          className="bg-slate-900/80 text-cyberCyan font-mono text-sm px-3 py-2 rounded-lg border border-cyberCyan/30 outline-none cursor-pointer hover:border-cyberCyan/70 hover:shadow-[0_0_10px_rgba(6,182,212,0.3)] focus:border-cyberCyan transition shrink-0"
+          className="bg-slate-800/80 text-brandBlue font-mono text-sm px-3 py-2 rounded-lg border border-brandBlue/30 outline-none cursor-pointer hover:border-brandBlue/70 focus:border-brandBlue transition shrink-0"
         >
           <option value="custom stairs calgary">"custom stairs calgary"</option>
           <option value="glass railings calgary">"glass railings calgary"</option>
@@ -30,7 +30,7 @@ export default function TopBar({ keyword, setKeyword, refresh, loading }) {
         <button 
           onClick={refresh} 
           disabled={loading}
-          className="bg-brandBlue/20 hover:bg-brandBlue/40 border border-brandBlue/50 text-brandBlue px-4 py-2 rounded-lg transition-all flex items-center text-sm font-bold shadow-[0_0_15px_rgba(14,165,233,0.2)] hover:shadow-[0_0_20px_rgba(14,165,233,0.5)] disabled:opacity-50 shrink-0"
+          className="bg-brandBlue/10 hover:bg-brandBlue/20 border border-brandBlue/50 text-brandBlue px-4 py-2 rounded-lg transition-all flex items-center text-sm font-bold disabled:opacity-50 shrink-0"
         >
           <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} /> 
           <span className="hidden sm:inline font-mono uppercase tracking-wider">{loading ? 'Syncing...' : 'Sync Intel'}</span>

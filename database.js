@@ -76,7 +76,7 @@ function seedMockData() {
   );
 
   // Seed Google Maps
-  db.prepare('INSERT INTO google_maps_intel (rating, reviews) VALUES (?, ?)').run('4.9', 142);
+  db.prepare('INSERT INTO google_maps_intel (rating, reviews) VALUES (?, ?)').run('4.9', 60);
 
   // Seed Search Trends
   const insertTrend = db.prepare('INSERT INTO search_trends (date, keyword, volume) VALUES (?, ?, ?)');

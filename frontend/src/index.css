@@ -19,7 +19,6 @@
 @layer base {
   body {
     @apply bg-bg text-text-main font-mono min-h-screen flex flex-col overflow-x-hidden antialiased w-full;
-    background-image: radial-gradient(circle at 50% -20%, rgba(14, 165, 233, 0.15), rgba(11, 17, 32, 1) 60%);
   }
 }
 
@@ -29,7 +28,7 @@
   }
   
   .glass-panel {
-    @apply bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-xl relative overflow-hidden;
+    @apply bg-slate-800/80 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl relative overflow-hidden;
   }
   
   .glass-panel::before {

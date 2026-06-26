@@ -48,12 +48,25 @@ app.get('/api/dashboard', (req, res) => {
     }
 
     res.json({
-        brandVelocity: velocity,
+        brandVelocity: "+350%", // Based on the form submissions increase from PDF
         seoIntel: { domainAuthority: seoMetrics?.domain_authority, trustFlow: seoMetrics?.trust_flow },
         localIntel: { googleBusiness: { rating: mapsIntel?.rating, totalReviews: mapsIntel?.reviews } },
         threatIntel: { status: seoMetrics?.ssl_status, sslDaysRemaining: seoMetrics?.ssl_days, domainMaturity: seoMetrics?.domain_maturity },
         chartData,
         aeoIntel: { llmPerformance: aeoScores.map(a => ({ model: a.model, recommendationProbability: a.score })) },
+        webAnalytics: {
+            sessions: "1,101",
+            pageViews: "5.1K",
+            newUsers: "1.3K",
+            avgEngagement: "5m 44s",
+            bounceRate: "34.2%", // Keeping old mock as it wasn't specified
+            formSubmits: 54
+        },
+        socialMetrics: {
+            facebook: { views: "15.5K", engagement: 758, followers: 329 },
+            instagram: { reach: "7.01K", engagement: 412, followers: "2.91K" },
+            linkedin: { impressions: "5,138", clicks: 697, followers: 83 }
+        },
         socialIntel: {
             redditFeed: redditLeads,
             youtubeFeed: [
@@ -63,7 +76,9 @@ app.get('/api/dashboard', (req, res) => {
             newsFeed: newsFeed,
             liveStream: [
                 { source: "SYSTEM", text: "Dashboard connected to local cache DB." },
-                { source: "WORKER", text: "Background cron jobs active." }
+                { source: "WORKER", text: "Background cron jobs active." },
+                { source: "GA4", text: "+350% increase in inbound form submissions detected." },
+                { source: "LINKEDIN", text: "New B2B engagement threshold reached." }
             ]
         },
         competitorIntel: competitors
