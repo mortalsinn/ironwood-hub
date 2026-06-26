@@ -49,12 +49,16 @@ async function syncReddit() {
                     "url": "https://www.reddit.com/r/calgary+alberta+airdrie/search/?q=%22Ironwood+Stairs%22+OR+%22Ironwood+Stair+%26+Rail%22+OR+%22Ironwood+Metalcraft%22+OR+%22Ironwood+Glass+Solutions%22+OR+%22Ironwood%22+OR+stairs+OR+railing+OR+railings&restrict_sr=1&sort=new"
                 }
             ],
+            "skipComments": true,
             "maxItems": 10
         };
 
         console.log("[WORKER] Calling Apify actor...");
         const run = await client.actor("trudax/reddit-scraper-lite").call(input);
         const { items } = await client.dataset(run.defaultDatasetId).listItems();
+        
+        // Clear old placeholders and previous leads so we only show fresh data
+        db.prepare(`DELETE FROM reddit_leads`).run();
         
         const insert = db.prepare(`INSERT OR REPLACE INTO reddit_leads (id, author, date, time, text, intent, url) VALUES (?, ?, ?, ?, ?, ?, ?)`);
         
@@ -82,7 +86,7 @@ async function syncReddit() {
                 timeStr, 
                 textPreview, 
                 intent, 
-                post.url || ""
+                post.url || (post.permalink ? `https://reddit.com${post.permalink}` : "")
             );
         }
         console.log(`[WORKER] Reddit Sync complete: processed ${items.length} items from Apify.`);
