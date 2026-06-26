@@ -25,6 +25,9 @@ export default function TopBar({ keyword, setKeyword, refresh, loading }) {
           <option value="custom stairs calgary">"custom stairs calgary"</option>
           <option value="glass railings calgary">"glass railings calgary"</option>
           <option value="ironwood stairs">"ironwood stairs"</option>
+          <option value="stair contractor calgary">"stair contractor calgary"</option>
+          <option value="staircase renovation calgary">"staircase renovation calgary"</option>
+          <option value="custom woodwork calgary">"custom woodwork calgary"</option>
         </select>
 
         <button 
