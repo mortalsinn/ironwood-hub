@@ -18,10 +18,13 @@ export default function Diagnostics({ data }) {
         <div className="surface-panel">
           <div className="bg-slate-50 border-b border-border p-5">
             <Tooltip text="Measures the structural strength of your website and inbound link profile. Domain Authority and Trust Flow are scored out of 100 and determine your ability to rank on Google.">
-              <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
-                <ActivitySquare className="text-brandBlue w-5 h-5 mr-2" /> 
-                Backlink & Authority Audit
-              </h3>
+              <div className="flex justify-between items-center w-full">
+                <h3 className="text-sm font-bold text-text-main uppercase tracking-widest flex items-center cursor-help">
+                  <ActivitySquare className="text-brandBlue w-5 h-5 mr-2" /> 
+                  Backlink & Authority Audit
+                </h3>
+                <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ml-4 cursor-default border border-amber-200">Simulated</span>
+              </div>
             </Tooltip>
           </div>
           <div className="p-6 space-y-8">
