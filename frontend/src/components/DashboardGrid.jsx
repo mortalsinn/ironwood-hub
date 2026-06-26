@@ -43,7 +43,7 @@ function ChartPanel({ data, keyword }) {
   };
 
   return (
-    <div className="glass-panel p-4 lg:col-span-2 h-80 flex flex-col group border-t-2 border-t-brandBlue transition-all hover:shadow-md">
+    <div className="glass-panel p-4 lg:col-span-2 h-80 flex flex-col group border-t-2 border-t-brandBlue transition-all hover:shadow-md hover:z-50">
       <Tooltip text="Plots search volume momentum over the last 90 days. Spikes indicate growing local interest.">
         <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2 cursor-help">
           <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase flex items-center">
@@ -62,7 +62,7 @@ function ChartPanel({ data, keyword }) {
 
 function AEOPanel({ data }) {
   return (
-    <div className="glass-panel p-4 lg:col-span-1 flex flex-col group border-t-2 border-t-purple-500 transition-all hover:shadow-md">
+    <div className="glass-panel p-4 lg:col-span-1 flex flex-col group border-t-2 border-t-purple-500 transition-all hover:shadow-md hover:z-50">
       <Tooltip text="Probability of leading LLMs explicitly recommending Ironwood Stair & Rail for local consumer queries.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <Brain className="text-purple-500 mr-2 w-5 h-5" /> AI Engine Matrix
@@ -93,7 +93,7 @@ function AEOPanel({ data }) {
 
 function RedditPanel({ data }) {
   return (
-    <div className="glass-panel p-4 lg:col-span-2 border-t-2 border-t-brandOrange relative overflow-hidden flex flex-col group hover:shadow-md">
+    <div className="glass-panel p-4 lg:col-span-2 border-t-2 border-t-brandOrange relative flex flex-col group hover:shadow-md hover:z-50">
       <Tooltip text="Live monitoring of Reddit conversations for purchase intent signals.">
         <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2 cursor-help">
             <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase flex items-center">
@@ -125,7 +125,7 @@ function RedditPanel({ data }) {
 
 function PRPanel({ data }) {
   return (
-    <div className="glass-panel p-4 lg:col-span-1 flex flex-col group border-t-2 border-t-red-500 hover:shadow-md">
+    <div className="glass-panel p-4 lg:col-span-1 flex flex-col group border-t-2 border-t-red-500 hover:shadow-md hover:z-50">
       <Tooltip text="Aggregated video and news coverage across the industry.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <Radio className="text-red-500 mr-2 w-5 h-5" /> Network Scraper
@@ -166,7 +166,7 @@ function PRPanel({ data }) {
 function MockAnalyticsPanel({ data }) {
   const analytics = data.webAnalytics || {};
   return (
-    <div className="glass-panel p-4 lg:col-span-2 flex flex-col justify-between group border-t-2 border-t-brandGreen hover:shadow-md">
+    <div className="glass-panel p-4 lg:col-span-2 flex flex-col justify-between group border-t-2 border-t-brandGreen hover:shadow-md hover:z-50">
       <Tooltip text="Live traffic data directly from your Google Analytics 4 property for the last 30 days.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <ActivitySquare className="text-brandGreen mr-2 w-5 h-5" /> Web Analytics (GA4)
@@ -198,7 +198,7 @@ function MockAnalyticsPanel({ data }) {
 function MockSocialPanel({ data }) {
   const social = data.socialMetrics || {};
   return (
-    <div className="glass-panel p-4 lg:col-span-1 flex flex-col justify-between group border-t-2 border-t-brandBlue hover:shadow-md">
+    <div className="glass-panel p-4 lg:col-span-1 flex flex-col justify-between group border-t-2 border-t-brandBlue hover:shadow-md hover:z-50">
       <Tooltip text="A snapshot of your brand's presence, reach, and follower count across major social platforms.">
         <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2 cursor-help">
           <Share2 className="text-brandBlue mr-2 w-5 h-5" /> Social Engagement
@@ -248,7 +248,7 @@ export default function DashboardGrid({ data, keyword }) {
 
       {/* Row 4: Competitor Intel & Diagnostic */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="glass-panel p-4 col-span-1 border-t-2 border-t-red-500 group hover:shadow-md">
+        <div className="glass-panel p-4 col-span-1 border-t-2 border-t-red-500 group hover:shadow-md hover:z-50">
             <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2">
               <Search className="text-red-500 mr-2 w-5 h-5" /> Target Acquisition (Competitors)
               <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-green-500/30 text-green-700 bg-green-500/10 font-mono">REAL</span>
@@ -267,7 +267,7 @@ export default function DashboardGrid({ data, keyword }) {
             </div>
         </div>
 
-        <div className="glass-panel p-4 col-span-1 border-t-2 border-t-brandBlue group hover:shadow-md">
+        <div className="glass-panel p-4 col-span-1 border-t-2 border-t-brandBlue group hover:shadow-md hover:z-50">
             <h3 className="text-sm font-bold text-slate-900 tracking-widest uppercase mb-4 flex items-center border-b border-slate-200 pb-2">
               <ActivitySquare className="text-brandBlue mr-2 w-5 h-5" /> System Diagnostics
               <span className="ml-auto text-[8px] px-1.5 py-0.5 rounded border border-amber-500/30 text-amber-700 bg-amber-500/10 font-mono">SIMULATED</span>

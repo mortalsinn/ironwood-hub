@@ -8,7 +8,7 @@ export default function KPICards({ data }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Velocity */}
-        <div className="glass-panel p-4 rounded-xl border-t-2 border-t-brandBlue flex justify-between items-center group cursor-default hover:bg-slate-50 transition shadow-sm hover:shadow-md">
+        <div className="glass-panel p-4 rounded-xl border-t-2 border-t-brandBlue flex justify-between items-center group hover:z-50 cursor-default hover:bg-slate-50 transition shadow-sm hover:shadow-md">
             <div>
                 <Tooltip text="Measures the percentage increase in how frequently your target keywords are being searched for over a 90-day period.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
@@ -22,7 +22,7 @@ export default function KPICards({ data }) {
         </div>
         
         {/* Google Maps */}
-        <div className="glass-panel p-4 rounded-xl border-t-2 border-t-brandGold flex justify-between items-center group hover:bg-slate-50 transition shadow-sm hover:shadow-md">
+        <div className="glass-panel p-4 rounded-xl border-t-2 border-t-brandGold flex justify-between items-center group hover:z-50 hover:bg-slate-50 transition shadow-sm hover:shadow-md">
             <div>
                 <Tooltip text="A live snapshot of your local Google Maps presence, tracking ratings and review counts.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
@@ -40,7 +40,7 @@ export default function KPICards({ data }) {
         </div>
 
         {/* Domain Age */}
-        <div className="glass-panel p-4 rounded-xl border-t-2 border-t-purple-500 hover:bg-slate-50 transition flex justify-between items-center group shadow-sm hover:shadow-md">
+        <div className="glass-panel p-4 rounded-xl border-t-2 border-t-purple-500 hover:bg-slate-50 transition flex justify-between items-center group hover:z-50 shadow-sm hover:shadow-md">
             <div>
                 <Tooltip text="How long Google has known about your domain. Older domains carry more inherent trust with search engines.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
@@ -54,7 +54,7 @@ export default function KPICards({ data }) {
         </div>
 
         {/* SSL */}
-        <div className="glass-panel p-4 rounded-xl border-t-2 border-t-brandGreen flex justify-between items-center hover:bg-slate-50 transition group shadow-sm hover:shadow-md">
+        <div className="glass-panel p-4 rounded-xl border-t-2 border-t-brandGreen flex justify-between items-center hover:bg-slate-50 transition group hover:z-50 shadow-sm hover:shadow-md">
             <div>
                 <Tooltip text="Monitors your website's security certificate. If the days remaining hit zero, browsers will block visitors from entering your site.">
                   <p className="flex items-center text-slate-500 text-[10px] font-bold uppercase tracking-widest cursor-help">
