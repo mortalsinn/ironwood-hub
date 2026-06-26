@@ -162,9 +162,9 @@ function startWorkers() {
     runAllSyncs();
 
     // Cron schedules
-    // Run every 30 minutes to stay fresh without getting rate limited
-    cron.schedule('*/30 * * * *', async () => {
-        console.log("[WORKER] Triggering 30-min interval sync...");
+    // Run every 12 hours to stay fresh without getting rate limited or abusing APIs
+    cron.schedule('0 */12 * * *', async () => {
+        console.log("[WORKER] Triggering 12-hour interval sync...");
         await syncReddit();
         await syncNews();
     });
