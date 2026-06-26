@@ -4,13 +4,20 @@ const path = require('path');
 let analyticsDataClient;
 
 if (process.env.GOOGLE_CREDENTIALS_JSON) {
-  // Use environment variable for production (Render)
-  const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
-  analyticsDataClient = new BetaAnalyticsDataClient({ credentials });
+  try {
+    const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+    analyticsDataClient = new BetaAnalyticsDataClient({ credentials });
+  } catch(e) {
+    console.error("Error parsing GOOGLE_CREDENTIALS_JSON from env:", e.message);
+  }
 } else {
-  // Fallback to local file for local development
+  const fs = require('fs');
   const credentialsPath = path.join(__dirname, 'google-credentials.json');
-  analyticsDataClient = new BetaAnalyticsDataClient({ keyFilename: credentialsPath });
+  if (fs.existsSync(credentialsPath)) {
+    analyticsDataClient = new BetaAnalyticsDataClient({ keyFilename: credentialsPath });
+  } else {
+    console.warn("WARNING: No GA4 credentials found. Live analytics will not work.");
+  }
 }
 
 /**
@@ -19,6 +26,10 @@ if (process.env.GOOGLE_CREDENTIALS_JSON) {
  * @returns {Promise<Object>} Formatted metrics
  */
 async function getGA4Metrics(propertyId) {
+  if (!analyticsDataClient) {
+    console.warn("GA4 Client not initialized. Returning null.");
+    return null;
+  }
   try {
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
