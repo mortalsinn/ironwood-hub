@@ -7,23 +7,35 @@ import LeadRadar from './pages/LeadRadar';
 import LocalPR from './pages/LocalPR';
 import Diagnostics from './pages/Diagnostics';
 import SocialEngagement from './pages/SocialEngagement';
+import Login from './pages/Login';
 
 function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState('custom stairs calgary');
   const [currentPage, setCurrentPage] = useState('overview');
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('dashboard_token'));
 
   const fetchData = async () => {
+    if (!isAuthenticated) return;
+    
     setLoading(true);
     try {
+      const token = localStorage.getItem('dashboard_token');
       const apiUrl = import.meta.env.DEV 
         ? `http://localhost:3000/api/dashboard?keyword=${encodeURIComponent(keyword)}` 
         : `/api/dashboard?keyword=${encodeURIComponent(keyword)}`;
-      const res = await axios.get(apiUrl);
+        
+      const res = await axios.get(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setData(res.data);
     } catch (err) {
       console.error("Failed to fetch data:", err);
+      if (err.response && err.response.status === 401) {
+        localStorage.removeItem('dashboard_token');
+        setIsAuthenticated(false);
+      }
     } finally {
       setLoading(false);
     }
@@ -31,7 +43,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
-  }, [keyword]);
+  }, [keyword, isAuthenticated]);
 
   const renderPage = () => {
     if (!data) return null;
@@ -44,6 +56,10 @@ function App() {
       default: return <Overview data={data} keyword={keyword} />;
     }
   };
+
+  if (!isAuthenticated) {
+    return <Login onLoginSuccess={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="flex flex-col xl:flex-row min-h-screen w-full overflow-x-hidden">

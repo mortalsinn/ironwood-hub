@@ -30,7 +30,31 @@ startWorkers();
 // API ENDPOINTS
 // ==========================================
 
+const getAuthToken = () => {
+    return Buffer.from(process.env.DASHBOARD_PASSWORD || 'Ironwood@2026stats!').toString('base64');
+};
+
+app.post('/api/auth', (req, res) => {
+    const { password } = req.body;
+    const correctPassword = process.env.DASHBOARD_PASSWORD;
+    
+    if (!correctPassword) {
+        console.warn("WARNING: DASHBOARD_PASSWORD is not set in environment variables.");
+    }
+
+    if (password === correctPassword) {
+        return res.json({ success: true, token: getAuthToken() });
+    }
+    return res.status(401).json({ success: false, message: 'Invalid password' });
+});
+
 app.get('/api/dashboard', async (req, res) => {
+    // Authentication Check
+    const authHeader = req.headers.authorization;
+    if (!authHeader || authHeader !== `Bearer ${getAuthToken()}`) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
     // Read from SQLite
     const keyword = req.query.keyword || 'custom stairs calgary';
 
